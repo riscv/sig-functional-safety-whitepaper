@@ -17,6 +17,7 @@ include::../docs-resources/global-config.adoc[]
 :experimental:
 :reproducible:
 //:WaveDromEditorApp: app/wavedrom-editor.app
+// imagesoutdir is overrided in Makefile
 :imagesoutdir: images
 //:srcdir: src
 :bibtex-file: src/fusa-whitepaper.bib
