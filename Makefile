@@ -46,20 +46,29 @@ XTRA_ADOC_OPTS :=
 ASCIIDOCTOR_PDF := asciidoctor-pdf
 ASCIIDOCTOR_HTML := asciidoctor
 OPTIONS := --trace \
-           -a compress \
-           -a mathematical-format=svg \
-           -a revnumber=${VERSION} \
-           -a revremark=${REVMARK} \
-           -a revdate=${DATE} \
-           -a pdf-fontsdir=docs-resources/fonts \
-           -a pdf-theme=docs-resources/themes/riscv-pdf.yml \
-           $(XTRA_ADOC_OPTS) \
-		   -D build \
-           --failure-level=ERROR
+  -a compress \
+  -a mathematical-format=svg \
+  -a revnumber=${VERSION} \
+  -a revremark=${REVMARK} \
+  -a revdate=${DATE} \
+  -a imagesoutdir=${BUILD_DIR}/images \
+  -a pdf-fontsdir=docs-resources/fonts \
+  -a pdf-theme=docs-resources/themes/riscv-pdf.yml \
+  $(XTRA_ADOC_OPTS) \
+  -D ${BUILD_DIR}/adoc \
+  --failure-level=ERROR
 REQUIRES := --require=asciidoctor-bibtex \
-            --require=asciidoctor-diagram \
-			--require=asciidoctor-lists \
-            --require=asciidoctor-mathematical
+  -a compress \
+  -a mathematical-format=svg \
+  -a revnumber=${VERSION} \
+  -a revremark=${REVMARK} \
+  -a revdate=${DATE} \
+  -a imagesoutdir=${BUILD_DIR}/images \
+  -a pdf-fontsdir=docs-resources/fonts \
+  -a pdf-theme=docs-resources/themes/riscv-pdf.yml \
+  $(XTRA_ADOC_OPTS) \
+  -D ${BUILD_DIR}/adoc \
+  --failure-level=ERROR
 
 .PHONY: all build clean build-container build-no-container build-docs
 
