@@ -93,6 +93,7 @@ build:
 		echo "Docker is not available, building without Docker..."; \
 		$(MAKE) build-no-container; \
 	fi
+	@echo "Generated documents can be found in the 'build/adoc' folder."
 
 build-container:
 	@echo "Starting build inside Docker container..."
