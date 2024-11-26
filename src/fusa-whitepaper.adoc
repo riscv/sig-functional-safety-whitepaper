@@ -71,6 +71,7 @@ include::contributors.adoc[]
 
 include::intro.adoc[]
 include::chapter2.adoc[]
+include::chapters/pmc.adoc[]
 
 // The index must precede the bibliography
 include::index.adoc[]
