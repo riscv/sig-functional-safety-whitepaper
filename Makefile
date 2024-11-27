@@ -58,17 +58,9 @@ OPTIONS := --trace \
   -D ${BUILD_DIR}/adoc \
   --failure-level=ERROR
 REQUIRES := --require=asciidoctor-bibtex \
-  -a compress \
-  -a mathematical-format=svg \
-  -a revnumber=${VERSION} \
-  -a revremark=${REVMARK} \
-  -a revdate=${DATE} \
-  -a imagesoutdir=${BUILD_DIR}/images \
-  -a pdf-fontsdir=docs-resources/fonts \
-  -a pdf-theme=docs-resources/themes/riscv-pdf.yml \
-  $(XTRA_ADOC_OPTS) \
-  -D ${BUILD_DIR}/adoc \
-  --failure-level=ERROR
+  --require=asciidoctor-diagram \
+  --require=asciidoctor-lists \
+  --require=asciidoctor-mathematical
 
 .PHONY: all build clean build-container build-no-container build-docs
 
