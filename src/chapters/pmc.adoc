@@ -1,6 +1,7 @@
 [#sec:pmc]
 ## Performance counters
 
+[#sec:pmc:safety]
 ### Safety needs
 
 Performance counters are used to monitor and analyse safety-critical
@@ -10,7 +11,7 @@ but the ability to observe the behaviour of the hardware as an application is
 executed is valuable for development and runtime monitoring of safety-critical
 systems.
 
-[#sec:pmc:features]
+[#sec:pmc:safety:features]
 #### Features
 
 Performance Counters, frequently referred as PMCs for Performance Monitoring
@@ -185,6 +186,7 @@ Likewise, when designing a system these features can be helpful to debug
 (filter) specific applications running in the system and raising signals and/or
 alarms when a state is reached (quota).
 
+[#sec:pmc:safety:level]
 ==== Level
 
 Performance Counters in the context of Safety are needed on the SoC- and
@@ -215,7 +217,8 @@ transferred). Other software-visible events, such as interrupts and exceptions,
 can also be monitored with software counters implemented in the
 hypervisor/OS/RTOS.
 
-==== Importance
+[#sec:pmc:safety:importance]
+#### Importance
 
 Performance counters are important for timing-sensitive applications that are
 implemented on architectures where there can be timing interferences between
@@ -254,11 +257,13 @@ information.
 Therefore, it is of prominent importance to provide detailed documentation along
 with the performance counters of what they really measure.
 
+[#sec:pmc:safety:justification]
 #### Justification
 
 This section provides first the scope of why performance counters are needed in
 safety-related systems and then reviews specific uses through some examples.
 
+[#sec:pmc:safety:justification:standards]
 ##### Traceability to standards
 
 Performance Counters can be used as the basis for meeting safety requirements
@@ -288,11 +293,13 @@ phases of the product life-cycle, as detailed next:
 In all those cases, evidence obtained from performance counters can be used to
 feed certification documentation.
 
+[#sec:pmc:safety:justification:uses]
 ##### Specific uses of performance counters
 
 Without being exhaustive, this section identifies a number of uses of
 performance counters in the context of safety-relevant systems.
 
+[#sec:pmc:safety:justification:uses:wcet]
 ###### Example 1: WCET estimation
 
 Performance counters can be used for measurement-based timing analysis, or to
@@ -309,6 +316,7 @@ estimation process as one could have in other domains such as avionics.
 In that case, performance counters can be used to feed timing models to find the
 best task scheduling in terms of timespan based on the timing model.
 
+[#sec:pmc:safety:justification:uses:valid]
 ###### Example 2: resource usage validation and diagnostics
 
 Performance counters can be used to measure accesses to different resources
@@ -326,6 +334,7 @@ predict future overruns as further integration occurs, by revealing whether some
 specific resources are highly stressed and hence, whether consolidating
 additional applications may lead to resource overutilization.
 
+[#sec:pmc:safety:justification:uses:monitoring]
 ###### Example 3: resource usage monitoring and diagnostics
 
 As for example 2, performance counters can be used during operation analogously
@@ -341,6 +350,7 @@ not only for instantaneous decisions, but also to track some history and, for
 instance, if a task experiences overruns too frequently, switch to a different
 precomputed task schedule.
 
+[#sec:pmc:safety:justification:uses:quota]
 ###### Example 4: quota allocation
 
 If performance counters allow programming quotas (e.g. maximum number of
@@ -354,6 +364,7 @@ instance, dropping the specific job of this task if it may affect more critical
 ones, or drop other tasks if this one is highly critical and becomes more
 vulnerable to interference.
 
+[#sec:pmc:safety:justification:uses:faults]
 ###### Example 5: management of random hardware faults
 
 Performance counters related to errors detected and/or corrected may be used to
@@ -370,6 +381,7 @@ avoid having unprotected components if the correction capabilities are devoted
 to correct permanent or intermittent errors, which would make transient faults
 not be correctable.
 
+[#sec:pmc:safety:justification:uses:contrib]
 ##### Contribution to safety properties
 
 This section refers to the safety properties presented in the main chapter of
@@ -385,6 +397,7 @@ this white paper and how performance counters address them:
 * Observability: Performance counters add observation capabilities that can be
   used during SW/HW development and at run-time.
 
+[#sec:pmc:rv]
 ### RISC-V solutions
 
 The RISC-V Privileged ISA Specification cite:[rv-priv-spec:2024] Section 3.1.10
@@ -427,7 +440,99 @@ The RISC-V Privileged ISA Specification cite:[rv-priv-spec:2024] Chapter 17
 defines the *Sscofpmf* extension providing performance counters overflow and
 mode filtering capabilities for machine and supervisor modes.
 The overflow capability allows the implementation of quotas as identified in the
-Features section of this chapter (<<sec:pmc:features>>), while the mode filtering
+Features section of this chapter (<<sec:pmc:safety:features>>), while the mode filtering
 capabilities partially addresses the filtering capabilities identified in the
 same section, but limited to execution modes. Note that the overflow capability
 does not apply to the mandatory `cycle` and `instret` counters.
+
+[#sec:pmc:recom]
+### Recommendations
+
+[#sec:pmc:recom:spec-gaps]
+#### Identified gaps in existing specifications
+
+The standard Hardware Performance Monitoring facility and extensions defined by
+the RISC-V specifications, see previous section, provide an important base to
+address the implementation of safety-related hardware performance counters.
+The following desirable features, not addressed by the RISC-V specification,
+can be highlighted:
+
+1. Event specification: besides the identification of specific events causing a
+  counter to increment, it would be desirable to provide the possibility of
+  specifying a family of events (i.e. events that have to be recorded at the
+  same time) or specifying non-event conditions (i.e. counting the number of
+  clock cycles for which a certain event does not occur).
+2. Filtering capabilities: the *Sscofpmf* extension provides mode-filtering
+  capabilities, nevertheless it would be desirable to provide other
+  event-filtering capabilities, such as comparison or edge detection, or the
+  initiator/target of the transaction (core ID for instance).
+3. Linked counters: it would be desirable to provide the capability of linking
+  multiple counters, defining chains of events to be monitored.
+4. Quota allocation (see <<sec:pmc:safety:justification:uses:quota>> above):
+  upon reaching the defined threshold, an interrupt would be triggered.
+  An implementation would be to preload a value in the counter and trigger an
+  interrupt when the counter overflows as provided by the *Sscofpmf* extension.
+5. Standardized event description: the description of events should be
+  standardized as much as possible among the different RISC-V processor
+  implementations.
+  This is important to allow the development of software solutions (e.g.
+  hypervisors) capable of addressing the different processor implementations as
+  long as the events are available in those cores.
+  At the time of this writing the Performance Events TG is already addressing
+  this feature at the core level.
+
+[#sec:pmc:recom:impl-gaps]
+#### Possible gaps in implementation
+
+1. Availability of SoC-level counters: monitoring harts or SoC resource usage
+  (e.g. use of shared resources) requires the definition of counters outside the
+  core.
+  A MMIO architecture could be considered for the implementation, with  Machine
+  Timer Registers (`mtime` and `mtimecmp`) constituting a valuable reference in
+  this sense.
+2. Support for counter management: support at software and configuration level
+  to guarantee the availability of safety related counters (e.g. preventing
+  disabling the counters) while granting the user access to specific resources.
+  It should be noted that some degree of protection is already guaranteed by the
+  existing privileged architecture, as remarked in the previous section.
+
+[#sec:pmc:recom:safety]
+#### Safety usage
+
+1. `mcountinhibit`: While this register allows stopping the counter from
+  incrementing to save energy consumption or to prevent side channel security
+  attacks, it may result in violation of some safety requirements or usage which
+  depends on the counter being always active.
+  The designer of a combined hardware/software system using this CSR from
+  machine mode to do the deactivation should weigh the tradeoffs depending on
+  the overall system requirements before using this register and/or device
+  additional logic such as authentication of the client(s) that has access to
+  this register.
+
+[#sec:pmc:activities]
+### Relevant activities
+
+#### Related external bodies
+
+Performance counters usually have very diverse specifications on different
+processors (Power, x86, ...).
+
+Linux features the `perf` command to instrument performance counters.
+Other OSes and vendors provide similar tools.
+
+#### Related chapters
+
+Performance counters can be used to monitor the effect of Quality of Service
+(QoS) policies, or even to dynamically influence them.
+Refer to <<sec:qos>>.
+
+Performance counters are obviously used to monitor cache performance.
+Refer to <<sec:caches>>.
+
+Performance counters can be used to measure the occurrences of certain
+(obviously not fatal) errors.
+Refer to <<sec:error>>.
+
+SoC-level performance counters and monitoring are needed to implement some
+features identified to monitor the multi-core interference.
+Refer to <<sec:interference>>.
