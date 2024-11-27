@@ -55,7 +55,7 @@ OPTIONS := --trace \
   -a pdf-fontsdir=docs-resources/fonts \
   -a pdf-theme=docs-resources/themes/riscv-pdf.yml \
   $(XTRA_ADOC_OPTS) \
-  -D ${BUILD_DIR}/adoc \
+  -D ${BUILD_DIR} \
   --failure-level=ERROR
 REQUIRES := --require=asciidoctor-bibtex \
   --require=asciidoctor-diagram \
@@ -85,7 +85,7 @@ build:
 		echo "Docker is not available, building without Docker..."; \
 		$(MAKE) build-no-container; \
 	fi
-	@echo "Generated documents can be found in the 'build/adoc' folder."
+	@echo "Generated documents can be found in the '${BUILD_DIR}' folder."
 
 build-container:
 	@echo "Starting build inside Docker container..."
