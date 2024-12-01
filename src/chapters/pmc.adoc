@@ -269,7 +269,7 @@ safety-related systems and then reviews specific uses through some examples.
 Performance Counters can be used as the basis for meeting safety requirements
 related to a variety of safety needs such as “freedom from interference”
 (ISO 26262 cite:[iso26262:2018]), “resource usage tests” (ISO 26262
-cite:[iso26262:2018]), and “interference channel characterization” (CAST-32A cite:[todo]),
+cite:[iso26262:2018]), and “interference channel characterization” (CAST-32A cite:[cast32:2016]),
 as well as for processes related to timing estimation, critical configuration
 setting validation and random hardware fault management.
 
