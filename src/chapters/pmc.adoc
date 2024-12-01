@@ -187,7 +187,7 @@ Likewise, when designing a system these features can be helpful to debug
 alarms when a state is reached (quota).
 
 [#sec:pmc:safety:level]
-==== Level
+#### Level
 
 Performance Counters in the context of Safety are needed on the SoC- and
 core-level.
