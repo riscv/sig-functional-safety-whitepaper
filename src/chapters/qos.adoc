@@ -1,0 +1,317 @@
+[#sec:qos]
+## Configurable Quality of Service (QoS) and Priority Management
+
+[#sec:qos:safety]
+### Safety needs
+
+Safety standards define processes of safety assessment and hazard analysis to
+allow each task to be categorized according to its criticality, e.g. ASIL levels
+in ISO 26262 cite:[iso26262:2018], DAL levels in DO-178 cite:[do178c:2012],
+software criticality categories in ECSS cite:[ecss:2024].
+In a given system, if the tasks that share hardware resources vary in their
+criticality levels, or if safety critical and non-safety critical tasks can
+coexist, the system is said to be of mixed-criticality.
+
+The criticality of a task and the standard according to which its code is
+developed have a direct impact on the number and type of safety mechanisms that
+need to be implemented. As a consequence, the acceptable error rates of the
+tasks differ according to their criticality level.
+To prevent a less/non critical task from interfering with the execution of a
+more critical task, it is therefore required to ensure freedom from such
+interference.
+
+Even if the tasks have the same criticality level, it is sometimes necessary to
+ensure freedom from interference if the tasks rely on each other to perform some
+safety function.
+Such cases could be exposed, for example, by a dependent failure analysis, as it
+is the case with ISO 26262.
+
+Freedom from interference, limited or complete, is often implemented by building
+on Quality of Service (QoS) and priority-related features, where QoS is the
+minimal end-to-end performance that is guaranteed in advance by a service level
+agreement (SLA) to an application.
+The performance may be measured by metrics such as instructions per cycle (IPC),
+latency of servicing work, etc.
+
+Note that, in the context of this document, we consider priority-related
+features (i.e., those features controlling the access to resources according to
+priorities assigned to tasks) a subset of QoS features.
+
+QoS features, that can be implemented at hardware and/or software level, can be
+used to guarantee specific maximum latencies, minimum bandwidth, minimum cache
+space, and the like, for specific tasks with safety and performance
+requirements.
+These guarantees can be fully enforced to achieve complete freedom from
+interference (a “hard” guarantee), or allow the system to miss targets some of
+the time up to some agreed-upon threshold, achieving a limited degree of freedom
+from interference (a “soft” or “best-effort” guarantee).
+
+In this document, we cover QoS features in the context of tasks with safety
+requirements.
+
+[#sec:qos:safety:features]
+#### Features
+
+Our aim is having configurable QoS that allows exercising control on the
+performance of tasks.
+Such control can be exercised in multiple forms, such as (not intended to be an
+exhaustive list):
+
+* End-to-end latency bounds
+* Throughput bounds
+* Space allocation bounds
+
+QoS features can be used to guarantee a performance target for a task by
+granting such task a share of the resources.
+However, since that share of the resources then becomes unavailable to other
+tasks, any task that depends upon those resources is likely to experience a
+performance drop.
+
+QoS features are allocated to tasks and/or components with different degrees of
+temporal flexibility.
+Some examples are:
+
+* Static allocation: a task has a given QoS level that never changes across
+  different executions.
+* Semi-static allocation: each execution of a given task may have a different
+  QoS level, but such level remains constant during the complete execution of
+  the task.
+* Dynamic allocation: QoS levels may change during the execution of the task.
+
+Along with configurable QoS levels, we aim at having metrics (e.g., performance
+counters) to assess how tasks are using the system to select the appropriate QoS
+level for each task (and potentially for each shared resource).
+The discussion of performance counters can be found in the corresponding
+chapter.
+
+[#sec:qos:safety:level]
+#### Level
+
+While QoS could be applied to single-core (and single-threaded) processors
+(e.g., for temperature concerns, or to manage interference across tasks running
+serially), it is particularly relevant for multi-core configurations where tasks
+run concurrently sharing hardware resources. Single-core concerns can be viewed
+as a (small) subset of multi-core concerns.
+Hence, the level at which QoS is relevant is typically the SoC, with particular
+emphasis on the shared hardware resources.
+
+[#sec:qos:safety:importance]
+#### Importance
+
+If more than one application or process need to coexist on the same platform,
+then configurable QoS is an important solution to mitigate interference
+channels, which is required at every criticality level.
+
+[#sec:qos:safety:justification]
+#### Justification
+
+Without QoS support a task (referred to as application in CAST32A
+cite:[cast32:2016]) may delay another by creating contention over a shared
+resource, which could be processor cycles or any of the physical resources.
+This leads to a reduction in the availability of the system.
+
+In avionics, the CAST32A guideline -- now superseded by EASA
+AMC 20-193 cite:[amc20193:2022] and FAA AC 20-193 cite:[ac20193:2024] --
+mandates that all interference channels must be identified and mitigated.
+A task of any criticality shall not impact the execution of another task,
+including its execution time (robust partitioning).
+
+In automotive, ISO26262 part 6 (software) identifies freedom from interference
+as a requirement across different software partitions.
+Annex D further lists relevant faults that can arise upon the lack of freedom
+from interference, one of which is as follows:
+
+* Timing and execution faults: blocking of execution, deadlocks, livelocks,
+  incorrect allocation of execution time (i.e. exceeding allocated time
+  budgets), and incorrect synchronization across software elements.
+
+ISO26262 also mandates dependent failure analysis (i.e., analysis of failures
+that occur as a consequence of a previous failure) to identify and limit the
+impact of a failure, which aims to make the system more reliable.
+Either QoS support and/or partitioning are likely to be mandated as an outcome
+of this analysis.
+
+Note, however, that not all incarnations of QoS support are appropriate to
+mitigate timing interference in the context of safety.
+For instance, dynamic features are generally ill-advised since they may
+challenge the certification process.
+Examples of dynamic features are, for instance, QoS features varying
+autonomously (i.e., without being specifically instructed by the affected safety
+critical task), such as in the case of a bus arbiter aiming at keeping similar
+waiting times across tasks in different cores.
+
+[#sec:qos:rv]
+### RISC-V solutions
+
+The most relevant set of features in the context of RISC-V can be found in the
+“RISC-V Quality-of-Service (QoS) Identifiers (*Ssqosid*)” v1.0 extension
+ratified on the 2024/06/29 cite:[ssqosid:2024].
+While such document provides the specification of the QoS identifiers, the Fast
+Track ISA Extension Proposal with the same name cite:[ft-qosid:2023] also
+includes motivation and use cases for those QoS identifiers.
+
+The proposal describes two types of identifiers that we briefly summarize here
+for reference, although we strongly suggest that the reader reviews the original
+and complete documents. Note that in the discussion below, as well as in the
+rest of the document, we refer to tasks as the software unit of interest.
+In the aforementioned documents about QoS IDs, the reference unit of interest
+is the hart (abbreviation for “hardware thread”).
+While harts and tasks are different types of entities, we use task for
+consistency with the rest of the chapters and assume during our discussions
+below that each hart runs a single task (or none).
+The two types of identifiers defined by the *Ssqosid* extension are:
+
+* Resource Control Identifiers (RCIDs): Each RCID covers a set of shared
+  resources.  Each task with such RCID gets access to a specific service level
+  (QoS) from those resources, and shares them with all other tasks with the same
+  RCID.
+** Example: RCID1 could correspond to 25% bandwidth of a bus, ways 1 and 2 of a
+   shared L2 cache, and 8 entries in the request queue of the memory controller.
+   RCID2 could correspond to 50% of bandwidth, ways 3 and 4, and 16 entries.
+   RCID3 could correspond to 75%, way 3, and 16 entries.
+   We could map task A to RCID1 and task B to RCID3.
+   This would allow sharing the bus (25% vs 75%), the shared L2 cache (ways 1-2
+   vs way 3), and the memory controller as long as its queue has at least 24
+   entries (8 vs 16 entries).
+   We could also map another task (task C) to RCID3, which would make tasks B
+   and C compete for their 75% of bandwidth, cache way 3, and the 16 entries in
+   the request queue (resources in RCID3  are guaranteed only in the aggregate,
+   but B and C compete without constraint for RCID3 resources).
+   If we have an additional task D allocated to RCID2, then guarantees would not
+   be feasible (e.g., 150% bandwidth required in the bus).
+*** Note that the RCID allocated to a given task can be changed dynamically.
+* Monitor Counter Identifiers (MCIDs): Each MCID is mapped to a specific monitor
+  of each resource with QoS capabilities, hence typically providing information
+  about the usage of that resource by tasks with such MCID (e.g., 20% bandwidth
+  utilization, 50% space allocated). In general, more than one monitor per
+  component may be needed for safety reasons (e.g., L2 cache dirty evictions,
+  L2 stall cycles in the eviction buffer, etc).
+  Therefore, MCIDs are not directly amenable to safety uses unless some tricks
+  are played:
+** One could create multiple virtual components with QoS support (e.g., as many
+   as monitors required) and make RCIDs have no effect on those components,
+   but let them have a monitor each.
+   Yet, while feasible, this is an anomalous use of MCIDs.
+
+Overall, RCIDs need to be carefully set and allocated, and modified dynamically
+in a controlled fashion (if at all modified).
+MCIDs could serve the purpose of accessing safety-relevant monitors, but they do
+not generally match safety needs.
+
+[#sec:qos:recom]
+### Recommendations
+
+[#sec:qos:recom:enforcement]
+#### QoS enforcement
+
+RCIDs provide a sufficiently powerful abstraction allowing to define any set of
+constraints in any shared component that may be needed for safety reasons.
+RCIDs provide an abstraction allowing to set constraints for diverse components,
+including interconnects, cache memories, queues, and any other.
+Yet, defining constraints must be done with special care since nothing prevents
+using RCIDs with incompatible or potentially problematic constraints across
+tasks running in different harts.
+For instance, it is possible to run tasks whose aggregated bandwidth allocated
+in an interconnect is above 100%, which would be incompatible in practice, or
+with potentially problematic cache allocations (e.g., task A uses ways 1 and 2,
+and task B ways 2 and 3) that provide neither partitioning, nor full sharing.
+Also, specific combinations of RCIDs, if used by different concurrent tasks,
+could lead to issues such as priority inversion if not defined and used with
+care.
+
+Based on their definition, RCIDs could allow expressing virtually any set of
+constraints, such as end-to-end constraints (e.g., end-to-end memory latencies),
+but how to map RCIDs to specific QoS constraints is completely implementation
+dependent.
+Therefore, from an ISA perspective, no further ISA support is needed to realize
+end-to-end constraints.
+
+One could use RCIDs to express multiple constraints even for a single shared
+resource, such as for instance, the virtual channel to use and the bandwidth
+allocated within that virtual channel for a NoC, as well as the allocated cache
+space and the number of entries allocated in multiple queues in such a cache (to
+hold miss requests, eviction requests, etc.).
+Since RCIDs can be changed dynamically, even if associated to harts, one could
+keep an RCID per task and update the RCID of the hart upon a context switch.
+Hence, the scope at which to use RCIDs is completely software dependent and
+virtually any required scope can be realized with RCIDs.
+
+RCID management can likely be implemented in the operating system or the
+hypervisor.
+One could, for instance, link RCIDs to scheduling priorities to provide a simple
+user interface.
+
+It remains to be defined how those RCIDs are effectively implemented at
+microarchitectural level, but such a definition is beyond RISC-V ISA
+specifications.
+Hence, while tagging requests with RCIDs and propagating those RCIDs across
+cascade requests in other components could be an appropriate implementation,
+whether this or another implementation is used is beyond the scope of this
+document.
+
+[#sec:qos:recom:monitors]
+#### QoS-relevant monitors
+
+MCIDs offer a single monitor per component which, for safety purposes, may fall
+short since QoS choices may be performed based on multiple monitors.
+For instance, one may decide to increase or decrease the service for a task in a
+shared L2 cache based on how often such a task accesses the cache, whether it
+performs read or write requests, experiences hits or misses, keeps occupancy of
+specific queues high or low, etc.
+The fact that multiple such metrics would have to be covered by a single monitor
+can be regarded as a limitation and some form of safety extension may be needed.
+
+As explained before, virtual components can be defined as a way to define as
+many MCIDs as required per physical or logical component.
+While this trick would be practically doable, it can be regarded as an
+inappropriate use of MCIDs.
+Hence, this further encourages the definition of appropriate safety extensions
+for safety-related monitoring in general, and safety-related QoS monitoring in
+particular.
+
+Safety extensions for monitoring could consist of having an arbitrarily large
+(or large enough) set of memory mapped monitors so that a given task can access
+as much information as needed.
+These safety extensions could be easily combined with the current MCID
+definition so that the MCID is used to choose the appropriate set of monitors
+to read.
+Different tasks with different MCIDs may want to read the same monitor, which
+may be mapped into multiple memory locations (e.g., overall interconnect
+utilization), or different per-task monitors (e.g., individual interconnect
+utilization).
+
+[#sec:qos:recom:propagation]
+#### QoS IDs propagation
+
+Finally, a concern spanning across both RCIDs and MCIDs is RCID/MCID
+propagation.
+A number of microarchitectural events such as cache dirty evictions, cascade
+requests of the coherence protocol, and I/O generated activity are hard to
+attribute to specific tasks.
+For instance, in the case of a dirty line eviction from cache, one could
+attribute such request to the task evicting the line or to the one modifying
+originally the line.
+RCIDs and MCIDs are agnostic to those choices, which are fully implementation
+dependent (e.g., one may use a specific RCID/MCID for I/O generated activity),
+but it is important to make a sound use of RCIDs and MCIDs for those types of
+requests also because they may have non-negligible performance effects (e.g.,
+dirty cache line evictions may occur frequently and saturate memory access).
+
+[#sec:qos:activities]
+### Relevant activities
+
+#### Related external bodies
+
+None identified.
+
+#### Related chapters
+The goal of QoS and priority-related features overlaps quite significantly with
+that of time partitioning since both types of features are generally used to
+mitigate multicore interference channels.
+Hence, the xref:sec:partitioning[xrefstyle=full] is related to this chapter,
+xref:sec:qos[xrefstyle=full].
+
+Also, QoS support often relies on performance monitoring counters to make QoS
+decisions.
+Hence, the xref:sec:pmc[xrefstyle=full] is related to this chapter,
+xref:sec:qos[xrefstyle=full].
