@@ -524,15 +524,15 @@ Other OSes and vendors provide similar tools.
 
 Performance counters can be used to monitor the effect of Quality of Service
 (QoS) policies, or even to dynamically influence them.
-Refer to <<sec:qos>>.
+Refer to xref:sec:qos[xrefstyle=full].
 
 Performance counters are obviously used to monitor cache performance.
-Refer to <<sec:caches>>.
+Refer to xref:sec:caches[xrefstyle=full].
 
 Performance counters can be used to measure the occurrences of certain
 (obviously not fatal) errors.
-Refer to <<sec:error>>.
+Refer to xref:sec:error[xrefstyle=full].
 
 SoC-level performance counters and monitoring are needed to implement some
 features identified to monitor the multi-core interference.
-Refer to <<sec:interference>>.
+Refer to xref:sec:interference[xrefstyle=full].
