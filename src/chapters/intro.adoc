@@ -1,0 +1,4 @@
+[#sec:intro]
+## Introduction
+
+include::intro/glossary.adoc[]

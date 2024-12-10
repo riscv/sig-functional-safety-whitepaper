@@ -1,0 +1,67 @@
+[#sec:intro:glossary]
+### Glossary
+
+.Glossary of terms
+[cols="1,4a",]
+|===
+| *Term* | *Definition*
+
+| ASIL
+|
+
+| CAST
+| Certification Authorities Software Team.
+  CAST is an international group of aviation certification and regulatory
+  authority representatives.
+  Inactive since 2016.
+
+| DAL
+|
+
+| EASA
+| European Union Aviation Safety Agency.
+
+| ECSS
+| European Center for Space Standardization.
+
+| ESA
+| European Space Agency.
+
+| FAA
+|
+
+| Hypervisor
+|
+
+| ISO
+| International Standards Office.
+
+| PMC
+| Performance Monitoring Counter, also referred as Performance Counter.
+
+| QoS
+| Quality of Service.
+
+| RTOS
+|
+
+| SECDED
+| Single Error Correction Double Error Detection.
+
+| SLA
+| Service Level Agreement.
+
+| WCET
+| Worst-Case Exection Time
+
+|===
+
+[WARNING]
+.Other possible terms
+====
+Do we need to add the following terms to the glossary:
+
+* IPC: Instructions Per Cycle.
+* RCID/MCID
+
+====

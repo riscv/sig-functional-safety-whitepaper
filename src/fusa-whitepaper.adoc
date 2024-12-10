@@ -73,6 +73,8 @@ include::contributors.adoc[]
 
 include::intro.adoc[]
 include::chapter2.adoc[]
+
+include::chapters/intro.adoc[]
 include::chapters/pmc.adoc[]
 include::chapters/qos.adoc[]
 
