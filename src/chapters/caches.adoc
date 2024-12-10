@@ -1,0 +1,261 @@
+[#sec:caches]
+## Caches and Tightly Coupled Memories (TMCs)
+
+[#sec:caches:safety]
+### Safety needs
+
+Caches and Tightly Coupled Memories (TCMs, also known as Closely-Coupled
+Memories (CCMs), scratchpad memories, local memories, Tightly Integrated
+Memories, or local store) are important components, particularly in high
+performance CPUs, for mitigating the effects of difference in speed between the
+processor and main memory.
+These kinds of memories provide relatively small, fast on-chip storage close to
+the processor to reduce the frequency of accesses to main memory, in order to
+improve performance and reduce power consumption.
+
+Caches offer a very convenient method to access data.
+They are accessed implicitly -- software does not address them directly.
+Hardware mechanisms take care of keeping copies of appropriate data in these
+memories, and tracking which data is stored where.
+However, they introduce a number of potential functional and safety related
+issues:
+
+* The implicit nature of the memory access through a cache memory, while very
+  convenient from a programming point of view (for non-safety-critical systems),
+  means there is little control over the transaction.
+  Dedicated instructions such as the CMO extensions or memory fences that may be
+  needed to ensure consistency (especially in a copy-back cache) are usually not
+  exposed in higher-level programming languages.
+* While the average memory access time is reduced, variability of access time is
+  increased.
+  Multiple accesses to the same memory location may have widely differing access
+  times, depending upon cache state that is not easily predictable or
+  controllable by software.
+* Concurrent access to different memory areas by different cores may be cached
+  in the same area (depending on cache associativity).
+  While the cache control hardware ensures the correct data is always returned,
+  this can result in one process affecting the timing and performance of another
+  process.(e.g. through mutual eviction of data).
+* The cache replacement (or eviction) policy may have an impact on the ability
+  to perform timing analysis.
+  For example a PLRU (pseudo least-recently used) algorithm can be more
+  difficult to analyze than true LRU (least-recently used).
+* Coherency issues can occur as multiple (sometimes different) copies of the
+  same data are stored in different locations.
+  These issues can become very complex where multiple agents access the same
+  memory, and where multiple caches exist in a system.
+  While these issues are predictable and can be avoided with correct software
+  design, the requirements to achieve this may be non-trivial, and any bugs
+  introduced can be difficult to test for or identify.
+  Furthermore, coherency management may further increase the non-uniformity of
+  memory access times, for example directory-based cache coherency incurs
+  additional traffic on the interconnect, increasing risks of timing
+  interference.
+* The type of fast memories that are required to implement caches, have an
+  increased susceptibility to soft errors, due to the very low charge involved
+  in storing a bit value.
+
+Functionally safe systems must be able to provide temporal isolation (a lack of
+interference of a software task by the previous state of the cache).
+
+TCMs are accessed explicitly by software, and therefore provide more control to
+the software over their use than caches do.
+If used appropriately, a TCM can avoid or reduce the non-determinism that caches
+can introduce.
+There is however an additional burden on the software to manage this usage (for
+example copying data into and out of the TCM).
+
+[#sec:caches:safety:features]
+#### Features
+
+##### Cache partitioning
+
+A cache memory may be shared between several processors (or other agents).
+Even if a cache is private to a single core, it will normally be shared by all
+harts and separate software threads time-multiplexed onto that hart.
+This means any attempt to analyze the cache behavior for a single software
+thread is complicated by a dependence on unrelated activity in the system (for
+example: other software running, DMA transfers or system IO occurring).
+
+Cache partitioning allows some portion of a cache (for example, specific ways)
+to be allocated to a specific core, hart, or software thread.
+This can significantly reduce performance dependencies between software threads,
+and simplifies cache-related performance analysis.
+It is likely, however, to reduce the overall efficiency of the cache allocation
+mechanisms and therefore overall performance.
+
+##### Cache lockdown
+
+A cache implementation may include a facility to load data (or instructions)
+into specific ways of the cache, then '_lock_' those ways, preventing them from
+being selected for cache allocations and evictions.
+This mechanism allows software to guarantee that accesses to particular
+data/instructions will hit in the cache, improving determinism.
+This can also improve the performance of a particular function.
+Cache locking does, however, reduce the amount of cache available for other
+data, thus reducing overall system performance.
+
+Data locked into a cache in this manner incurs the area and power overheads
+associated with tag RAMs and cache lookups, so it is a relatively inefficient
+method of storing critical data.
+However, it does provide flexibility to divide cache resources dynamically
+between standard cached and selected critical data.
+In practice this allocation is likely to be a static configuration during
+run-time.
+
+Cache lockdown should not generally be used for data that is not exclusively
+accessed through the same cache, for example memory that may also be directly
+updated by a DMA controller.
+If it is, any software coherency management schemes may need to unlock, reload
+and relock such data.
+Hardware cache coherency mechanisms may not be constrained by cache locking and
+still perform evictions, possibly requiring manual reloading and relocking.
+
+##### Tightly Coupled Memory
+
+Tightly Coupled Memory (TCM) provides deterministic (usually fast) access to a
+defined area of the address space.
+The physical memory address space it is mapped to will usually be configurable
+at run time.
+TCM is typically implemented as SRAM, but there can also be other types of
+memory, such as flash or ROM.
+If the TCM is implemented as volatile memory, an external access mechanism may
+allow the TCM to be initialized before the processor comes out of reset,
+allowing boot from the TCM.
+Alternatively, the CPU may boot from external memory, and load the TCM (using a
+bootloader or dynamically when creating a task) before executing code from it.
+While many topologies are possible and widely used, TCM is often implemented
+with separate instruction and data memories, offering improved performance and
+determinism.
+
+TCM is often private to a single core, which is a useful property to allow
+processing in isolation.
+A TCM that is shared may enable this by allowing the core to disable external
+access (after initialization, for example).
+
+Some systems allow the configuration of the same fast memory area either fully
+or partially to either cache or scratchpad mode of operation.
+For example, three-quarters may be used as cache and the remaining quarter as
+TCM.
+
+##### Fast System Memory
+
+High performance compute systems usually have a complex memory system which can
+concurrently process multiple outstanding accesses from multiple processor cores
+and other agents, and complete them out-of-order (within defined constraints).
+This can deliver high performance while making efficient use of shared resources
+such as communication paths through an interconnect.
+However, this introduces another potential source of interference between
+processes.
+If one process floods the memory system with many requests, another may be
+forced to wait for the completion of an access which could otherwise have
+completed quickly.
+
+Processors may implement additional memory interfaces to provide a dedicated
+path to memory or peripherals for specific address spaces, avoiding influence
+from the main memory subsystem.
+Alternatively, priority and QoS signaling on the main system bus can work in
+conjunction with the system interconnect to similarly ensure deterministic
+accesses.
+
+##### Fault tolerance
+
+Cache and TCM memories are inherently vulnerable to random errors and some form
+of redundancy will typically be required to mitigate the risk introduced by
+these (see <<sec:redundancy>>).
+This is usually implemented in the form of parity bits or ECC.
+Instruction caches and write-through data caches store copies of data that are
+also valid in external memory (possibly subject to various buffers being
+drained).
+In these cases, error detection without hardware correction is often sufficient
+(though multi-bit error detection may still be required) as the correct data can
+be reloaded from main memory.
+TCM and copy-back data/combined caches may contain the only valid copy of active
+data, so error correction is often required (SECDED protection is common for
+ISO 26262).
+
+##### Address translation
+
+For systems implementing virtual to physical address translation, a translation
+lookaside buffer (TLB) is frequently used to cache address translations stored
+in tables in external memory.
+TCMs and caches are usually physically addressed (or at least physically
+tagged), so a TLB miss can introduce non-deterministic response times, in a
+similar way to a cache miss.
+In systems where a TLB miss is managed in hardware (also known as hardware page
+table walks), additional implicit traffic on the interconnect is generated, and
+it may also evict data from other tasks in data caches.
+
+TLB lockdown (similar to cache lockdown) or a software-controlled section of the
+TLB are possible solutions to this.
+
+[#sec:caches:safety:level]
+#### Level
+
+Level 1 caches (which may be the only caches in simpler systems) are generally
+associated with a single core.
+Larger systems may contain several levels of cache, where the higher levels may
+be shared among several processors, a larger subsystem, or the entire SoC.
+Cache partitioning is more common in caches shared between multiple processors
+but could also be implemented in a single-core cache with a partition devoted to
+either a single hart or a subset of software threads scheduled to run on that
+single hart.
+Cache lockdown could be used in any level of cache.
+
+TCMs may have different coupling tightness, from tight core integration, to L1
+bus connection, to L2 or L3 interconnect, and therefore may be associated with a
+single core (and shared among harts within that core), shared between several
+cores, or the entire SoC.
+
+While caches, TCMs and their integration within an SoC are hardware concerns,
+all of them have an important impact at the software level.
+Software typically has to manage the capabilities offered by these components
+and their integration in the SoC. Examples include but are not limited to:
+
+* Managing the cache capabilities like locking and partitioning.
+* Managing cache coherency, e.g. defining which data needs hardware coherency
+  management.
+* Managing which data needs to be stored in a TCM and when.
+* Performing appropriate cache maintenance operations, for example cleaning the
+  data cache and invalidating the instruction cache after code is written to
+  memory.
+
+[#sec:caches:safety:importance]
+#### Importance
+
+Caches are not a requirement originating from safety considerations -- indeed
+they introduce additional safety concerns.
+However, caches often provide essential improvements in system performance and
+reduction in power consumption, and shared caches (usually at the L2 level and
+deeper) are required to support symmetric multiprocessing (SMP) efficiently.
+
+Deterministic response times, even in the presence of caches, is often a
+"Must Have" requirement, and many of the mechanisms here are approaches to
+help achieve this.
+
+TCMs are often a “Must Have” requirement, in order to provide the fast,
+deterministic behavior required by many safety-critical applications, and to
+help ensure freedom from interference between processes.
+
+[#sec:caches:safety:justification]
+#### Justification
+
+Caches, TCMs, and the memory subsystem are some of the main shared components
+in a system.
+As such, they are important contention points to be considered in its design.
+
+In avionics, the CAST 32-A cite:[cast32:2016] guideline mandates that the interference channels are
+identified and mitigated.
+Caches, as a shared resource between different tasks in a hart or between harts,
+represent a significant interference channel.
+TCMs, being typically attached to a single core, naturally mitigate most of the
+interferences, however the software running in the core should ensure its
+management to mitigate interferences between the different tasks that might use
+them (and between the harts within the core, if more than one hart accesses the
+TCM).
+
+Likewise, in the automotive domain, the ISO 26262 cite:[iso26262:2018] part 6
+(software) requires freedom from interference across different software
+partitions.
+Caches and TCMs are a potential source of dependent failures and/or interference
+through resource sharing, which should be mitigated.
