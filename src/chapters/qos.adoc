@@ -105,19 +105,19 @@ channels, which is required at every criticality level.
 [#sec:qos:safety:justification]
 #### Justification
 
-Without QoS support a task (referred to as application in CAST32A
+Without QoS support a task (referred to as application in CAST 32-A
 cite:[cast32:2016]) may delay another by creating contention over a shared
 resource, which could be processor cycles or any of the physical resources.
 This leads to a reduction in the availability of the system.
 
-In avionics, the CAST32A guideline -- now superseded by EASA
+In avionics, the CAST 32-A guideline -- now superseded by EASA
 AMC 20-193 cite:[amc20193:2022] and FAA AC 20-193 cite:[ac20193:2024] --
 mandates that all interference channels must be identified and mitigated.
 A task of any criticality shall not impact the execution of another task,
 including its execution time (robust partitioning).
 
-In automotive, ISO26262 part 6 (software) identifies freedom from interference
-as a requirement across different software partitions.
+In automotive, the ISO 26262 part 6 (software) identifies freedom from
+interference as a requirement across different software partitions.
 Annex D further lists relevant faults that can arise upon the lack of freedom
 from interference, one of which is as follows:
 
@@ -125,7 +125,7 @@ from interference, one of which is as follows:
   incorrect allocation of execution time (i.e. exceeding allocated time
   budgets), and incorrect synchronization across software elements.
 
-ISO26262 also mandates dependent failure analysis (i.e., analysis of failures
+ISO 26262 also mandates dependent failure analysis (i.e., analysis of failures
 that occur as a consequence of a previous failure) to identify and limit the
 impact of a failure, which aims to make the system more reliable.
 Either QoS support and/or partitioning are likely to be mandated as an outcome
