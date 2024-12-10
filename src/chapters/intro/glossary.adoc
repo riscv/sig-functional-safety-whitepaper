@@ -15,14 +15,26 @@
   authority representatives.
   Inactive since 2016.
 
+| CMO
+| Cache Memory Operations.
+
 | DAL
+|
+
+| Determinism
 |
 
 | EASA
 | European Union Aviation Safety Agency.
 
+| ECC
+| Error Code Correction.
+
 | ECSS
 | European Center for Space Standardization.
+
+| Error
+|
 
 | ESA
 | European Space Agency.
@@ -30,11 +42,26 @@
 | FAA
 |
 
+| Failure
+|
+
+| Fault
+|
+
+| Interference
+|
+
 | Hypervisor
 |
 
 | ISO
 | International Standards Office.
+
+| LRU
+| *Least-recently used* algorithm.
+
+| PLRU
+| *Pseudo least-recently used* algorithm.
 
 | PMC
 | Performance Monitoring Counter, also referred as Performance Counter.
@@ -51,6 +78,11 @@
 | SLA
 | Service Level Agreement.
 
+| TCM
+| Tightly Coupled Memory. Also known as Closely-Coupled Memories (CCMs),
+  scratchpad memories, local memories, Tightly Integrated Memories, or local
+  memories.
+
 | WCET
 | Worst-Case Exection Time
 
@@ -63,5 +95,8 @@ Do we need to add the following terms to the glossary:
 
 * IPC: Instructions Per Cycle.
 * RCID/MCID
+* DMA
+* IO
+* SMP: Symmetric Multi-Processing
 
 ====
