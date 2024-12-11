@@ -58,10 +58,10 @@
 | International Standards Office.
 
 | LRU
-| *Least-recently used* algorithm.
+| _Least-recently used_ algorithm.
 
 | PLRU
-| *Pseudo least-recently used* algorithm.
+| _Pseudo least-recently used_ algorithm.
 
 | PMC
 | Performance Monitoring Counter, also referred as Performance Counter.
