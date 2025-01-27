@@ -14,16 +14,34 @@
 // =============================================================================
 This whitepaper currently includes chapters for the following topics:
 
-* Caches and tightly coupled memories (TCM), see <<sec:caches>>.
-* Performance counters, see <<sec:pmc>>.
-* Quality of Service (QoS), see <<sec:qos>>.
-* Error management, see <<sec:error>>.
-* Multicore interferences, see <<sec:interference>>.
+* Caches and tightly coupled memories (TCM), see <<sec:caches>>;
+* Performance counters, see <<sec:pmc>>;
+* Quality of Service (QoS), see <<sec:qos>>;
+* Redundancy, see <<sec:redundancy>>;
+* And Partitioning, see <<sec:partitioning>>.
+
+Additional chapters will be added in the future to address other functional
+safety topics.
+Likewise, current chapters will be updated and/or extended as required, e.g.
+adding new references to new RISC-V specifications that address any of the
+topics of those chapters.
 
 // =============================================================================
 // =============================================================================
 // Organization of the chapters.
 // =============================================================================
 // =============================================================================
+
+All the chapters follow the same structure:
+
+* The *Safety needs* section describes how the chapter topic impacts the
+  functional safety requirements.
+* The *RISC-V solutions* section identifies current RISC-V specifications that
+  address the chapter topic.
+* The *Recommendations* section provides some recommendations on how the current
+  RISC-V specifications can be exploited to address the chapter topic and
+  identifies potential gaps in current specifications.
+* The *Related activities* section provides links to external bodies addressing
+  the chapter topic and other chapters related to the topic.
 
 include::intro/glossary.adoc[]
