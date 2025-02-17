@@ -8,7 +8,7 @@
 // =============================================================================
 
 // https://www.electropedia.org/iev/iev.nsf/display?openform&ievref=192-01-22
-Functional safety, or dependability, refers to the mechanisms and methods
+Functional safety refers to the mechanisms and methods
 ensuring the correct operation of safety critical systems, such as avoiding
 human casualties or ecological catastrophes.
 Functional safety solutions ensure that the system remains in a safe state on
@@ -31,8 +31,9 @@ define standards with functional safety properties the computing elements
 hardware and address should address.
 Which properties a computing element should address will depend on how it is
 being integrated in the final system (e.g. a car or  a plane) to support the
-functional safety of the later.
-As defined by Avizenis et al. cite:[avizenis:2001] these properties include:
+functional safety of the latter.
+As defined by Avizenis et al. cite:[avizenis:2001] these properties, which
+Avizenis et al. group under the concept of _dependability_, include:
 
 * Availability: readiness for correct service.
 * Reliability: continuity of correct service.
