@@ -79,6 +79,8 @@ include::chapters/pmc.adoc[]
 
 include::chapters/qos.adoc[]
 
+include::chapters/redundancy.adoc[]
+
 // The index must precede the bibliography
 include::index.adoc[]
 
