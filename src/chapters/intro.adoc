@@ -39,7 +39,6 @@ Avizenis et al. group under the concept of _dependability_, include:
 * Reliability: continuity of correct service.
 * Safety: absence of catastrophic consequences on the user(s) and the
   environment.
-* Confidentiality: absence of unauthorized disclosure of information.
 * Integrity: absence of improper system state alterations.
 * Maintainability: ability to undergo repairs and modifications.
 
