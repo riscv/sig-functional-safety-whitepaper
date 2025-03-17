@@ -42,6 +42,30 @@ Avizenis et al. group under the concept of _dependability_, include:
 * Integrity: absence of improper system state alterations.
 * Maintainability: ability to undergo repairs and modifications.
 
+Different technical and non-technical solutions are used or followed by
+industry, and academia, to ensure these properties.
+The following is a non-exhaustive list of those solutions:
+
+* Verification of ISA compliance to ensure computation correctness.
+* Use of saturated floating-point arithmetic to avoid overflows or underflows,
+  a design choice to ensure data integrity.
+* Use of memory management units (MMU) or physical memory protection (PMP) to
+  ensure memory-space isolation.
+* Use of designs providing spatial redundancy (e.g. lockstep) or temporal
+  redundancy (e.g. replay) allowing continuous operation in the presence of
+  a fault to improve the reliability.
+  These redundancy solutions can be augmented with diversity/dissimilarity to
+  minimize common failure modes.
+* Parity or error detection/correction codes (ED, ECC) for the reliability
+  of memory elements (e.g. caches).
+* Performance monitoring capabilities to detect/control time interferences
+  and observability in general.
+* Debug interfaces for the extenal observability of the SoCs.
+* Extensive use of documentation, including complete design descriptions,
+  -- sometimes only available under NDA -- providing detailed description
+  of the SoC functional and time behavior required to ensure the explainability
+  of the isolation between the different software running on top of it.
+
 The purpose of this document is to describe different mechanisms and methods
 used in the safety critical domain industry to assess these functional safety
 properties for their computing elements, both software and hardware.
