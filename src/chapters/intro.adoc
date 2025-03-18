@@ -56,7 +56,7 @@ The following is a non-exhaustive list of those solutions:
   a fault to improve the reliability.
   These redundancy solutions can be augmented with diversity/dissimilarity to
   minimize common failure modes.
-* Parity or error detection/correction codes (ED, ECC) for the reliability
+* Parity or error detection/correction codes (EDC, ECC) for the reliability
   of memory elements (e.g. caches).
 * Performance monitoring capabilities to detect/control time interferences
   and observability in general.
