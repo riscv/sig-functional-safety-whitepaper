@@ -1,4 +1,130 @@
 [#sec:intro]
 ## Introduction
 
+// =============================================================================
+// =============================================================================
+// Definition of functional safety.
+// =============================================================================
+// =============================================================================
+
+// https://www.electropedia.org/iev/iev.nsf/display?openform&ievref=192-01-22
+Functional safety refers to the mechanisms and methods
+ensuring the correct operation of safety critical systems, such as avoiding
+human casualties or ecological catastrophes.
+Functional safety solutions ensure that the system remains in a safe state on
+the occurrence of spurious or systematic errors, hardware failures, and
+stressing environmental and operational conditions.
+Safety is a system requirement and what are the parts of the systems that
+require to implement a functional safety solution heavily depends on the system,
+its constraints and its requirements.
+Thus while products for a safety critical domain such as avionics might
+implement a series of functional safety solutions to ensure the safety of the
+product, products on a different domain might not implement the same ones
+because of different requirements and constraints, even if some fundamentals
+might be shared.
+
+Safety requirements on the different safety critical domains extend to their
+computing elements, including the processors and operating systems, from their
+conception to the their exploitation.
+Safety critical domains such as automotive, avionics, space and transports
+define standards with functional safety properties the computing elements
+hardware and address should address.
+Which properties a computing element should address will depend on how it is
+being integrated in the final system (e.g. a car or  a plane) to support the
+functional safety of the latter.
+As defined by Avizenis et al. cite:[avizenis:2001] these properties, which
+Avizenis et al. group under the concept of _dependability_, include:
+
+* Availability: readiness for correct service.
+* Reliability: continuity of correct service.
+* Safety: absence of catastrophic consequences on the user(s) and the
+  environment.
+* Integrity: absence of improper system state alterations.
+* Maintainability: ability to undergo repairs and modifications.
+
+Different technical and non-technical solutions are used or followed by
+industry, and academia, to ensure these properties.
+The following is a non-exhaustive list of those solutions:
+
+* Verification of ISA compliance to ensure computation correctness.
+* Use of saturated floating-point arithmetic to avoid overflows or underflows,
+  a design choice to ensure data integrity.
+* Use of memory management units (MMU) or physical memory protection (PMP) to
+  ensure memory-space isolation.
+* Use of designs providing spatial redundancy (e.g. lockstep) or temporal
+  redundancy (e.g. replay) allowing continuous operation in the presence of
+  a fault to improve the reliability.
+  These redundancy solutions can be augmented with diversity/dissimilarity to
+  minimize common failure modes.
+* Parity or error detection/correction codes (EDC, ECC) for the reliability
+  of memory elements (e.g. caches).
+* Performance monitoring capabilities to detect/control time interferences
+  and observability in general.
+* Debug interfaces for the extenal observability of the SoCs.
+* Extensive use of documentation, including complete design descriptions,
+  -- sometimes only available under NDA -- providing detailed description
+  of the SoC functional and time behavior required to ensure the explainability
+  of the isolation between the different software running on top of it.
+
+The purpose of this document is to describe different mechanisms and methods
+used in the safety critical domain industry to assess these functional safety
+properties for their computing elements, both software and hardware.
+Such mechanisms and methods should be considered in the design of RISC-V based
+computing elements, including but not limited at the ISA level, to foster the
+adoption of RISC-V on safety critical domains.
+
+### Disclaimer
+
+This document does not try address all the functional safety mechanisms and
+methods, neither to fully discuss the ones addressed.
+Furthermore, the specifications issued by RISC-V International being
+continuously amended, updated and extended the identified gaps, recommendations
+and solutions discussed in this document might be incomplete or outdated.
+
+Finally, the contents of this document are limited to the knowledge of its
+contributors.
+If you find missing, incomplete, or outdated information in this document please
+contact the Functional Safety Special Interest Group (Functional Safety SIG) at
+https://lists.riscv.org/g/sig-safety and contribute to the completeness and
+exactitude of this document.
+
+### Scope
+
+// =============================================================================
+// =============================================================================
+// Current chapters.
+// =============================================================================
+// =============================================================================
+This whitepaper currently includes chapters for the following topics:
+
+* Caches and tightly coupled memories (TCM), see <<sec:caches>>;
+* Performance counters, see <<sec:pmc>>;
+* Quality of Service (QoS), see <<sec:qos>>;
+* Redundancy, see <<sec:redundancy>>;
+* And Partitioning, see <<sec:partitioning>>.
+
+Additional chapters will be added in the future to address other functional
+safety topics.
+Likewise, current chapters will be updated and/or extended as required, e.g.
+adding new references to new RISC-V specifications that address any of the
+topics of those chapters.
+
+// =============================================================================
+// =============================================================================
+// Organization of the chapters.
+// =============================================================================
+// =============================================================================
+
+All the chapters follow the same structure:
+
+* The *Safety needs* section describes the chapter topic relation with safety
+  requirements on safety critical systems.
+* The *RISC-V solutions* section identifies current RISC-V specifications that
+  address the chapter topic.
+* The *Recommendations* section provides some recommendations on how the current
+  RISC-V specifications can be exploited to address the chapter topic and
+  identifies potential gaps in current specifications.
+* The *Related activities* section provides links to external bodies addressing
+  the chapter topic and other chapters related to the topic.
+
 include::intro/glossary.adoc[]
