@@ -28,6 +28,7 @@ include::../docs-resources/global-config.adoc[]
 :lang: en
 :listing-caption: Listing
 :sectnums:
+:sectnumlevels: 4
 :toc: left
 :toclevels: 4
 :source-highlighter: pygments
@@ -80,6 +81,8 @@ include::chapters/pmc.adoc[]
 include::chapters/qos.adoc[]
 
 include::chapters/redundancy.adoc[]
+
+include::chapters/partitioning.adoc[]
 
 // The index must precede the bibliography
 include::index.adoc[]
