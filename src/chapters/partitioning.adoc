@@ -470,21 +470,21 @@ interference channels, which is required at every criticality level.
 [#sec:partitioning:safety:justification]
 #### Justification
 
-Without partitioning, a task (referred to as application in CAST32A) may delay
-another by creating contention over a shared resource, which could be processor
-cycles or any of the physical resources.
+Without partitioning, a task (referred to as application in CAST 32-A cite:[cast32:2016])
+may delay another by creating contention over a shared resource, which could be
+processor cycles or any of the physical resources.
 This leads to a reduction in the availability of the system.
 
 Without partitioning, the integrity and confidentiality of each process may also
 be affected, for example if its memory is overwritten by another process.
 
-In avionics, the CAST32A guideline mandates that all interference channels must
-be identified and mitigated.
+In avionics, the CAST 32-A guideline mandates that all interference channels
+must be identified and mitigated.
 A task of any criticality shall not impact the execution of another application,
 including its execution time (robust partitioning).
 
-In automotive, ISO26262 part 6 (software) identifies freedom from interference
-as a requirement across different software partitions.
+In automotive, ISO26262 part 6 cite:[iec16508-6:2010] (software) identifies
+reedom from interference as a requirement across different software partitions.
 Annex D further lists relevant faults that can arise upon the lack of freedom
 from interference as follows:
 
@@ -502,3 +502,175 @@ receivers/senders.
 ISO26262 also mandates dependent failure analysis to identify and limit the
 impact of a failure, which aims to make the system more reliable.
 Partitioning is likely to be mandated as an outcome of this analysis.
+
+[#sec:partitioning:rv]
+### RISC-V solutions
+
+[#sec:partitioning:rv:time]
+#### Time partitioning
+
+*Timers*.
+The RISC-V unprivileged architecture specification cite:[rv-unpriv-spec:2024]
+provides instructions to access some base counters and timers.
+While several approaches exist, it might be useful to take into account the more
+recent Sstc extension:
+
+* _M-mode timer_: The first approach is the using the cycle count (with the
+`RDCYCLE` instruction) and the wall clock (with the `RDTIME`` instruction).
+This feature can be used to assess whether the bounds of a time partition have
+been exceeded and hence, whether a deadline overrun occurred.
+Also, the RISC-V privileged architecture specification provides a real-time
+counter that can be set and read as needed, under the section “Machine Timer
+Registers (`mtime` and `mtimecmp`)”.
+However, the Machine Timer approach introduces substantial overhead, as all
+timer services for S-mode, HS-mode, and VS-mode must be handled indirectly
+through M-mode.
+This is typically done via SBI calls, where S/HS-mode requests are routed up to
+M-mode (or VS-mode requests to HS-mode, and then to M-mode).
+M-mode is then responsible for multiplexing these logical timers onto its single
+ physical timer and routing timer interrupts back down to the appropriate lower
+ privilege modes.
+* _Sstc extension_: The second approach is the RISC-V Sstc extension, which
+addresses the previous gap by allowing S-mode and VS-mode to manage their own
+timer services directly.
+It introduces two dedicated CSRs (`stimecmp` and `vstimecmp`), enabling these
+privilege modes to set and handle timer interrupts without involving M-mode.
+
+*Cache flushing*.
+There are some features potentially useful to flush cache contents:
+
+* In the RISC-V architecture privileged specification cite:[rv-priv-spec:2024],
+section 3.6.6, there is a feature that, if implemented by the underlying
+hardware, could be used for that purpose: the “configurable cacheability
+settings” for a memory region.
+It allows specifying whether a memory region is cacheable or not and, upon
+making a region non-cacheable, enforces that all contents belonging to that
+region not yet in memory are propagated to memory and removed from cache
+memories.
+Hence, if this feature can be used during operation, one could use it to set any
+region (or all regions) to non-cacheable as a way to flush caches, and then set
+them back to cacheable again as needed.
+* As part of the RISC-V Base Cache Management Operation (CMO) ISA Extensions,
+the `cbo.flush` instruction is defined.
+It allows cleaning and invalidating the contents of a cache block, which is
+identified by a physical address corresponding to the underlying memory
+locations, and whose size is implementation dependent.
+This feature can be used to flush cache, but how to do it is fully dependent on
+how cache blocks are defined since they can be potentially defined of any size
+subject to being a naturally-aligned power-of-two (NAPOT) range of memory
+locations, with such size being typically a power-of-two multiple of the cache
+line size.
+Hence, `cbo.flush` can be used to flush specific contents from cache providing
+the instruction with the cache block memory address to be flushed (it is an
+input parameter), which is a strong requirement for cache flushing because
+either cache contents are known beforehand, or data are evicted speculatively
+with potential uncertainty on whether all cache contents have been effectively
+flushed.
+
+[#sec:partitioning:rv:mem]
+#### Memory partitioning
+
+The RISC-V privileged architecture specification defines three software
+privilege levels (in increasing order of capability): user-mode (U-mode),
+supervisor mode (S-mode), and machine mode (M-mode).
+The processor can run in only one of the privilege modes at a time.
+The M-mode is the highest privilege mode and controls all physical resources by
+means of the PMP (and their ePMP variation) strong standard primitive, which
+configures a set of control status registers (CSR) that define physical memory
+regions and specify the access privileges for them.
+The S-mode is commonly used at the kernel or the hypervisor level, and the
+U-mode is used for user processes.
+PMP rules are critical for enforcing memory isolation: because of such mode
+priority, lower-priority software (such as the OS), running in S-mode, is never
+allowed to access the memory space allocated to higher-privilege software
+running in M-mode, such as the kernel or the bootloader.
+At the system level, M-mode memory is safeguarded from non-CPU initiators
+controlled by lower privileges via the RISC-V IOPMP.
+The current IOPMP specification, near ratification (18/03/2025), introduces a
+Source Identifier (SID) for each bus initiator.
+This identifier associates an initiator to one or more memory domains, which
+define physical address ranges and specify rules for validating transactions in
+memory-mapped registers.
+
+As a complement to PMP, which focuses on protecting the M-mode assets, RISC-V
+cores featuring S-mode can also use page-based virtual memory in any of the
+different schemes defined by the RISC-V privileged architecture (Sv39, Sv48 or
+Sv57), thus providing a portion of the processor state that a user process can
+read but not modify.
+Such state includes the page table pointer and a bit dictating whether the
+dprocessor is in user or supervisor mode.
+Each page table entry handles read/write permissions, as well as the permission
+that allows access to that entry from user mode.
+RISC-V also provides a mechanism that allows the processor to go from user mode
+to supervisor mode by means of a system call exception (the `ecall`
+instruction).
+To return to user mode from the exception, the supervisor exception return
+(`sret`) instruction is used.
+By using these mechanisms and storing the page tables in the operating system's
+address space, the operating system can effectively change the page tables while
+ensuring that a user process can access only the storage provided to it by the
+operating system.
+Memory accesses from IO devices controlled by the Supervisor (e.g., OS or
+hypervisor) or controlled by User-mode can be mediated via the RISC-V IOMMU.
+This hardware primitive virtualizes the memory seen by bus masters, performing
+permission checks and address translation the same way the MMU does within a
+RISC-V core.
+For each DMA-capable device present in the platform, Supervisor software
+configures in main memory context information and page tables that the IOMMU
+uses to translate virtual addresses to physical addresses and process requests.
+Memory accesses issued by these devices are always accompanied by unique context
+identifiers that the IOMMU uses to locate the appropriate data structures
+supplied by software.
+
+Due to the need to improve latency, determinism, and safety (over GPOS),
+Real-Time operating systems (RTOS) typically rely on OS-managed memory
+protection primitives/facilities to enforce user-level application isolation.
+Consequently, the RISC-V community is working on the Sspmp extension cite:[sspmp:2025]
+that replaces the virtual memory infrastructure, i.e., the Memory Management
+Unit (MMU), with an S-Mode PMP (thus, SPMP), checking accesses from both User
+and Supervisor modes.
+The SPMP follows an identical design as the (e)PMP.
+As of this writing (05/05/2025), the Sspmp extension is near entering the final
+stages towards final ratification.
+
+Also as part of the RISC-V privileged architecture specification, hardware
+virtualization support is specified through the Hypervisor (H) extension.
+As shown in <<#fig:partitioning:hypervisor-extension>> it allows virtualizing
+the supervisor-level architecture by changing the supervisor mode into
+hypervisor-extended supervisor mode (HS-mode, or hypervisor mode), where a
+type-1 or type-2 hypervisor or a hosting-capable operating system runs.
+The hypervisor extension also adds another stage of address translation, from
+guest physical addresses to supervisor physical addresses, to virtualize the
+memory and memory-mapped I/O subsystems for a guest operating system and
+therefore providing a secure virtual interface for accessing such elements.
+Similarly, once ratified, the SPMP will be extended to support the Hypervisor
+extension by defining a dual-stage PMP with the
+Shspmp extension cite:[shspmp:2025].
+
+.RISC-V privileged levels when the Hypervisor extension is enabled. When virtualization is enabled, the Supervisor mode (S mode) is augmented to an hypervisor-extended supervisor mode (HS mode) and the virtual user mode (VU mode) and a virtual supervisor mode (VS mode) are added.
+[#fig:partitioning:hypervisor-extension] 
+image::src/chapters/partitioning/hypervisor-extension.png[Hypervisor extension,align="center",pdfwidth=80%]
+
+In a multi-tenant platform, the PMP/Smepmp can also be leveraged by a Root
+Domain Security Manager (RDSM), running in M-Mode, to enforce physical memory
+isolation between supervisor domains.
+Supervisor Domain Access Protection (SmMTT) cite:[smmtt:2025] is a RISC-V
+privileged architecture extension, under development at the time of this
+writing, to support physical address space (memory and devices) isolation for
+more than one supervisor domain use case.
+Each supervisor domain is assigned a unique set of physical address regions,
+isolated from other domains, with the RDSM maintaining centralized control over
+the entire physical memory map.
+To support this, each hart operating within a supervisor domain is tagged with a
+Supervisor Domain Identifier (SDID).
+This extension aims to minimize the TCB shared among domains.
+Sensitive data can be confined to specific domains based on their verified trust
+properties, either established statically at boot or dynamically through
+attestation.
+
+For the memory that needs to be shared, and hence cannot be partitioned, the
+RISC-V user-level ISA defines the Atomic Instructions (A) extension.
+It contains instructions that atomically read-modify-write memory to support
+synchronization between multiple RISC-V harts running in the same memory space,
+effectively preventing memory access conflicts and simplifying semaphore
+operations.
