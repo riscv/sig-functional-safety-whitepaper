@@ -16,13 +16,19 @@
   Inactive since 2016.
 
 | CMO
-| Cache Memory Operations.
+| Cache Memory Operations (task group).
 
 | DAL
-|
+| Design Assurance Level, term used in avionics systems to define the safety
+level.
+Safety levels are identified with letter, from A to E, with DAL A identifying
+the highest safety requirements and DAL E for no safety requirement.
 
 | Determinism
 |
+
+| DMA
+| Direct-Memory Access.
 
 | EASA
 | European Union Aviation Safety Agency.
@@ -40,7 +46,7 @@
 | European Space Agency.
 
 | FAA
-|
+| Federal Aviation Agency.
 
 | Failure
 |
@@ -54,11 +60,38 @@
 | Hypervisor
 |
 
+| ID
+| Identifier.
+
+| IO
+| Input/Output.
+
+| IOATC
+| IOMMU Address Translation Cache.
+
+| IOMMU
+| Input/Output Memory Management Unit.
+
+| IPC
+| Instructions Per Cycle.
+
 | ISO
 | International Standards Office.
 
 | LRU
 | _Least-recently used_ algorithm.
+
+| MCU
+| Micro-Controller Unit.
+
+| MMU
+| Memory Management Unit.
+
+| MSI
+| Message Signaled Interrupt.
+
+| OS
+| Operating System.
 
 | PLRU
 | _Pseudo least-recently used_ algorithm.
@@ -70,13 +103,16 @@
 | Quality of Service.
 
 | RTOS
-|
+| Real-Time Operating System.
 
 | SECDED
 | Single Error Correction Double Error Detection.
 
 | SLA
 | Service Level Agreement.
+
+| SMP
+| Symmetric Multi-Processing.
 
 | TCM
 | Tightly Coupled Memory. Also known as Closely-Coupled Memories (CCMs),
@@ -93,10 +129,6 @@
 ====
 Do we need to add the following terms to the glossary:
 
-* IPC: Instructions Per Cycle.
 * RCID/MCID
-* DMA
-* IO
-* SMP: Symmetric Multi-Processing
 
 ====
