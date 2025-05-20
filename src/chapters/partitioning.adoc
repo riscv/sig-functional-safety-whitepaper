@@ -540,9 +540,9 @@ privilege modes to set and handle timer interrupts without involving M-mode.
 There are some features potentially useful to flush cache contents:
 
 * In the RISC-V architecture privileged specification cite:[rv-priv-spec:2024],
-section 3.6.6, there is a feature that, if implemented by the underlying
-hardware, could be used for that purpose: the “configurable cacheability
-settings” for a memory region.
+Section 3.6.6 _Coherence and Cacheability PMAs_, there is a feature that, if
+implemented by the underlying hardware, could be used for that purpose: the
+“configurable cacheability settings” for a memory region.
 It allows specifying whether a memory region is cacheable or not and, upon
 making a region non-cacheable, enforces that all contents belonging to that
 region not yet in memory are propagated to memory and removed from cache
@@ -550,8 +550,8 @@ memories.
 Hence, if this feature can be used during operation, one could use it to set any
 region (or all regions) to non-cacheable as a way to flush caches, and then set
 them back to cacheable again as needed.
-* As part of the RISC-V Base Cache Management Operation (CMO) ISA Extensions,
-the `cbo.flush` instruction is defined.
+* The RISC-V Base Cache Management Operation (CMO) ISA Extensions define the
+`cbo.flush` instruction.
 It allows cleaning and invalidating the contents of a cache block, which is
 identified by a physical address corresponding to the underlying memory
 locations, and whose size is implementation dependent.
@@ -661,8 +661,8 @@ more than one supervisor domain use case.
 Each supervisor domain is assigned a unique set of physical address regions,
 isolated from other domains, with the RDSM maintaining centralized control over
 the entire physical memory map.
-To support thisWorldGuard, each hart operating within a supervisor domain is tagged with a
-Supervisor Domain Identifier (SDID).
+To support thisWorldGuard, each hart operating within a supervisor domain is
+tagged with a Supervisor Domain Identifier (SDID).
 This extension aims to minimize the TCB shared among domains.
 Sensitive data can be confined to specific domains based on their verified trust
 properties, either established statically at boot or dynamically through
