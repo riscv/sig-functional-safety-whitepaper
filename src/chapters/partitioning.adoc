@@ -48,7 +48,7 @@ Hardware resources to be partitioned may include processing capacity (e.g.,
 CPUs, GPUs, NPUs, TPUs, etc.), memory, cache, interconnect and I/O devices.
 
 In this document, we cover memory space partitioning as well as the partitioning
-of other resources as part of the space partitioning. 
+of other resources as part of the space partitioning.
 
 [#sec:partitioning:safety]
 ### Safety needs
@@ -275,7 +275,7 @@ Space partitioning also applies to memory-mapped peripherals and memory
 transactions initiated by peripherals (through DMA...).
 Memory space partitioning relies on the creation of a separate memory address
 space for each task and limiting or disabling the reading, writing or execution
-of code/data in address spaces that belong to different tasks. 
+of code/data in address spaces that belong to different tasks.
 
 Additionally, main memory is a major shared resource among cores in a multicore
 system.
@@ -648,7 +648,7 @@ extension by defining a dual-stage PMP with the
 Shspmp extension cite:[shspmp:2025].
 
 .RISC-V privileged levels when the Hypervisor extension is enabled. When virtualization is enabled, the Supervisor mode (S mode) is augmented to an hypervisor-extended supervisor mode (HS mode) and the virtual user mode (VU mode) and a virtual supervisor mode (VS mode) are added.
-[#fig:partitioning:hypervisor-extension] 
+[#fig:partitioning:hypervisor-extension]
 image::src/chapters/partitioning/hypervisor-extension.png[Hypervisor extension,align="center",pdfwidth=80%]
 
 In a multi-tenant platform, the PMP/Smepmp can also be leveraged by a Root
@@ -800,7 +800,7 @@ of previously scheduled tasks:
 boundable.
 
 To facilitate the implementation of processor affinity or allocation, `mhartid`
-should be a physical ID (not virtual or dynamically allocated). 
+should be a physical ID (not virtual or dynamically allocated).
 
 The interconnect should minimize interference channels (e.g. multi-path NoC
 instead of shared bus), allow analysis of arbitration mechanisms, and possibly
