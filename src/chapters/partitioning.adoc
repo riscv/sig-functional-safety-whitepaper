@@ -431,9 +431,9 @@ applications running in other cores.
 * Explicit communication between partitions, as any implicit mechanism (for
 example threads sharing global variables, or cache coherency) are difficult to
 monitor and to predict.
-For example, critical systems hypervisors (e.g. ARINC-653 hypervisors) may
-provide inter-partition communication mechanisms such as queueing ports and
-sampling ports.
+For example, critical systems hypervisors (e.g. ARINC 653 cite:[arinc653p0:2021]
+hypervisors) may provide inter-partition communication mechanisms such as
+queueing ports and sampling ports.
 * Shared peripherals, including I/O interfaces, accelerators (such as DSP, GPU,
 neural network coprocessor, etc.) and DMAs.
 Transaction initiators could be considered like processor cores, as they may
