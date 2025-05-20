@@ -40,6 +40,7 @@ endif::[]
 :stem: latexmath
 :footnote:
 :xrefstyle: short
+:page-background-image: image:docs-resources/images/draft.png[]
 
 [preface]
 == List of figures
