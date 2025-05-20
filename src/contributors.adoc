@@ -3,4 +3,7 @@
 This whitepaper has been contributed to directly or indirectly by:
 Jaume Abella (BSC),
 Jimmy Le Rhun (THALES),
-Daniel Gracia Pérez (THALES)
+Daniel Gracia Pérez (THALES),
+Manuel Rodríguez (Universidade do Minho),
+Sandro Pinto (Universidade do Minho),
+Thomas Roecker (Infineon)
