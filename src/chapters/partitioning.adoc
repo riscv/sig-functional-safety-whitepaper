@@ -516,7 +516,7 @@ While several approaches exist, it might be useful to take into account the more
 recent Sstc extension:
 
 * _M-mode timer_: The first approach is the using the cycle count (with the
-`RDCYCLE` instruction) and the wall clock (with the `RDTIME`` instruction).
+`RDCYCLE` instruction) and the wall clock (with the `RDTIME` instruction).
 This feature can be used to assess whether the bounds of a time partition have
 been exceeded and hence, whether a deadline overrun occurred.
 Also, the RISC-V privileged architecture specification provides a real-time
