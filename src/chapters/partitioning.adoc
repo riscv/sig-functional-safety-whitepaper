@@ -649,7 +649,7 @@ Shspmp extension cite:[shspmp:2025].
 
 .RISC-V privileged levels when the Hypervisor extension is enabled. When virtualization is enabled, the Supervisor mode (S mode) is augmented to an hypervisor-extended supervisor mode (HS mode) and the virtual user mode (VU mode) and a virtual supervisor mode (VS mode) are added.
 [#fig:partitioning:hypervisor-extension]
-image::src/chapters/partitioning/hypervisor-extension.png[Hypervisor extension,align="center",pdfwidth=80%]
+image::src/chapters/partitioning/hypervisor-extension.svg[Hypervisor extension,align="center",pdfwidth=80%]
 
 In a multi-tenant platform, the PMP/Smepmp can also be leveraged by a Root
 Domain Security Manager (RDSM), running in M-Mode, to enforce physical memory
