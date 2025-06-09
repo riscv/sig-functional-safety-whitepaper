@@ -469,7 +469,7 @@ interference channels, which is required at every criticality level.
 
 [#sec:partitioning:safety:justification]
 #### Justification
-mem
+
 Without partitioning, a task (referred to as application in CAST 32-A cite:[cast32:2016])
 may delay another by creating contention over a shared resource, which could be
 processor cycles or any of the physical resources.
@@ -484,7 +484,7 @@ A task of any criticality shall not impact the execution of another application,
 including its execution time (robust partitioning).
 
 In automotive, ISO26262 part 6 cite:[iec16508-6:2010] (software) identifies
-reedom from interference as a requirement across different software partitions.
+freedom from interference as a requirement across different software partitions.
 Annex D further lists relevant faults that can arise upon the lack of freedom
 from interference as follows:
 
@@ -598,7 +598,7 @@ different schemes defined by the RISC-V privileged architecture (Sv39, Sv48 or
 Sv57), thus providing a portion of the processor state that a user process can
 read but not modify.
 Such state includes the page table pointer and a bit dictating whether the
-dprocessor is in user or supervisor mode.
+processor is in user or supervisor mode.
 Each page table entry handles read/write permissions, as well as the permission
 that allows access to that entry from user mode.
 RISC-V also provides a mechanism that allows the processor to go from user mode
@@ -621,7 +621,7 @@ uses to translate virtual addresses to physical addresses and process requests.
 Memory accesses issued by these devices are always accompanied by unique context
 identifiers that the IOMMU uses to locate the appropriate data structures
 supplied by software.
-mem
+
 Due to the need to improve latency, determinism, and safety (over GPOS),
 Real-Time operating systems (RTOS) typically rely on OS-managed memory
 protection primitives/facilities to enforce user-level application isolation.
@@ -661,7 +661,7 @@ more than one supervisor domain use case.
 Each supervisor domain is assigned a unique set of physical address regions,
 isolated from other domains, with the RDSM maintaining centralized control over
 the entire physical memory map.
-To support thisWorldGuard, each hart operating within a supervisor domain is
+To support this, each hart operating within a supervisor domain is
 tagged with a Supervisor Domain Identifier (SDID).
 This extension aims to minimize the TCB shared among domains.
 Sensitive data can be confined to specific domains based on their verified trust
@@ -764,7 +764,7 @@ This design could generate contention among devices as IOATCs (IOMMU Address
 Translation Caches) are shared between them.
 As a solution, the option of a distributed IOMMU architecture could be included,
 i.e., a dedicated IOATC per device (or group of devices) and a central
-translation unit containingWorldGuard the memory walkers.
+translation unit containing the memory walkers.
 
 In terms of ongoing developments, the RISC-V IOPMP and SPMP specifications are
 near ratification, while a task group works on the integration and extension of
