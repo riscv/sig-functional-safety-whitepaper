@@ -22,15 +22,15 @@ Cache and TLB usage (hit/miss), number of executed instructions and clock
 cycles, stalled cycles, Load/Store accesses, branch prediction statistics,
 and number of exceptions raised.
 
-Next, we provide a detailed breakdown across the main performance counter types,
-along with some details on the information that would be needed to ease
-verification and validation of safety-related systems, as well as for the
-implementation of safety measures.
+Next, in <<tab:pmc:pmc-types>> we provide a detailed breakdown across the main
+performance counter types, along with some details on the information that would
+be needed to ease verification and validation of safety-related systems, as well
+as for the implementation of safety measures.
 The table also indicates the source, core or another SoC IP, the event usually
 comes.
 
 .Non-exhaustive breakdown of the main performance counter types
-[cols="2,5a,1",]
+[#tab:pmc:pmc-types,cols="2,5a,1",]
 |===
 |*Performance counter type* |*Detail* |*Usual scope*
 
