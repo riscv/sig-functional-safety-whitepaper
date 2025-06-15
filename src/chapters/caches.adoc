@@ -35,7 +35,7 @@ controllable by software.
 in the same area (depending on cache associativity).
 While the cache control hardware ensures the correct data is always returned,
 this can result in one process affecting the timing and performance of another
-process.(e.g. through mutual eviction of data).
+process (e.g. through mutual eviction of data).
 * The cache replacement (or eviction) policy may have an impact on the ability
 to perform timing analysis.
 For example a PLRU (pseudo least-recently used) algorithm can be more
@@ -172,7 +172,7 @@ In these cases, error detection without hardware correction is often sufficient
 be reloaded from main memory.
 TCM and copy-back data/combined caches may contain the only valid copy of active
 data, so error correction is often required (SECDED protection is common for
-ISO 26262).
+ISO 26262 cite:[iso26262:2018]).
 
 ##### Address translation
 
@@ -316,8 +316,7 @@ operation) or is about to read from (for the clean operation) a specific
 buffer of data.
 However, it is not well suited to resetting the cache to a known state to
 provide the temporal isolation discussed here, as one can expect the size of
-a _Zicbom_ block to be too small to effectively use for the entire address
-space.
+a _Zicbom_ block to be too small to effectively use the entire address space.
 . Traditionally, safe processors required the ability to remove or disable
 caches to ensure maximal predictability. Other solutions have emerged since,
 to avoid the drastic induced performance loss.
