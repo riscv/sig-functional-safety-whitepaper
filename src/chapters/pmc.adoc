@@ -531,8 +531,9 @@ Refer to xref:sec:caches[xrefstyle=full].
 
 Performance counters can be used to measure the occurrences of certain
 (obviously not fatal) errors.
-Refer to xref:sec:error[xrefstyle=full].
+Such errors could be managed by an error management mechanism (related chapter
+to be released).
 
 SoC-level performance counters and monitoring are needed to implement some
 features identified to monitor the multi-core interference.
-Refer to xref:sec:interference[xrefstyle=full].
+Refer to xref:sec:partitioning[xrefstyle=full].
