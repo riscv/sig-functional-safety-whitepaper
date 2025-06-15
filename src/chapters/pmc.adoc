@@ -468,7 +468,9 @@ can be highlighted:
   initiator/target of the transaction (core ID for instance).
 3. Linked counters: it would be desirable to provide the capability of linking
   multiple counters, defining chains of events to be monitored.
-4. Quota allocation (see <<sec:pmc:safety:justification:uses:quota>> above):
+4. Quota allocation (see
+  xref:sec:pmc:safety:justification:uses:quota[Example 4: quota allocation]
+  above):
   upon reaching the defined threshold, an interrupt would be triggered.
   An implementation would be to preload a value in the counter and trigger an
   interrupt when the counter overflows as provided by the *Sscofpmf* extension.
