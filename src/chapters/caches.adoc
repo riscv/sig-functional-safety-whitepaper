@@ -172,7 +172,7 @@ In these cases, error detection without hardware correction is often sufficient
 be reloaded from main memory.
 TCM and copy-back data/combined caches may contain the only valid copy of active
 data, so error correction is often required (SECDED protection is common for
-ISO 26262).
+ISO 26262 cite:[iso26262:2018]).
 
 ##### Address translation
 
