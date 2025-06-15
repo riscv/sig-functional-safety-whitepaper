@@ -212,7 +212,7 @@ as, for instance, those related to peripherals, DMA, and even some memories
 (e.g. some flash memories).
 Such components may only be accessible through specific hypervisor/OS/RTOS
 services, and hence, those software layers can implement software counters to
-monitor activities related to those devices (e.g., access counts, data
+monitor activities related to those devices (e.g. access counts, data
 transferred). Other software-visible events, such as interrupts and exceptions,
 can also be monitored with software counters implemented in the
 hypervisor/OS/RTOS.
@@ -417,7 +417,7 @@ RISC-V performance counters are 64-bit wide.
 In RV32 processors, they are accessed via two 32-bit CSRs for their LSB and MSB
 portions.
 
-The RISC-V Unprivileged ISA Specification cite:[rv-unpriv-spec:2024] (Chapter 8)
+The RISC-V Unprivileged ISA Specification cite:[rv-unpriv-spec:2024] Chapter 8
 defines with the *Zicntr* and *Zihpm* extensions an analogous facility for
 unprivileged hardware performance counters,
 including the Cycle Counter (`cycle`) CSR, the Instruction Retired Counter
