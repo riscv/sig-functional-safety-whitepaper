@@ -325,9 +325,9 @@ could be considered in future RISC-V specifications to embrace all approaches.
 Note that there are two standard ways to achieve this with current
 specifications, but both have significant drawbacks (there may also be
 implementation specific mechanisms):
-.. If the _Svpbmt_ (Page-Based Memory Types) extension is implemented, memory
-pages can be marked as non-cacheable in the page table, overriding the PMA
-attributes.
+.. If the [.extension]#Svpbmt# (Page-Based Memory Types) extension is
+implemented, memory pages can be marked as non-cacheable in the page table,
+overriding the PMA attributes.
 While in some situations this may be feasible, it either requires maintaining
 an alternate set of page tables, or updating existing page tables.
 It should be possible to activate or deactivate temporarily and temporally

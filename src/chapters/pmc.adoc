@@ -300,7 +300,7 @@ Without being exhaustive, this section identifies a number of uses of
 performance counters in the context of safety-relevant systems.
 
 [#sec:pmc:safety:justification:uses:wcet]
-###### Example 1: WCET estimation
+###### [.h4-example-heading]#Example 1: WCET estimation#
 
 Performance counters can be used for measurement-based timing analysis, or to
 feed some input data related to, for instance, latencies into static timing
@@ -317,7 +317,7 @@ In that case, performance counters can be used to feed timing models to find the
 best task scheduling in terms of timespan based on the timing model.
 
 [#sec:pmc:safety:justification:uses:valid]
-###### Example 2: resource usage validation and diagnostics
+###### [.h4-example-heading]#Example 2: resource usage validation and diagnostics#
 
 Performance counters can be used to measure accesses to different resources
 (e.g. peripheral devices, DRAM memory), as well as data transferred during the
@@ -335,7 +335,7 @@ specific resources are highly stressed and hence, whether consolidating
 additional applications may lead to resource overutilization.
 
 [#sec:pmc:safety:justification:uses:monitoring]
-###### Example 3: resource usage monitoring and diagnostics
+###### [.h4-example-heading]#Example 3: resource usage monitoring and diagnostics#
 
 As for example 2, performance counters can be used during operation analogously
 to the validation process, but to implement safety measures.
@@ -351,7 +351,7 @@ instance, if a task experiences overruns too frequently, switch to a different
 precomputed task schedule.
 
 [#sec:pmc:safety:justification:uses:quota]
-###### Example 4: quota allocation
+###### [.h4-example-heading]#Example 4: quota allocation#
 
 If performance counters allow programming quotas (e.g. maximum number of
 accesses or data transferred in a given resource), safety measures can be
@@ -365,7 +365,7 @@ ones, or drop other tasks if this one is highly critical and becomes more
 vulnerable to interference.
 
 [#sec:pmc:safety:justification:uses:faults]
-###### Example 5: management of random hardware faults
+###### [.h4-example-heading]#Example 5: management of random hardware faults#
 
 Performance counters related to errors detected and/or corrected may be used to
 detect intermittent and permanent faults.
