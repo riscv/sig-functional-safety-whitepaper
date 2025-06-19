@@ -267,9 +267,10 @@ safety-related systems and then reviews specific uses through some examples.
 ##### Traceability to standards
 
 Performance Counters can be used as the basis for meeting safety requirements
-related to a variety of safety needs such as “freedom from interference”
-(ISO 26262 cite:[iso26262:2018]), “resource usage tests” (ISO 26262
-cite:[iso26262:2018]), and “interference channel characterization” (CAST 32-A cite:[cast32:2016]),
+related to a variety of safety needs such as "freedom from interference"
+(ISO 26262 cite:[iso26262:2018]), "resource usage tests" (ISO 26262
+cite:[iso26262:2018]), and "interference channel characterization"
+(CAST 32-A cite:[cast32:2016]),
 as well as for processes related to timing estimation, critical configuration
 setting validation and random hardware fault management.
 
@@ -418,8 +419,8 @@ In RV32 processors, they are accessed via two 32-bit CSRs for their LSB and MSB
 portions.
 
 The RISC-V Unprivileged ISA Specification cite:[rv-unpriv-spec:2024] (Chapter 8)
-defines with the *Zicntr* and *Zihpm* extensions an analogous facility for
-unprivileged hardware performance counters,
+defines with the [.extension]#Zicntr# and [.extension]#Zihpm# extensions an
+analogous facility for unprivileged hardware performance counters,
 including the Cycle Counter (`cycle`) CSR, the Instruction Retired Counter
 (`instret`) CSR and 29 additional Performance Monitoring Counters
 (`hpmcounter3` - `hpmcounter31`).
@@ -437,8 +438,8 @@ cite:[rv-priv-spec:2024] Sections 3.1.11 and 10.1.15, for machine and supervisor
 modes respectively).
 
 The RISC-V Privileged ISA Specification cite:[rv-priv-spec:2024] Chapter 17
-defines the *Sscofpmf* extension providing performance counters overflow and
-mode filtering capabilities for machine and supervisor modes.
+defines the [.extension]#Sscofpmf# extension providing performance counters
+overflow and mode filtering capabilities for machine and supervisor modes.
 The overflow capability allows the implementation of quotas as identified in the
 Features section of this chapter (<<sec:pmc:safety:features>>), while the mode filtering
 capabilities partially addresses the filtering capabilities identified in the
@@ -462,16 +463,17 @@ can be highlighted:
   specifying a family of events (i.e. events that have to be recorded at the
   same time) or specifying non-event conditions (i.e. counting the number of
   clock cycles for which a certain event does not occur).
-2. Filtering capabilities: the *Sscofpmf* extension provides mode-filtering
-  capabilities, nevertheless it would be desirable to provide other
-  event-filtering capabilities, such as comparison or edge detection, or the
-  initiator/target of the transaction (core ID for instance).
+2. Filtering capabilities: the [.extension]#Sscofpmf# extension provides
+  mode-filtering capabilities, nevertheless it would be desirable to provide
+  other event-filtering capabilities, such as comparison or edge detection, or
+  the initiator/target of the transaction (core ID for instance).
 3. Linked counters: it would be desirable to provide the capability of linking
   multiple counters, defining chains of events to be monitored.
 4. Quota allocation (see <<sec:pmc:safety:justification:uses:quota>> above):
   upon reaching the defined threshold, an interrupt would be triggered.
   An implementation would be to preload a value in the counter and trigger an
-  interrupt when the counter overflows as provided by the *Sscofpmf* extension.
+  interrupt when the counter overflows as provided by the [.extension]#Sscofpmf#
+  extension.
 5. Standardized event description: the description of events should be
   standardized as much as possible among the different RISC-V processor
   implementations.
