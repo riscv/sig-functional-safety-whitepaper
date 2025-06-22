@@ -379,3 +379,24 @@ identify and minimize interference channels.
 typically a multiple of the number of harts that are sharing that level of
 cache, so that a way can uniquely be assigned to a hart.
 . Cache locking can be a way of implementing TCM-like functionality.
+
+[#sec:caches:activities]
+### Relevant activities
+
+#### Related external bodies
+
+The memory hierarchy, including the caches and TCMs, is very specific on
+each processor (Power, Intel, AMD, ...).
+
+#### Related chapters
+
+Caches have an important impact on the performance of system which needs to be
+carefully managed on safety critical systems.
+Performance counters are frequently used to monitor cache performance,
+refer to xref:sec:pmc[xrefstyle=full].
+Furthermore, Quality of Service (QoS) policies can be applied to control the
+caches behavior and performance, refer to xref:sec:qos[xrefstyle=full].
+
+Partitioning (spatial and temporal) of caches is frequently required to
+manage the impact of caches on the different tasks executed in the processor.
+Refer to xref:sec:partitioning[xrefstyle=full].

@@ -22,15 +22,15 @@ Cache and TLB usage (hit/miss), number of executed instructions and clock
 cycles, stalled cycles, Load/Store accesses, branch prediction statistics,
 and number of exceptions raised.
 
-Next, we provide a detailed breakdown across the main performance counter types,
-along with some details on the information that would be needed to ease
-verification and validation of safety-related systems, as well as for the
-implementation of safety measures.
+Next, in <<tab:pmc:pmc-types>> we provide a detailed breakdown across the main
+performance counter types, along with some details on the information that would
+be needed to ease verification and validation of safety-related systems, as well
+as for the implementation of safety measures.
 The table also indicates the source, core or another SoC IP, the event usually
 comes.
 
 .Non-exhaustive breakdown of the main performance counter types
-[cols="2,5a,1",]
+[#tab:pmc:pmc-types,cols="2,5a,1",]
 |===
 |*Performance counter type* |*Detail* |*Usual scope*
 
@@ -212,7 +212,7 @@ as, for instance, those related to peripherals, DMA, and even some memories
 (e.g. some flash memories).
 Such components may only be accessible through specific hypervisor/OS/RTOS
 services, and hence, those software layers can implement software counters to
-monitor activities related to those devices (e.g., access counts, data
+monitor activities related to those devices (e.g. access counts, data
 transferred). Other software-visible events, such as interrupts and exceptions,
 can also be monitored with software counters implemented in the
 hypervisor/OS/RTOS.
@@ -418,7 +418,7 @@ RISC-V performance counters are 64-bit wide.
 In RV32 processors, they are accessed via two 32-bit CSRs for their LSB and MSB
 portions.
 
-The RISC-V Unprivileged ISA Specification cite:[rv-unpriv-spec:2024] (Chapter 8)
+The RISC-V Unprivileged ISA Specification cite:[rv-unpriv-spec:2024] Chapter 8
 defines with the [.extension]#Zicntr# and [.extension]#Zihpm# extensions an
 analogous facility for unprivileged hardware performance counters,
 including the Cycle Counter (`cycle`) CSR, the Instruction Retired Counter
@@ -469,7 +469,9 @@ can be highlighted:
   the initiator/target of the transaction (core ID for instance).
 3. Linked counters: it would be desirable to provide the capability of linking
   multiple counters, defining chains of events to be monitored.
-4. Quota allocation (see <<sec:pmc:safety:justification:uses:quota>> above):
+4. Quota allocation (see
+  xref:sec:pmc:safety:justification:uses:quota[Example 4: quota allocation]
+  above):
   upon reaching the defined threshold, an interrupt would be triggered.
   An implementation would be to preload a value in the counter and trigger an
   interrupt when the counter overflows as provided by the [.extension]#Sscofpmf#
@@ -533,8 +535,9 @@ Refer to xref:sec:caches[xrefstyle=full].
 
 Performance counters can be used to measure the occurrences of certain
 (obviously not fatal) errors.
-Refer to xref:sec:error[xrefstyle=full].
+Such errors could be managed by an error management mechanism (related chapter
+to be released).
 
 SoC-level performance counters and monitoring are needed to implement some
 features identified to monitor the multi-core interference.
-Refer to xref:sec:interference[xrefstyle=full].
+Refer to xref:sec:partitioning[xrefstyle=full].
