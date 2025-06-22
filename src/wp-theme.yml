@@ -5,4 +5,3 @@ role:
     font-size: 1.17em # use the h3 size of the riscv-pdf theme
   extension:
     font-style: italic
-    
