@@ -23,9 +23,9 @@ issues:
 * The implicit nature of the memory access through a cache memory, while very
 convenient from a programming point of view (for non-safety-critical systems),
 means there is little control over the transaction.
-Dedicated instructions such as the CMO extensions or memory fences that may be
-needed to ensure consistency (especially in a copy-back cache) are usually not
-exposed in higher-level programming languages.
+Dedicated instructions such as the [.extension]#CMO# extensions or memory fences
+that may be needed to ensure consistency (especially in a copy-back cache) are
+usually not exposed in higher-level programming languages.
 * While the average memory access time is reduced, variability of access time is
 increased.
 Multiple accesses to the same memory location may have widely differing access
@@ -270,11 +270,10 @@ non-cacheable.
 This scheme may be either fixed or configurable by Machine Mode Software.
 This satisfies safety requirements for disabling the effect of caches for
 particular data areas (though not through a standardized mechanism).
-For paged virtual-memory systems, if implemented the _Svpbmt_ (Page-Based Memory
-Types) extension (see
-RISC-V Privileged ISA Specification cite:[rv-priv-spec:2024] Chapter 12)
-provides a more suitable and standardized method for achieving the same
-objective.
+For paged virtual-memory systems, if implemented the [.extension]#Svpbmt#
+(Page-Based Memory Types) extension (see RISC-V Privileged ISA Specification
+cite:[rv-priv-spec:2024] Chapter 12) provides a more suitable and standardized
+method for achieving the same objective.
 
 The RISC-V Unprivileged ISA Specification cite:[rv-unpriv-spec:2024] Chapter 17
 defines the RISC-V Weak Memory Ordering model, applied to main memory.
@@ -285,11 +284,12 @@ In the RISC-V Unprivileged ISA Specification cite:[rv-unpriv-spec:2024] Chapter
 19, the Cache Management Operations TG specified instructions to manage a Cache
 Block (with architecture-dependant block size):
 
-* The _Zicbom_ extension defines a set of cache-block management instructions:
-`CBO.INVAL`, `CBO.CLEAN`, and `CBO.FLUSH`
-* The _Zicboz_ extension defines a cache-block zero instruction: `CBO.ZERO`
-* The _Zicbop_ extension defines a set of cache-block prefetch instructions:
-`PREFETCH.R`, `PREFETCH.W`, and `PREFETCH.I`
+* The [.extension]#Zicbom# extension defines a set of cache-block management
+instructions: `CBO.INVAL`, `CBO.CLEAN`, and `CBO.FLUSH`
+* The [.extension]#Zicboz# extension defines a cache-block zero instruction:
+`CBO.ZERO`
+* The [.extension]#Zicbop# extension defines a set of cache-block prefetch
+instructions: `PREFETCH.R`, `PREFETCH.W`, and `PREFETCH.I`
 
 [#sec:caches:recom]
 ### Recommendations
@@ -305,9 +305,9 @@ Alternatively, set/way operations should be supported, which can be used to
 synthesize such entire cache/partition operations.
 +
 The ability to control (clean/invalidate) caches is provided in the (ratified)
-"Base Cache Maintenance Operations” extensions, more specifically the _Zicbom_
-(Cache Block Management) extension.
-These specify “block operations” -- operations related to a particular
+"Cache Management Operations" extensions, more specifically the
+[.extension]#Zicbom# (Cache Block Management) extension.
+These specify "block operations" -- operations related to a particular
 physical address range.
 This mechanism is suitable for implementing a software cache coherency scheme
 in situations where software knows that an external agent (that is not
@@ -316,7 +316,8 @@ operation) or is about to read from (for the clean operation) a specific
 buffer of data.
 However, it is not well suited to resetting the cache to a known state to
 provide the temporal isolation discussed here, as one can expect the size of
-a _Zicbom_ block to be too small to effectively use the entire address space.
+a [.extension]#Zicbom# block to be too small to effectively use the entire
+address space.
 . Traditionally, safe processors required the ability to remove or disable
 caches to ensure maximal predictability. Other solutions have emerged since,
 to avoid the drastic induced performance loss.
@@ -325,9 +326,9 @@ could be considered in future RISC-V specifications to embrace all approaches.
 Note that there are two standard ways to achieve this with current
 specifications, but both have significant drawbacks (there may also be
 implementation specific mechanisms):
-.. If the _Svpbmt_ (Page-Based Memory Types) extension is implemented, memory
-pages can be marked as non-cacheable in the page table, overriding the PMA
-attributes.
+.. If the [.extension]#Svpbmt# (Page-Based Memory Types) extension is
+implemented, memory pages can be marked as non-cacheable in the page table,
+overriding the PMA attributes.
 While in some situations this may be feasible, it either requires maintaining
 an alternate set of page tables, or updating existing page tables.
 It should be possible to activate or deactivate temporarily and temporally
@@ -337,10 +338,10 @@ This functionality is platform defined (so may not be configurable for all or
 any memory regions), and it is not consistent with the intended use-model for
 PMA as described in the RISC-V Privileged ISA Specification
 cite:[rv-priv-spec:2024] Section 3.6:
-“PMAs are inherent properties of the underlying hardware and rarely change
+"PMAs are inherent properties of the underlying hardware and rarely change
 during system operation.
 Unlike Physical Memory Protection (PMP) values described in Section 3.7, PMAs
-do not vary by execution context”.
+do not vary by execution context".
 
 Standardized control and discovery mechanisms for TCM (and other memory
 architectures) can be considered.

@@ -53,7 +53,7 @@ OPTIONS := --trace \
   -a revdate=${DATE} \
   -a imagesoutdir=${BUILD_DIR}/images \
   -a pdf-fontsdir=docs-resources/fonts \
-  -a pdf-theme=docs-resources/themes/riscv-pdf.yml \
+  -a pdf-theme=src/wp-theme.yml \
   $(XTRA_ADOC_OPTS) \
   -D ${BUILD_DIR} \
   --failure-level=ERROR
