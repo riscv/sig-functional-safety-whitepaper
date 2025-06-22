@@ -14,8 +14,9 @@ coexist, the system is said to be of mixed-criticality.
 
 The criticality of a task and the standard according to which its code is
 developed have a direct impact on the number and type of safety mechanisms that
-need to be implemented. As a consequence, the acceptable error rates of the
-tasks differ according to their criticality level.
+need to be implemented.
+As a consequence, the acceptable error rates of the tasks differ according to
+their criticality level.
 To prevent a less/non critical task from interfering with the execution of a
 more critical task, it is therefore required to ensure freedom from such
 interference.
@@ -42,12 +43,12 @@ used to guarantee specific maximum latencies, minimum bandwidth, minimum cache
 space, and the like, for specific tasks with safety and performance
 requirements.
 These guarantees can be fully enforced to achieve complete freedom from
-interference (a “hard” guarantee), or allow the system to miss targets some of
+interference (a "hard" guarantee), or allow the system to miss targets some of
 the time up to some agreed-upon threshold, achieving a limited degree of freedom
-from interference (a “soft” or “best-effort” guarantee).
+from interference (a "soft" or "best-effort" guarantee).
 
-In this document, we cover QoS features in the context of tasks with safety
-requirements.
+In this document, we cover QoS features in the context of tasks (referred to as
+application in CAST 32-A cite:[cast32:2016]) with safety requirements.
 
 [#sec:qos:safety:features]
 #### Features
@@ -81,8 +82,8 @@ Some examples are:
 Along with configurable QoS levels, we aim at having metrics (e.g., performance
 counters) to assess how tasks are using the system to select the appropriate QoS
 level for each task (and potentially for each shared resource).
-The discussion of performance counters can be found in the corresponding
-chapter.
+The discussion of performance counters can be found in
+xref:sec:pmc[xrefstyle=full].
 
 [#sec:qos:safety:level]
 #### Level
@@ -105,19 +106,19 @@ channels, which is required at every criticality level.
 [#sec:qos:safety:justification]
 #### Justification
 
-Without QoS support a task (referred to as application in CAST 32-A
-cite:[cast32:2016]) may delay another by creating contention over a shared
-resource, which could be processor cycles or any of the physical resources.
+Without QoS support a task may delay another by creating contention over a
+shared resource, which could be processor cycles or any of the physical
+resources.
 This leads to a reduction in the availability of the system.
 
-In avionics, the CAST 32-A guideline -- now superseded by EASA
-AMC 20-193 cite:[amc20193:2022] and FAA AC 20-193 cite:[ac20193:2024] --
+In avionics, the CAST 32-A cite:[cast32:2016] guideline -- now superseded by
+EASA AMC 20-193 cite:[amc20193:2022] and FAA AC 20-193 cite:[ac20193:2024] --
 mandates that all interference channels must be identified and mitigated.
 A task of any criticality shall not impact the execution of another task,
 including its execution time (robust partitioning).
 
-In automotive, the ISO 26262 part 6 (software) identifies freedom from
-interference as a requirement across different software partitions.
+In automotive, the ISO 26262 cite:[iso26262:2018] part 6 (software) identifies
+freedom from interference as a requirement across different software partitions.
 Annex D further lists relevant faults that can arise upon the lack of freedom
 from interference, one of which is as follows:
 
@@ -128,7 +129,8 @@ from interference, one of which is as follows:
 ISO 26262 also mandates dependent failure analysis (i.e., analysis of failures
 that occur as a consequence of a previous failure) to identify and limit the
 impact of a failure, which aims to make the system more reliable.
-Either QoS support and/or partitioning are likely to be mandated as an outcome
+Either QoS support and/or partitioning (discussed in
+xref:sec:partitioning[xrefstyle=full]) are likely to be mandated as an outcome
 of this analysis.
 
 Note, however, that not all incarnations of QoS support are appropriate to
@@ -144,51 +146,53 @@ waiting times across tasks in different cores.
 ### RISC-V solutions
 
 The most relevant set of features in the context of RISC-V can be found in the
-“RISC-V Quality-of-Service (QoS) Identifiers (*Ssqosid*)” v1.0 extension
-ratified on the 2024/06/29 cite:[ssqosid:2024].
+"RISC-V Quality-of-Service (QoS) Identifiers ([.extension]#Ssqosid#)" v1.0
+extension ratified on the 2024/06/29 cite:[ssqosid:2024].
 While such document provides the specification of the QoS identifiers, the Fast
 Track ISA Extension Proposal with the same name cite:[ft-qosid:2023] also
 includes motivation and use cases for those QoS identifiers.
 
 The proposal describes two types of identifiers that we briefly summarize here
 for reference, although we strongly suggest that the reader reviews the original
-and complete documents. Note that in the discussion below, as well as in the
-rest of the document, we refer to tasks as the software unit of interest.
+and complete documents.
+Note that in the discussion below, as well as in the rest of the document, we
+refer to tasks as the software unit of interest.
 In the aforementioned documents about QoS IDs, the reference unit of interest
-is the hart (abbreviation for “hardware thread”).
+is the hart (abbreviation for "hardware thread").
 While harts and tasks are different types of entities, we use task for
 consistency with the rest of the chapters and assume during our discussions
 below that each hart runs a single task (or none).
-The two types of identifiers defined by the *Ssqosid* extension are:
+The two types of identifiers defined by the [.extension]#Ssqosid# extension are:
 
 * Resource Control Identifiers (RCIDs): Each RCID covers a set of shared
-  resources.  Each task with such RCID gets access to a specific service level
-  (QoS) from those resources, and shares them with all other tasks with the same
-  RCID.
+  resources.
+  Each task with such RCID gets access to a specific service level (QoS) from
+  those resources, and shares them with all other tasks with the same RCID.
 ** Example: RCID1 could correspond to 25% bandwidth of a bus, ways 1 and 2 of a
    shared L2 cache, and 8 entries in the request queue of the memory controller.
    RCID2 could correspond to 50% of bandwidth, ways 3 and 4, and 16 entries.
-   RCID3 could correspond to 75%, way 3, and 16 entries.
+   RCID3 could correspond to 75% of bandwidth, way 3, and 16 entries.
    We could map task A to RCID1 and task B to RCID3.
    This would allow sharing the bus (25% vs 75%), the shared L2 cache (ways 1-2
    vs way 3), and the memory controller as long as its queue has at least 24
    entries (8 vs 16 entries).
    We could also map another task (task C) to RCID3, which would make tasks B
    and C compete for their 75% of bandwidth, cache way 3, and the 16 entries in
-   the request queue (resources in RCID3  are guaranteed only in the aggregate,
+   the request queue (resources in RCID3 are guaranteed only in the aggregate,
    but B and C compete without constraint for RCID3 resources).
    If we have an additional task D allocated to RCID2, then guarantees would not
-   be feasible (e.g., 150% bandwidth required in the bus).
+   be feasible (e.g. 150% bandwidth required in the bus).
 *** Note that the RCID allocated to a given task can be changed dynamically.
 * Monitor Counter Identifiers (MCIDs): Each MCID is mapped to a specific monitor
   of each resource with QoS capabilities, hence typically providing information
-  about the usage of that resource by tasks with such MCID (e.g., 20% bandwidth
-  utilization, 50% space allocated). In general, more than one monitor per
-  component may be needed for safety reasons (e.g., L2 cache dirty evictions,
-  L2 stall cycles in the eviction buffer, etc).
+  about the usage of that resource by tasks with such MCID (e.g. 20% bandwidth
+  utilization, 50% space allocated).
+  In general, more than one monitor per component may be needed for safety
+  reasons (e.g. L2 cache dirty evictions, L2 stall cycles in the eviction
+  buffer, etc.).
   Therefore, MCIDs are not directly amenable to safety uses unless some tricks
   are played:
-** One could create multiple virtual components with QoS support (e.g., as many
+** One could create multiple virtual components with QoS support (e.g. as many
    as monitors required) and make RCIDs have no effect on those components,
    but let them have a monitor each.
    Yet, while feasible, this is an anomalous use of MCIDs.
@@ -213,14 +217,14 @@ using RCIDs with incompatible or potentially problematic constraints across
 tasks running in different harts.
 For instance, it is possible to run tasks whose aggregated bandwidth allocated
 in an interconnect is above 100%, which would be incompatible in practice, or
-with potentially problematic cache allocations (e.g., task A uses ways 1 and 2,
+with potentially problematic cache allocations (e.g. task A uses ways 1 and 2,
 and task B ways 2 and 3) that provide neither partitioning, nor full sharing.
 Also, specific combinations of RCIDs, if used by different concurrent tasks,
 could lead to issues such as priority inversion if not defined and used with
 care.
 
 Based on their definition, RCIDs could allow expressing virtually any set of
-constraints, such as end-to-end constraints (e.g., end-to-end memory latencies),
+constraints, such as end-to-end constraints (e.g. end-to-end memory latencies),
 but how to map RCIDs to specific QoS constraints is completely implementation
 dependent.
 Therefore, from an ISA perspective, no further ISA support is needed to realize
@@ -276,8 +280,8 @@ These safety extensions could be easily combined with the current MCID
 definition so that the MCID is used to choose the appropriate set of monitors
 to read.
 Different tasks with different MCIDs may want to read the same monitor, which
-may be mapped into multiple memory locations (e.g., overall interconnect
-utilization), or different per-task monitors (e.g., individual interconnect
+may be mapped into multiple memory locations (e.g. overall interconnect
+utilization), or different per-task monitors (e.g. individual interconnect
 utilization).
 
 [#sec:qos:recom:propagation]
@@ -292,9 +296,9 @@ For instance, in the case of a dirty line eviction from cache, one could
 attribute such request to the task evicting the line or to the one modifying
 originally the line.
 RCIDs and MCIDs are agnostic to those choices, which are fully implementation
-dependent (e.g., one may use a specific RCID/MCID for I/O generated activity),
+dependent (e.g. one may use a specific RCID/MCID for I/O generated activity),
 but it is important to make a sound use of RCIDs and MCIDs for those types of
-requests also because they may have non-negligible performance effects (e.g.,
+requests also because they may have non-negligible performance effects (e.g.
 dirty cache line evictions may occur frequently and saturate memory access).
 
 [#sec:qos:activities]
@@ -313,5 +317,4 @@ xref:sec:qos[xrefstyle=full].
 
 Also, QoS support often relies on performance monitoring counters to make QoS
 decisions.
-Hence, the xref:sec:pmc[xrefstyle=full] is related to this chapter,
-xref:sec:qos[xrefstyle=full].
+Hence, the xref:sec:pmc[xrefstyle=full] is related to this chapter.
