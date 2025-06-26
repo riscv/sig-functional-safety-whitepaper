@@ -90,9 +90,9 @@ xref:sec:pmc[xrefstyle=full].
 
 While QoS could be applied to single-core (and single-threaded) processors
 (e.g., for temperature concerns, or to manage interference across tasks running
-serially), it is particularly relevant for multi-core configurations where tasks
+serially), it is particularly relevant for multicore configurations where tasks
 run concurrently sharing hardware resources. Single-core concerns can be viewed
-as a (small) subset of multi-core concerns.
+as a (small) subset of multicore concerns.
 Hence, the level at which QoS is relevant is typically the SoC, with particular
 emphasis on the shared hardware resources.
 

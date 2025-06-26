@@ -80,7 +80,7 @@ advantages:
 * It also allows decreasing the risk of deadline overruns during operation since
   timing impacts  across different tasks are significantly decreased.
 
-On multi-core SOCs, time partitioning of tasks should be applied individually to
+On multicore SOCs, time partitioning of tasks should be applied individually to
 a single core as well as combinations of multiple cores.
 Time partitioning is key to allow tasks to start, with some degree of precision,
 when required, as well as to ensure they make sufficient progress to meet their
@@ -680,7 +680,7 @@ operations.
 
 In most cases, the mechanisms to partition resources other than memory are
 implementation-specific or located outside of the processor core (e.g. in the
-interconnect of multi-core systems) and not yet addressed by RISC-V
+interconnect of multicore systems) and not yet addressed by RISC-V
 specifications.
 
 For routing interrupts to a specific core, the Platform-Level Interrupt
