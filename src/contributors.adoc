@@ -1,9 +1,25 @@
 == Contributors
 
 This whitepaper has been contributed to directly or indirectly by:
-Jaume Abella (BSC),
-Jimmy Le Rhun (THALES),
-Daniel Gracia Pérez (THALES),
-Manuel Rodríguez (Universidade do Minho),
+Jaume Abella (Barcelona Supercomputing Center),
+Sergi Alcaide Portet (Barcelona Supercomputing Center),
+Verena Beckham (Qualcomm),
+Holger Blasum (SYSGO),
+Daniel Gracia Pérez (Thales),
+Ren Guo (ALIBABA.COM),
+David Higham (Codasip),
+Andrew Jones (Ventana Micro Systems),
+Jimmy Le Rhun (Thales),
+Pete Lewin (Imagination Technologies Ltd.),
+Claudio Maia (Individual),
+Vicente Nicolau Gallego (Fent Innovative Software Solutions),
+Amit Pabalkar (NVIDIA Corporation),
 Sandro Pinto (Universidade do Minho),
-Thomas Roecker (Infineon)
+Jérôme Quévremont (Thales),
+Thomas Roecker (Infineon),
+Manuel Rodríguez (Universidade do Minho),
+Matthias Rosenfelder (SYSGO),
+Afonso Santos (Universidade do Minho),
+Jon Stephan (SiFive),
+David Weaver (Akeana),
+Michael Wong (Codeplay Software).
