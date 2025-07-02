@@ -7,7 +7,10 @@
 | *Term* | *Definition*
 
 | ASIL
-|
+| Automotive Safety Integrity Level.
+  Risk classification scheme defined by the ISO 26262 cite:[iso26262:2018]
+  identifying four ASILs ranging from the lowest to the highest integrity
+  requirements: ASIL A, ASIL B, ASIL C and ASIL D.
 
 | CAST
 | Certification Authorities Software Team.
@@ -39,20 +42,26 @@ the highest safety requirements and DAL E for no safety requirement.
 | ECSS
 | European Center for Space Standardization.
 
-| Error
-|
-
 | ESA
 | European Space Agency.
 
 | FAA
 | Federal Aviation Agency.
 
-| Failure
-|
-
-| Fault
-|
+| Fault, error and failure
+| These terms refer to the series of events that can put a system malfunctioning
+  state, which in the case of safety critical systems might cause hazard to the
+  environment or human life.
+  Depending on the domain (software, automotive, avionics, etc.) these terms
+  differ.
+  For example, in the automotive domain (ISO 26262) a _fault_ is an
+  abnormal condition that can cause an element to fail, which can cause an
+  _error_ (a discrepancy between a computed, observed or measured
+  value/condition and the true theoretical value/condition) which can ultimately
+  provoke a permanent or transient _failure_ on the system, that is the
+  termination of the system intended behavior.
+  In the software domain, an _error_ refers to a software error (e.g. a bug)
+  that can cause a _fault_ which ultimately causes a system _failure_.
 
 | Interference
 |
@@ -120,7 +129,9 @@ the highest safety requirements and DAL E for no safety requirement.
   memories.
 
 | WCET
-| Worst-Case Exection Time
+| Worst-Case Exection Time.
+  In a computer system the WCET is the maximum time a task could take to
+  execute.
 
 |===
 
