@@ -28,7 +28,13 @@ Safety levels are identified with letter, from A to E, with DAL A identifying
 the highest safety requirements and DAL E for no safety requirement.
 
 | Determinism
-|
+| Capability of a system that given the same input it always generates the same
+outputs while passing through the same intermediate states, no matter how many
+times the same input is presented to the system.
+In safety critical systems determinism typically also applies to the time, and
+other non-functional properties, the system requires to process the input, i.e.
+capability of the system to always process the input in a fixed amount of time
+no matter when the input is presented to the system.
 
 | DMA
 | Direct-Memory Access.
@@ -64,10 +70,14 @@ the highest safety requirements and DAL E for no safety requirement.
   that can cause a _fault_ which ultimately causes a system _failure_.
 
 | Interference
-|
+| Interference refers to the impact an event or process can have in the
+execution of another process in a processor.
+The interference can be observed as a variation on the process execution time
+and it is typically due to the use processor shared resources.
 
 | Hypervisor
-|
+| Thin software layer that provides abstraction of hardware to one or several
+operating systems, by allowing them to run on the same host hardware.
 
 | ID
 | Identifier.
