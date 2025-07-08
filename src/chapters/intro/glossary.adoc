@@ -28,13 +28,9 @@ Safety levels are identified with letter, from A to E, with DAL A identifying
 the highest safety requirements and DAL E for no safety requirement.
 
 | Determinism
-| Capability of a system that given the same input it always generates the same
-outputs while passing through the same intermediate states, no matter how many
-times the same input is presented to the system.
-In safety critical systems determinism typically also applies to the time, and
-other non-functional properties, the system requires to process the input, i.e.
-capability of the system to always process the input in a fixed amount of time
-no matter when the input is presented to the system.
+| Capability of a system that given the same input to the same initial state it
+always generates the same outputs while passing through the same intermediate
+states, no matter how many times the same input is presented to the system.
 
 | DMA
 | Direct-Memory Access.
@@ -55,25 +51,19 @@ no matter when the input is presented to the system.
 | Federal Aviation Agency.
 
 | Fault, error and failure
-| These terms refer to the series of events that can put a system malfunctioning
-  state, which in the case of safety critical systems might cause hazard to the
-  environment or human life.
-  Depending on the domain (software, automotive, avionics, etc.) these terms
-  differ.
-  For example, in the automotive domain (ISO 26262) a _fault_ is an
-  abnormal condition that can cause an element to fail, which can cause an
-  _error_ (a discrepancy between a computed, observed or measured
-  value/condition and the true theoretical value/condition) which can ultimately
-  provoke a permanent or transient _failure_ on the system, that is the
-  termination of the system intended behavior.
-  In the software domain, an _error_ refers to a software error (e.g. a bug)
-  that can cause a _fault_ which ultimately causes a system _failure_.
+| In the context of this document these terms refer to the series of events that
+can put a system into a malfunctioning state: a _fault_ is an abnormal
+condition that can cause an element to fail, which can cause an _error_ (a
+discrepancy between a computed, observed or measured value/condition and the
+true theoretical value/condition) which can ultimately provoke a permanent or
+transient _failure_ on the system, that is the termination of the system
+intended behavior.
 
 | Interference
-| Interference refers to the impact an event or process can have in the
-execution of another process in a processor.
-The interference can be observed as a variation on the process execution time
-and it is typically due to the use processor shared resources.
+| Interference refers to the impact an event or task can have in the
+execution of another task in a processor.
+The interference can be observed as a variation on the task execution
+and it is typically due to the use of processor shared resources.
 
 | Hypervisor
 | Thin software layer that provides abstraction of hardware to one or several
