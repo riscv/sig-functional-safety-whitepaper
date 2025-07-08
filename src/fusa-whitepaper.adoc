@@ -1,5 +1,5 @@
 = Functional Safety Whitepaper
-Editors: Jérôme Quévremont (Thales), Jaume Abella (Barcelona Supercomputing Center), Daniel Gracia Pérez (Thales)
+Editors: Jérôme Quévremont (Thales), Amit Pabalkar (NVIDIA Corporation), Jaume Abella (Barcelona Supercomputing Center), Daniel Gracia Pérez (Thales)
 include::../docs-resources/global-config.adoc[]
 :docgroup: RISC-V Functional Safety Special Interest Group
 :description: RISC-V Functional Safety Whitepaper
