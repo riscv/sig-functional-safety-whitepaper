@@ -7,7 +7,10 @@
 | *Term* | *Definition*
 
 | ASIL
-|
+| Automotive Safety Integrity Level.
+  Risk classification scheme defined by the ISO 26262 cite:[iso26262:2018]
+  identifying four ASILs ranging from the lowest to the highest integrity
+  requirements: ASIL A, ASIL B, ASIL C and ASIL D.
 
 | CAST
 | Certification Authorities Software Team.
@@ -25,7 +28,9 @@ Safety levels are identified with letter, from A to E, with DAL A identifying
 the highest safety requirements and DAL E for no safety requirement.
 
 | Determinism
-|
+| Capability of a system that given the same input to the same initial state it
+always generates the same outputs while passing through the same intermediate
+states, no matter how many times the same input is presented to the system.
 
 | DMA
 | Direct-Memory Access.
@@ -39,26 +44,30 @@ the highest safety requirements and DAL E for no safety requirement.
 | ECSS
 | European Center for Space Standardization.
 
-| Error
-|
-
 | ESA
 | European Space Agency.
 
 | FAA
 | Federal Aviation Agency.
 
-| Failure
-|
-
-| Fault
-|
+| Fault, error and failure
+| In the context of this document these terms refer to the series of events that
+can put a system into a malfunctioning state: a _fault_ is an abnormal
+condition that can cause an element to fail, which can cause an _error_ (a
+discrepancy between a computed, observed or measured value/condition and the
+true theoretical value/condition) which can ultimately provoke a permanent or
+transient _failure_ on the system, that is the termination of the system
+intended behavior.
 
 | Interference
-|
+| Interference refers to the impact an event or task can have in the
+execution of another task in a processor.
+The interference can be observed as a variation on the task execution
+and it is typically due to the use of processor shared resources.
 
 | Hypervisor
-|
+| Thin software layer that provides abstraction of hardware to one or several
+operating systems, by allowing them to run on the same host hardware.
 
 | ID
 | Identifier.
@@ -120,7 +129,9 @@ the highest safety requirements and DAL E for no safety requirement.
   memories.
 
 | WCET
-| Worst-Case Exection Time
+| Worst-Case Exection Time.
+  In a computer system the WCET is the maximum time a task could take to
+  execute.
 
 |===
 
