@@ -39,16 +39,16 @@ states, no matter how many times the same input is presented to the system.
 | European Union Aviation Safety Agency.
 
 | ECC
-| Error Code Correction.
+| Error Correction Code.
 
 | ECSS
-| European Center for Space Standardization.
+| European Cooperation for Space Standardization.
 
 | ESA
 | European Space Agency.
 
 | FAA
-| Federal Aviation Agency.
+| Federal Aviation Administration.
 
 | Fault, error and failure
 | In the context of this document these terms refer to the series of events that
@@ -85,7 +85,7 @@ operating systems, by allowing them to run on the same host hardware.
 | Instructions Per Cycle.
 
 | ISO
-| International Standards Office.
+| International Organization for Standardization.
 
 | LRU
 | _Least-recently used_ algorithm.
