@@ -17,7 +17,9 @@ DOCS := \
 
 DATE ?= $(shell date +%Y-%m-%d)
 VERSION ?= v0.0.0
-REVMARK ?= Draft
+# Leaving the REVMARK unset will put the document in draft state and the
+# background of the document will have a "DRAFT" image.
+REVMARK ?=
 DOCKER_IMG := riscvintl/riscv-docs-base-container-image:latest
 ifneq ($(SKIP_DOCKER),true)
   DOCKER_IS_PODMAN = \
@@ -49,7 +51,6 @@ OPTIONS := --trace \
   -a compress \
   -a mathematical-format=svg \
   -a revnumber=${VERSION} \
-  -a revremark=${REVMARK} \
   -a revdate=${DATE} \
   -a imagesoutdir=${BUILD_DIR}/images \
   -a pdf-fontsdir=docs-resources/fonts \
@@ -57,6 +58,9 @@ OPTIONS := --trace \
   $(XTRA_ADOC_OPTS) \
   -D ${BUILD_DIR} \
   --failure-level=ERROR
+ifneq (${REVMARK},)
+OPTIONS := ${OPTIONS} -a revremark=${REVMARK}
+endif
 REQUIRES := --require=asciidoctor-bibtex \
   --require=asciidoctor-diagram \
   --require=asciidoctor-lists \
