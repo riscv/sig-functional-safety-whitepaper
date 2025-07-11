@@ -5,7 +5,11 @@ include::../docs-resources/global-config.adoc[]
 :description: RISC-V Functional Safety Whitepaper
 :revdate: 11/2024
 :revnumber: 1.0
-:revremark: This document is under development. Expect potential changes. Visit http://riscv.org/spec-state for further details.
+ifndef::revremark[]
+:revremark: This document is under development. Expect potential changes.
+// Visit http://riscv.org/spec-state for further details.
+:page-background-image: image:docs-resources/images/draft.png[]
+endif::[]
 :revinfo:
 :preface-title: Preamble
 :colophon:
@@ -40,7 +44,6 @@ endif::[]
 :stem: latexmath
 :footnote:
 :xrefstyle: short
-:page-background-image: image:docs-resources/images/draft.png[]
 
 [preface]
 == List of figures
