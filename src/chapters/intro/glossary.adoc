@@ -134,12 +134,3 @@ operating systems, by allowing them to run on the same host hardware.
   execute.
 
 |===
-
-[WARNING]
-.Other possible terms
-====
-Do we need to add the following terms to the glossary:
-
-* RCID/MCID
-
-====
