@@ -483,7 +483,7 @@ must be identified and mitigated.
 A task of any criticality shall not impact the execution of another application,
 including its execution time (robust partitioning).
 
-In automotive, ISO26262 part 6 cite:[iec16508-6:2010] (software) identifies
+In automotive, ISO 26262 part 6 cite:[iec16508-6:2010] (software) identifies
 freedom from interference as a requirement across different software partitions.
 Annex D further lists relevant faults that can arise upon the lack of freedom
 from interference as follows:
@@ -499,7 +499,7 @@ masquerade, incorrect sequence, corruption, blocking access to a communication
 channel, and failure to send/receive information to/from appropriate
 receivers/senders.
 
-ISO26262 also mandates dependent failure analysis to identify and limit the
+ISO 26262 also mandates dependent failure analysis to identify and limit the
 impact of a failure, which aims to make the system more reliable.
 Partitioning is likely to be mandated as an outcome of this analysis.
 

@@ -14,8 +14,8 @@ human casualties or ecological catastrophes.
 Functional safety solutions ensure that the system remains in a safe state on
 the occurrence of spurious or systematic errors, hardware failures, and
 stressing environmental and operational conditions.
-Safety is a system requirement and what are the parts of the systems that
-require to implement a functional safety solution heavily depends on the system,
+Safety is a system requirement, and what parts of the system
+require implementing a functional safety solution heavily depends on the system,
 its constraints and its requirements.
 Thus while products for a safety critical domain such as avionics might
 implement a series of functional safety solutions to ensure the safety of the
@@ -60,7 +60,7 @@ The following is a non-exhaustive list of those solutions:
   of memory elements (e.g. caches).
 * Performance monitoring capabilities to detect/control time interferences
   and observability in general.
-* Debug interfaces for the extenal observability of the SoCs.
+* Debug interfaces for the external observability of the SoCs.
 * Extensive use of documentation, including complete design descriptions,
   -- sometimes only available under NDA -- providing detailed description
   of the SoC functional and time behavior required to ensure the explainability
@@ -86,7 +86,7 @@ contributors.
 If you find missing, incomplete, or outdated information in this document please
 contact the Functional Safety Special Interest Group (Functional Safety SIG) at
 https://lists.riscv.org/g/sig-safety and contribute to the completeness and
-exactitude of this document.
+accuracy of this document.
 
 ### Scope
 
@@ -101,7 +101,7 @@ This whitepaper currently includes chapters for the following topics:
 * Performance counters, see <<sec:pmc>>;
 * Quality of Service (QoS), see <<sec:qos>>;
 * Redundancy, see <<sec:redundancy>>;
-* And Partitioning, see <<sec:partitioning>>.
+* Partitioning, see <<sec:partitioning>>.
 
 Additional chapters will be added in the future to address other functional
 safety topics.
