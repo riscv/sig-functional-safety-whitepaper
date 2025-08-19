@@ -129,7 +129,7 @@ operating systems, by allowing them to run on the same host hardware.
   memories.
 
 | WCET
-| Worst-Case Exection Time.
+| Worst-Case Execution Time.
   In a computer system the WCET is the maximum time a task could take to
   execute.
 

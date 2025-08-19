@@ -742,7 +742,7 @@ memories) would help implement the typical application addressed in this white
 paper.
 
 [#sec:partitioning:recom:mem]
-#### Memory patitioning
+#### Memory partitioning
 
 The RISC-V ecosystem is quite comprehensive on the memory space partitioning
 side, incorporating diverse mechanisms at both the core and system levels to

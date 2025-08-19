@@ -11,7 +11,7 @@
 +
 [CAUTION]
 ====
-A moment of caution is required for this block of text must be read and apreciated for its importance.
+A moment of caution is required for this block of text must be read and appreciated for its importance.
 ====
 
 . Yet another item.

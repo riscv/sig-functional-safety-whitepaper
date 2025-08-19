@@ -60,7 +60,7 @@ The following is a non-exhaustive list of those solutions:
   of memory elements (e.g. caches).
 * Performance monitoring capabilities to detect/control time interferences
   and observability in general.
-* Debug interfaces for the extenal observability of the SoCs.
+* Debug interfaces for the external observability of the SoCs.
 * Extensive use of documentation, including complete design descriptions,
   -- sometimes only available under NDA -- providing detailed description
   of the SoC functional and time behavior required to ensure the explainability
