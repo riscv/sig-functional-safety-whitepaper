@@ -21,7 +21,7 @@ endif::[]
 :experimental:
 :reproducible:
 //:WaveDromEditorApp: app/wavedrom-editor.app
-// imagesoutdir is overrided in Makefile
+// imagesoutdir is overridden in Makefile
 :imagesoutdir: images
 //:srcdir: src
 :bibtex-file: src/fusa-whitepaper.bib
