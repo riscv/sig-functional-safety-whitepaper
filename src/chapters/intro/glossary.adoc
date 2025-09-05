@@ -59,6 +59,9 @@ true theoretical value/condition) which can ultimately provoke a permanent or
 transient _failure_ on the system, that is the termination of the system
 intended behavior.
 
+| IEC
+| International Electrotechnical Commission
+
 | Interference
 | Interference refers to the impact an event or task can have in the
 execution of another task in a processor.
@@ -116,6 +119,9 @@ operating systems, by allowing them to run on the same host hardware.
 
 | SECDED
 | Single Error Correction Double Error Detection.
+
+| SIL
+| Safety Integrity Level.
 
 | SLA
 | Service Level Agreement.
