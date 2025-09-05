@@ -1,5 +1,5 @@
 [#sec:caches]
-## Caches and Tightly Coupled Memories (TMCs)
+## Caches and Tightly Coupled Memories (TCMs)
 
 [#sec:caches:safety]
 ### Safety needs
