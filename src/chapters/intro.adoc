@@ -8,32 +8,35 @@
 // =============================================================================
 
 // https://www.electropedia.org/iev/iev.nsf/display?openform&ievref=192-01-22
-Functional safety refers to the mechanisms and methods
-ensuring the correct operation of safety critical systems, such as avoiding
-human casualties or ecological catastrophes.
-Functional safety solutions ensure that the system remains in a safe state on
-the occurrence of spurious or systematic errors, hardware failures, and
-stressing environmental and operational conditions.
-Safety is a system requirement, and what parts of the system
-require implementing a functional safety solution heavily depends on the system,
-its constraints and its requirements.
-Thus while products for a safety critical domain such as avionics might
-implement a series of functional safety solutions to ensure the safety of the
-product, products on a different domain might not implement the same ones
-because of different requirements and constraints, even if some fundamentals
-might be shared.
+Functional safety is one aspect of system design that ensures electronic and
+electrical systems operate safety even when faults occur.
+It is particularly critical in industries where failure can lead to serious
+consequences to people, the environment and equipment.
 
-Safety requirements on the different safety critical domains extend to their
-computing elements, including the processors and operating systems, from their
-conception to the their exploitation.
-Safety critical domains such as automotive, avionics, space and transports
-define standards with functional safety properties the computing elements
-hardware and address should address.
-Which properties a computing element should address will depend on how it is
-being integrated in the final system (e.g. a car or  a plane) to support the
-functional safety of the latter.
-As defined by Avizenis et al. cite:[avizenis:2001] these properties, which
-Avizenis et al. group under the concept of _dependability_, include:
+This discipline is guided by international standards like IEC 61508
+cite:[iec16508-1:2010] (the foundational standard for functional safety across
+many industries), and industry-specific standards for domains such automotive,
+avionic, space and rail transport systems.
+These standards typically define process requirements for risk assessment,
+safety management, system architecture, testing, and validation, and are aimed
+at achieving a specified Safety Integrity Level (SIL) or ASIL (Automotive SIL)
+in the case of ISO 26262 cite:[iso26262:2018].
+
+At its core, functional safety is about identifying safety-related risks,
+defining and implementing appropriate risk treatment e.g. by detecting,
+preventing, and mitigating the risks caused by unexpected behavior.
+Fundamentally, it involves designing systems that are robust to systematic and
+random failures, i.e. that they are unlikely to fail in an unsafe manner, or
+they can enter a safe state when a safety-related failure occurs.
+
+Safety requirements play a key role across all safety-related industries, where
+safety requirements, that are derived from system design and analysis, are
+cascaded to the computing elements of the system, e.g. the processors and
+operating systems.
+The safety requirements of the computing elements are heavily influenced by the
+properties required of the nominal use case e.g. a car or a plane.
+As defined by Avizenis et al. cite:[avizenis:2001] these properties are grouped
+under the concept of _dependability_, i.e.:
 
 * Availability: readiness for correct service.
 * Reliability: continuity of correct service.
