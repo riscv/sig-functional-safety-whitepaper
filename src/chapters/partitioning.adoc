@@ -587,7 +587,7 @@ running in M-mode, such as the kernel or the bootloader.
 At the system level, M-mode memory is safeguarded from non-CPU initiators
 controlled by lower privileges via the RISC-V IOPMP.
 The current IOPMP specification, near ratification (18/03/2025), introduces a
-Source Identifier (SID) for each bus initiator.
+Request Role Identifier (RRID) for each bus initiator.
 This identifier associates an initiator to one or more memory domains, which
 define physical address ranges and specify rules for validating transactions in
 memory-mapped registers.
