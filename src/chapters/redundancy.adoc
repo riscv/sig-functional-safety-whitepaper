@@ -69,7 +69,8 @@ techniques such as error detection and correction codes (EDC/ECC) in memory.
 ##### Hardware Redundancy
 
 Redundancy can be characterized by its level of diversity.
-If, for example, multiple identical hardware elements are integrated without modification the diversity is low.
+If, for example, multiple identical hardware elements are integrated without
+modification the diversity is low.
 Diversity can be increased by triggering the execution of the software on such a
 system with an offset of a number of clock cycles. Additional diversity can be
 achieved by incorporating elements of differing design, differing ISAs or even
@@ -171,22 +172,23 @@ Both the core and the whole SoC can be replicated for redundancy purposes.
 While most safety standards do not require redundancy, to achieve the levels of
 fault tolerance required at higher safety levels redundancy is one of the key
 techniques employed. This can be seen in functional safety standards such as
-ISO 26262 and IEC 61508.
+ISO 26262 cite:[iso26262:2018] and IEC 61508 cite:[iec16508-1:2010].
 
-In the context of ISO 26262 cite:[iso26262:2018], redundancy is integral to
+In the context of ISO 26262, redundancy is integral to
 "`ASIL tailoring`" i.e. the decomposition of safety requirements to redundant
 architectural elements,
 whereby, if absence of dependent failures can be demonstrated, the ASIL
 allocated to the redundant elements can be reduced.
 
-Similarly IEC 61508-2:2010 cite:[iec16508-2:2010] provides guidance for the maximum
-diagnostics coverage of a variety of redundancy techniques, and
-IEC 61508-6:2010 cite:[iec16508-6:2010] Annex B provides guidance for evaluating probabilities of hardware failure that includes various redundant voting schemas.
-In addition, IEC 61508-2:2010 cite:[iec16508-2:2010] Annex E defines normative
-requirements for:
+Similarly IEC 61508-2:2010 cite:[iec16508-2:2010] provides guidance for the
+maximum diagnostics coverage of a variety of redundancy techniques, and
+IEC 61508-6:2010 cite:[iec16508-6:2010] Annex B provides guidance for evaluating
+ probabilities of hardware failure that includes various redundant voting
+ schemas.
+In addition, IEC 61508-2:2010 Annex E defines normative requirements for:
 "`__Special architecture requirements for digital integrated circuits (ICs) with
-on-chip redundancy__`" to avoid common cause failures for ICs that share the same
-substrate.
+on-chip redundancy__`" to avoid common cause failures for ICs that share the
+same substrate.
 
 [#sec:redundancy:safety:justification]
 #### Justification
@@ -205,12 +207,12 @@ In the case of a primary-backup setup availability can be said to increase,
 since the backup component may be available even if the primary component has
 failed.
 
-ISO 26262:5 cite:[iso26262-5:2018] mentions redundancy as a safety mechanism, with typical diagnostic
-coverage considered achievable described as "`High`".
+ISO 26262:5 cite:[iso26262-5:2018] mentions redundancy as a safety mechanism,
+with typical diagnostic coverage considered achievable described as "`High`".
 
-ISO 26262:11 cite:[iso26262-11:2018] also specifically mentions diverse redundancy as a tool to reduce
-risk of hardware failures when using IP with limited documentation and
-insufficient historic (aka "`proven in use`") data.
+ISO 26262:11 cite:[iso26262-11:2018] also specifically mentions diverse
+redundancy as a tool to reduce risk of hardware failures when using IP with
+limited documentation and insufficient historic (aka "`proven in use`") data.
 
 Error detection/correction modes are described in
 ISO 26262:11 cite:[iso26262-11:2018] as a technique to detect failures in
