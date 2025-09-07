@@ -1,6 +1,6 @@
 == Contributors
 
-This whitepaper has been contributed to directly or indirectly by:
+This white paper has been contributed to directly or indirectly by:
 Jaume Abella (Barcelona Supercomputing Center),
 Sergi Alcaide Portet (Barcelona Supercomputing Center),
 Verena Beckham (Qualcomm),

@@ -1,4 +1,4 @@
-= Functional Safety Whitepaper
+= Functional Safety White Paper
 Editors: Jérôme Quévremont (Thales), Amit Pabalkar (NVIDIA Corporation), Jaume Abella (Barcelona Supercomputing Center), Daniel Gracia Pérez (Thales)
 include::../docs-resources/global-config.adoc[]
 :docgroup: RISC-V Functional Safety Special Interest Group
@@ -66,7 +66,7 @@ it is accepted for publication. Citation test: RISC-V Unprivileged Specification
 
 [preface]
 == Copyright and license information
-This whitepaper is licensed under the Creative Commons
+This white paper is licensed under the Creative Commons
 Attribution 4.0 International License (CC-BY 4.0). The full
 license text is available at
 https://creativecommons.org/licenses/by/4.0/.

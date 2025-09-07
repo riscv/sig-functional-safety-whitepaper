@@ -98,7 +98,7 @@ accuracy of this document.
 // Current chapters.
 // =============================================================================
 // =============================================================================
-This whitepaper currently includes chapters for the following topics:
+This white paper currently includes chapters for the following topics:
 
 * Caches and tightly coupled memories (TCM), see <<sec:caches>>;
 * Performance counters, see <<sec:pmc>>;
