@@ -75,10 +75,13 @@ OPTIONS := --trace \
   -D ${BUILD_DIR} \
   --failure-level=ERROR
 ifeq (${NOREVMARK},)
+  $(info NOREVMARK = ${NOREVMARK})
   ifeq (${REVMARK},)
     REVMARK := ${DEFAULT_REVMARK}
   endif
   OPTIONS := ${OPTIONS} -a revremark='${REVMARK}'
+else
+  OPTIONS := ${OPTIONS} -a norevremark
 endif
 ifdef NODRAFTWATERMARK
   OPTIONS := ${OPTIONS} -a no-draft-watermark
