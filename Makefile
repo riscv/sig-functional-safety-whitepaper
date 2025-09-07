@@ -19,7 +19,23 @@ DATE ?= $(shell date +%Y-%m-%d)
 VERSION ?= v0.0.0
 # Leaving the REVMARK unset will put the document in draft state and the
 # background of the document will have a "DRAFT" image.
+# By default a revision mark is added to the title page along the document
+# version and the date.
+# To avoid the revision mark to appear, for example for a final release, launch
+# the Makefile with `NOREVMARK=1`. E.g.:
+# ```NOREVMARK=1 make```
+NOREVMARK ?=
+DEFAULT_REVMARK := \
+  This document is under development. Expect potential changes.
+# The default revision mark is the string defined by DEFAULT_REVMARK.
+# To use a different revision mark string set the `REVMARK` option when
+# launching the Makefile. E.g.:
+# ```REVMARK="Release for review"```
 REVMARK ?=
+# By default a "Draft" watermark is added to each page.
+# To remove it launch the Makefile with `NODRAFTWATERMARK=1`. E.g.:
+# ```NODRAFTWATERMARK=1 make```
+NODRAFTWATERMARK ?=
 DOCKER_IMG := riscvintl/riscv-docs-base-container-image:latest
 ifneq ($(SKIP_DOCKER),true)
   DOCKER_IS_PODMAN = \
@@ -58,8 +74,14 @@ OPTIONS := --trace \
   $(XTRA_ADOC_OPTS) \
   -D ${BUILD_DIR} \
   --failure-level=ERROR
-ifneq (${REVMARK},)
-OPTIONS := ${OPTIONS} -a revremark=${REVMARK}
+ifeq (${NOREVMARK},)
+  ifeq (${REVMARK},)
+    REVMARK := ${DEFAULT_REVMARK}
+  endif
+  OPTIONS := ${OPTIONS} -a revremark='${REVMARK}'
+endif
+ifdef NODRAFTWATERMARK
+  OPTIONS := ${OPTIONS} -a no-draft-watermark
 endif
 REQUIRES := --require=asciidoctor-bibtex \
   --require=asciidoctor-diagram \
