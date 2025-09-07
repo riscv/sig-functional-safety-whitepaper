@@ -730,16 +730,16 @@ instructions (e.g., to flush all caches) and a framework to define
 implementation specific instructions for processors, potentially as a new ISA
 extension.
 
-Although `cbo.flush`s can be used to flush cache content, it is an instruction
-defined from a software perspective, hence able to target memory ranges and
-addresses.
+Although the `cbo.flush` instruction can be used to flush cache content, it is
+an instruction defined from a software perspective, hence able to target memory
+ranges and addresses.
 Therefore, the size of the blocks being flushed as well as their initial
 addresses will have a significant impact on the ability to flush the whole
 cache.
 An additional command to flush or invalidate a complete cache, with visibility
 of the hardware implementation (i.e. being able to consider specific cache
-memories) would help implement the typical application addressed in this white
-paper.
+memories) would help implement the typical application addressed in this
+white paper.
 
 [#sec:partitioning:recom:mem]
 #### Memory partitioning
@@ -763,7 +763,7 @@ internal translation logic includes memory walkers and the caches/IOTBs.
 This design could generate contention among devices as IOATCs (IOMMU Address
 Translation Caches) are shared between them.
 As a solution, the option of a distributed IOMMU architecture could be included,
-i.e., a dedicated IOATC per device (or group of devices) and a central
+i.e. a dedicated IOATC per device (or group of devices) and a central
 translation unit containing the memory walkers.
 
 In terms of ongoing developments, the RISC-V IOPMP and SPMP specifications are
