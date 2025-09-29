@@ -27,6 +27,9 @@ level.
 Safety levels are identified with letter, from A to E, with DAL A identifying
 the highest safety requirements and DAL E for no safety requirement.
 
+| DCLS
+| Dual Core Lock-Step.
+
 | Determinism
 | Capability of a system that given the same input to the same initial state it
 always generates the same outputs while passing through the same intermediate
@@ -114,11 +117,17 @@ operating systems, by allowing them to run on the same host hardware.
 | QoS
 | Quality of Service.
 
+| RAS
+| Reliability, Availability and Serviceability.
+  Refers to the concept of measuring hardware reliability by counting hardware
+  errors which have been corrected, deferred, or have led to component recovery
+  action.
+
 | RTOS
 | Real-Time Operating System.
 
 | SECDED
-| Single Error Correction Double Error Detection.
+| Single-Error Correction Double-Error Detection.
 
 | SIL
 | Safety Integrity Level.
@@ -128,6 +137,9 @@ operating systems, by allowing them to run on the same host hardware.
 
 | SMP
 | Symmetric Multi-Processing.
+
+| TCLS
+| Triple Core Lock-Step.
 
 | TCM
 | Tightly Coupled Memory. Also known as Closely-Coupled Memories (CCMs),

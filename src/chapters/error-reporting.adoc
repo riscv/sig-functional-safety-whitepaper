@@ -28,13 +28,13 @@ injection, boot-up or power-down tests.
 
 Different error management mechanisms differ in their ability to detect and
 correct errors.
-For instance, Dual Core Lockstep (DCLS) offers error detection but no correction
-capabilities on its own since, as which "`Core`" is in error can not be
-determined with only one redundant core.
-On the other hand, redundancy with a higher cardinality, such as Triple Core
-Lockstep (TCLS) provides some level of correction.
-Similarly, memory solutions such as Single-Error Correction Double-Error
-Detection (SECDED) can detect and correct single-bit errors, but only detect
+For instance, dual core lock-step (DCLS) offers error detection but no
+correction capabilities on its own since, as which "`Core`" is in error can not
+be determined with only one redundant core.
+On the other hand, redundancy with a higher cardinality, such as triple core
+lock-step (TCLS) provides some level of correction.
+Similarly, memory solutions such as single-error correction double-error
+detection (SECDED) can detect and correct single-bit errors, but only detect
 double-bit errors and a fraction of higher bit count errors.
 
 The actions to take upon the detection of a correctable error (by the hardware
