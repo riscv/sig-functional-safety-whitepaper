@@ -92,6 +92,8 @@ include::chapters/redundancy.adoc[]
 
 include::chapters/partitioning.adoc[]
 
+include::chapters/error-reporting.adoc[]
+
 // The index must precede the bibliography
 include::index.adoc[]
 
