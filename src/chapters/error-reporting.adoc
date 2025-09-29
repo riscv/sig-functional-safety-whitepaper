@@ -195,6 +195,10 @@ many scrubbers, what do they do, etc.
 [#sec:error-reporting:activities]
 ### Relevant activities
 
+#### Related external bodies
+
+None.
+
 #### Related chapters
 
 Redundancy can be seen as an error management method.
