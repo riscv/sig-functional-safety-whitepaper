@@ -535,8 +535,8 @@ Refer to xref:sec:caches[xrefstyle=full].
 
 Performance counters can be used to measure the occurrences of certain
 (obviously not fatal) errors.
-Such errors could be managed by an error management mechanism (related chapter
-to be released).
+Such errors could be managed by an error management mechanism.
+Refer to xref:sec:error-reporting[xrefstyle=full].
 
 SoC-level performance counters and monitoring are needed to implement some
 features identified to monitor the multicore interference.
