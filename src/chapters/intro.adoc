@@ -104,7 +104,8 @@ This white paper currently includes chapters for the following topics:
 * Performance counters, see <<sec:pmc>>;
 * Quality of Service (QoS), see <<sec:qos>>;
 * Redundancy, see <<sec:redundancy>>;
-* Partitioning, see <<sec:partitioning>>.
+* Partitioning, see <<sec:partitioning>>;
+* Error reporting and management, see <<sec:error-reporting>>.
 
 Additional chapters will be added in the future to address other functional
 safety topics.
