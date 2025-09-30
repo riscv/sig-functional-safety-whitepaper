@@ -294,6 +294,7 @@ instructions: `PREFETCH.R`, `PREFETCH.W`, and `PREFETCH.I`
 [#sec:caches:recom]
 ### Recommendations
 
+ifdef::recommendations-old[]
 [#sec:caches:recom:isa]
 #### RISC-V ISA specification recommendations
 
@@ -379,6 +380,18 @@ identify and minimize interference channels.
 typically a multiple of the number of harts that are sharing that level of
 cache, so that a way can uniquely be assigned to a hart.
 . Cache locking can be a way of implementing TCM-like functionality.
+endif::[]
+
+ifdef::recommendations-old+recommendations-new[]
+WARNING: End of old recommendations, new recommendations hereafter.
+endif::[]
+ifndef::recommendations-old,recommendations-new[]
+WARNING: Recommendations section empty.
+endif::[]
+
+ifdef::recommendations-new[]
+New recommendations.
+endif::[]
 
 [#sec:caches:activities]
 ### Relevant activities

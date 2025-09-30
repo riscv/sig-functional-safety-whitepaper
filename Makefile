@@ -36,6 +36,15 @@ REVMARK ?=
 # To remove it launch the Makefile with `NODRAFTWATERMARK=1`. E.g.:
 # ```NODRAFTWATERMARK=1 make```
 NODRAFTWATERMARK ?=
+# Enable/disable to build a version of the document with the old version
+# of the recommendations section including gaps
+# Default: disabled (0)
+RECOMMENDATIONS_OLD ?= 0
+# Enable/disable to build a version of the document with the new version
+# of the recommendations section
+# Default: enabled (1)
+RECOMMENDATIONS_NEW ?= 1
+
 DOCKER_IMG := riscvintl/riscv-docs-base-container-image:latest
 ifneq ($(SKIP_DOCKER),true)
   DOCKER_IS_PODMAN = \
@@ -85,6 +94,12 @@ else
 endif
 ifdef NODRAFTWATERMARK
   OPTIONS := ${OPTIONS} -a no-draft-watermark
+endif
+ifeq (${RECOMMENDATIONS_OLD},1)
+  OPTIONS := ${OPTIONS} -a recommendations-old
+endif
+ifeq (${RECOMMENDATIONS_NEW},1)
+  OPTIONS := ${OPTIONS} -a recommendations-new
 endif
 REQUIRES := --require=asciidoctor-bibtex \
   --require=asciidoctor-diagram \

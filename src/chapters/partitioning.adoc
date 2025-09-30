@@ -710,6 +710,7 @@ file(s) or an APLIC domain to a supervisor domain.
 [#sec:partitioning:recom]
 ### Recommendations
 
+ifdef::recommendations-old[]
 [#sec:partitioning:recom:time]
 #### Time partitioning
 
@@ -839,6 +840,18 @@ The management of cache coherency could be expanded in the CMO task group, in
 order to mitigate either the added traffic on the interconnect (in
 directory-based cache coherency) or the interference channel of a shared bus (in
 case of snooping).
+endif::[]
+
+ifdef::recommendations-old+recommendations-new[]
+WARNING: End of old recommendations, new recommendations hereafter.
+endif::[]
+ifndef::recommendations-old,recommendations-new[]
+WARNING: Recommendations section empty.
+endif::[]
+
+ifdef::recommendations-new[]
+New recommendations.
+endif::[]
 
 [#sec:partitioning:activities]
 ### Relevant activities

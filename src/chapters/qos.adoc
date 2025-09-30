@@ -205,6 +205,7 @@ not generally match safety needs.
 [#sec:qos:recom]
 ### Recommendations
 
+ifdef::recommendations-old[]
 [#sec:qos:recom:enforcement]
 #### QoS enforcement
 
@@ -300,6 +301,18 @@ dependent (e.g. one may use a specific RCID/MCID for I/O generated activity),
 but it is important to make a sound use of RCIDs and MCIDs for those types of
 requests also because they may have non-negligible performance effects (e.g.
 dirty cache line evictions may occur frequently and saturate memory access).
+endif::[]
+
+ifdef::recommendations-old+recommendations-new[]
+WARNING: End of old recommendations, new recommendations hereafter.
+endif::[]
+ifndef::recommendations-old,recommendations-new[]
+WARNING: Recommendations section empty.
+endif::[]
+
+ifdef::recommendations-new[]
+New recommendations.
+endif::[]
 
 [#sec:qos:activities]
 ### Relevant activities

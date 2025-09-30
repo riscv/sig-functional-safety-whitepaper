@@ -449,6 +449,7 @@ does not apply to the mandatory `cycle` and `instret` counters.
 [#sec:pmc:recom]
 ### Recommendations
 
+ifdef::recommendations-old[]
 [#sec:pmc:recom:spec-gaps]
 #### Identified gaps in existing specifications
 
@@ -512,6 +513,18 @@ can be highlighted:
   the overall system requirements before using this register and/or device
   additional logic such as authentication of the client(s) that has access to
   this register.
+endif::[]
+
+ifdef::recommendations-old+recommendations-new[]
+WARNING: End of old recommendations, new recommendations hereafter.
+endif::[]
+ifndef::recommendations-old,recommendations-new[]
+WARNING: Recommendations section empty.
+endif::[]
+
+ifdef::recommendations-new[]
+New recommendations.
+endif::[]
 
 [#sec:pmc:activities]
 ### Relevant activities
