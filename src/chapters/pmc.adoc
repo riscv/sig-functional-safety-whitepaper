@@ -523,7 +523,20 @@ WARNING: Recommendations section empty.
 endif::[]
 
 ifdef::recommendations-new[]
-New recommendations.
+The standard Hardware Performance Monitoring facility and extensions defined by
+the RISC-V specifications, see previous section, provide an important base to
+address the implementation of safety-related hardware performance counters.
+Additional activities within RISC-V International _Performance Analysis_ Special
+Interest group are working on new extensions that can allow more efficient
+and new implementation of functional safety mechanisms relying on performance
+counters.
+New processor implementations targetting the safety critical domains should
+consider their integration.
+Examples of such works are:
+
+* The work on a standarized naming of the different performance events.
+* The work on a self tracing capabilities.
+* The work on TBC
 endif::[]
 
 [#sec:pmc:activities]
