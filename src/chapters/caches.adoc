@@ -306,9 +306,9 @@ Alternatively, set/way operations should be supported, which can be used to
 synthesize such entire cache/partition operations.
 +
 The ability to control (clean/invalidate) caches is provided in the (ratified)
-"Cache Management Operations" extensions, more specifically the
+"`Cache Management Operations`" extensions, more specifically the
 [.extension]#Zicbom# (Cache Block Management) extension.
-These specify "block operations" -- operations related to a particular
+These specify "`block operations`" -- operations related to a particular
 physical address range.
 This mechanism is suitable for implementing a software cache coherency scheme
 in situations where software knows that an external agent (that is not
@@ -320,8 +320,9 @@ provide the temporal isolation discussed here, as one can expect the size of
 a [.extension]#Zicbom# block to be too small to effectively use the entire
 address space.
 . Traditionally, safe processors required the ability to remove or disable
-caches to ensure maximal predictability. Other solutions have emerged since,
-to avoid the drastic induced performance loss.
+caches to ensure maximal predictability.
+Other solutions have emerged since, to avoid the drastic induced performance
+loss.
 However a standard mechanism for globally disabling and enabling the caches
 could be considered in future RISC-V specifications to embrace all approaches.
 Note that there are two standard ways to achieve this with current
@@ -339,10 +340,10 @@ This functionality is platform defined (so may not be configurable for all or
 any memory regions), and it is not consistent with the intended use-model for
 PMA as described in the RISC-V Privileged ISA Specification
 cite:[rv-priv-spec:2024] Section 3.6:
-"PMAs are inherent properties of the underlying hardware and rarely change
+"`PMAs are inherent properties of the underlying hardware and rarely change
 during system operation.
 Unlike Physical Memory Protection (PMP) values described in Section 3.7, PMAs
-do not vary by execution context".
+do not vary by execution context`".
 
 Standardized control and discovery mechanisms for TCM (and other memory
 architectures) can be considered.
@@ -390,7 +391,99 @@ WARNING: Recommendations section empty.
 endif::[]
 
 ifdef::recommendations-new[]
-New recommendations.
+[#sec:caches:recom:isa]
+#### RISC-V ISA specification recommendations
+
+. In order to provide temporal isolation (a lack of interference of a software
+task by the previous state of the cache), operations to clean and invalidate
+the entirety of the  cache should be supported.
+If the cache is partitioned, these operations could act on a single partition.
+Alternatively, set/way operations should be supported, which can be used to
+synthesize such entire cache/partition operations.
++
+The ability to control (clean/invalidate) caches is provided in the (ratified)
+"`Cache Management Operations`" extensions, more specifically the
+[.extension]#Zicbom# (Cache Block Management) extension.
+These specify "`block operations`" -- operations related to a particular
+physical address range.
+This mechanism is suitable for implementing a software cache coherency scheme
+in situations where software knows that an external agent (that is not
+hardware-coherent with the cache) may have written to (for the invalidate
+operation) or is about to read from (for the clean operation) a specific
+buffer of data.
+If used to reset the cache to a known state to provide the temporal isolation
+discussed in this chapter, it is recommended to perform a cache state analysis
+(probably an offline analysis) to selectively issue the [.extension]#Zicbom#
+instructions required to achieve the cache reset instead of just issuing
+[.extension]#Zicbom# instructions for the entire context, e.g. an application,
+address space.
+The latter might have an important negative performance impact when the size
+of the cache blocks is small compared to the entire context address space size.
+. Traditionally, safe processors required the ability to remove or disable
+caches to ensure maximal predictability.
+Other solutions have emerged since, to avoid the drastic induced performance
+loss.
+We have identified two standard ways for globally disabling and enabling the
+caches with the current RISC-V specifications:
++
+--
+.. If the [.extension]#Svpbmt# (Page-Based Memory Types) extension is
+implemented, memory pages can be marked as non-cacheable in the page table,
+overriding the PMA attributes.
+While in some situations this may be feasible, it either requires maintaining
+an alternate set of page tables, or updating existing page tables.
+It should be possible to activate or deactivate temporarily and temporally
+the cacheability of memory regions.
+.. Marking all memory locations as non-cacheable using the PMA mechanism.
+This functionality is platform defined (so may not be configurable for all or
+any memory regions), and it is not consistent with the intended use-model for
+PMA as described in the RISC-V Privileged ISA Specification
+cite:[rv-priv-spec:2024] Section 3.6:
+"`PMAs are inherent properties of the underlying hardware and rarely change
+during system operation.
+Unlike Physical Memory Protection (PMP) values described in Section 3.7, PMAs
+do not vary by execution context`".
+--
++
+Other ways may exist, be proposed by future extensions or provided by
+implementation specific mechanisms.
+
+Standardized control and discovery mechanisms for TCM (and other memory
+architectures) can be considered.
+These are not, however, considered important in a safety context.
+Safety-critical code using TCM for determinism purposes will need to be targeted
+and extensively analyzed for a particular hardware platform -- this design
+methodology is not consistent with software auto-discovering hardware features
+and adapting behavior accordingly.
+
+[#sec:caches:recom:non-isa]
+#### Non-ISA recommendations
+
+. As they are susceptible to random errors, the memories used to implement
+caches (including tag/valid RAMs) and TCMs should be analyzed thoroughly for
+the effects of potential errors on the functional safety of the system.
+It is highly likely that these memories will need to be protected by some form
+of redundancy -- often an ECC scheme is the most efficient way to meet these
+safety requirements.
+. Many safety-critical systems require isolation from interference from other
+software tasks (maybe with a lower safety integrity level).
+TCM that is private to a particular core can be extremely useful in delivering
+this isolation.
+If a TCM is accessible from other cores or agents (for example, can be
+accessed over the system bus by a DMA) it should be possible to disable this
+external access when required for isolation.
+. In order to allow thorough safety analysis, the cache replacement policy,
+associativity, and effect of cache-related instructions should be precisely
+documented, including scope of achievable isolation, e.g. in mixed-criticality
+systems.
+An analyzable cache replacement policy is desirable.
+. A shared cache should have as many access ports (and associated request
+queues) as independent paths in the corresponding interconnect, in order to
+identify and minimize interference channels.
+. If cache partitioning is supported, the number of ways in a shared cache is
+typically a multiple of the number of harts that are sharing that level of
+cache, so that a way can uniquely be assigned to a hart.
+. Cache locking can be a way of implementing TCM-like functionality.
 endif::[]
 
 [#sec:caches:activities]
