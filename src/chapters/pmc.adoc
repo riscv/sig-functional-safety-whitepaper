@@ -534,9 +534,11 @@ New processor implementations targetting the safety critical domains should
 consider their integration.
 Examples of such works are:
 
-* The work on a standarized naming of the different performance events.
-* The work on a self tracing capabilities.
-* The work on TBC
+* The standarized naming of the different performance events.
+* The performance events sampling extensions.
+* The self-hosted trace extension providing debug like functionalities but
+exploitable by the core itself and the software running on it without having
+to rely on an external debugger.
 endif::[]
 
 [#sec:pmc:activities]
