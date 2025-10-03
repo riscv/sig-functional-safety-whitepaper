@@ -702,8 +702,8 @@ supported via the IMSIC.
 Thus, RISC-V implementations featuring exclusively the APLIC will not provide
 any support for interrupt virtualization.
 
-Regarding the upcoming SmMTT specification, there are other resources that can
-be isolated between Supervisor Domains.
+Regarding the upcoming [.extension]#SmMTT# specification, there are other
+resources that can be isolated between Supervisor Domains.
 For example, the specification defines the [.extension]#IO-MPT# non-ISA
 extension to associate an IOMMU and the devices in scope of that IOMMU with a
 supervisor domain.
@@ -853,7 +853,73 @@ WARNING: Recommendations section empty.
 endif::[]
 
 ifdef::recommendations-new[]
-New recommendations.
+[#sec:partitioning:recom:time]
+#### Time partitioning
+
+Instructions providing explicit control of the state of microarchitectural
+features may be convenient, such as those related to flushing cache contents,
+making dirty cache contents become clean, and locking cache contents (e.g.
+including probe instructions or other mechanisms to check whether specific cache
+lines are stored in cache or not).
+The [.extension]#Zicbom# extension provides such kind of instructions.
+However, as pointed in <<sec:caches:recom:isa>>, when using these instructions
+to reset the state of the cache to a now state (e.g. by flushing its contents
+with the `cbo.flush` instruction) it is recommended to perform a cache state
+analysis (probably an offline analysis) to selectively issue these instructions
+to achieve the cache reset instead of just issuing them for the entire memory
+space of the context being removed from the cache.
+
+[#sec:partitioning:recom:mem]
+#### Memory partitioning
+
+[#sec:partitioning:recom:other]
+#### Partitioning resources other than memory
+
+The following options should be considered when drawing up designs integrating
+speculative mechanisms that modify the behavior of a unit based on the behavior
+of previously scheduled tasks:
+
+* avoid their integration;
+* provide support for their activation/deactivation;
+* provide control features to inhibit the impact of previously scheduled tasks;
+* or their internal operation should be made analyzable and their impact
+boundable.
+
+To facilitate the implementation of processor affinity or allocation, `mhartid`
+should be a physical ID (not virtual or dynamically allocated).
+
+The interconnect should minimize interference channels (e.g. multi-path NoC
+instead of shared bus), allow analysis of arbitration mechanisms, and possibly
+enforce isolation or budgeting mechanisms.
+Designs using private hart resources should avoid the usage of the shared
+interconnect for the communication between the hart and the private resource,
+e.g. hart and its scratchpad.
+
+The implementation of explicit communications may be eased by hardware
+mechanisms such as mailboxes with fast notification.
+
+When using a MSI controller, like the one provided by the AIA IMSIC (see
+<<sec:partitioning:rv:other>>), consider the impact of interrupt communications
+in the shared interconnect.
+It is worth mentioning that the AIA specification suggests MSIs to be sent over
+the main system bus.
+We highlight that such design decision may be subject to sources of interference
+on the main bus, which may undermine the jitter and WCET guarantees of the
+interrupt latency.
+Designs might consider dedicated paths for interrupt communications, like using
+dedicated level signals or dedicated buses for message interrupts.
+
+Simultaneous multithreading may be considered in some cores to enhance the
+system performance.
+However, this may lead to abundant time interferences at a very fine grain,
+which are hard to master - if possible at all. In safety-critical systems this
+feature should be disabled.
+
+Some cores may share some "`complex units`" (e.g. a vector unit, floating point
+units for complex math functions).
+Uncontrolled sharing must be avoided, generally by software means such as
+avoiding the use of those units altogether, allowing only one core to use them,
+or explicitly time-sharing them so that concurrent accesses cannot occur.
 endif::[]
 
 [#sec:partitioning:activities]
@@ -862,10 +928,11 @@ endif::[]
 #### Related external bodies
 
 Partitioning has traditionally been used in avionics systems and the reader
-might be interested in the ARINC 653 "_Avionics Application Software Standard
-Interface_" cite:[arinc653p0:2021,arinc653p1:2024,arinc653p2:2024] specification
-and in the DO-297 "_Integrated Modular Avionics (IMA) Development Guidance and
-Certification Considerations_" cite:[do297:2005] document.
+might be interested in the ARINC 653 "`__Avionics Application Software Standard
+Interface__`" cite:[arinc653p0:2021,arinc653p1:2024,arinc653p2:2024]
+specification and in the DO-297 "`__Integrated Modular Avionics (IMA)
+Development Guidance and Certification Considerations__`" cite:[do297:2005]
+document.
 
 #### Related chapters
 
