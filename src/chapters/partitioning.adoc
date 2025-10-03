@@ -513,7 +513,7 @@ Partitioning is likely to be mandated as an outcome of this analysis.
 The RISC-V unprivileged architecture specification cite:[rv-unpriv-spec:2024]
 provides instructions to access some base counters and timers.
 While several approaches exist, it might be useful to take into account the more
-recent Sstc extension:
+recent [.extension]#Sstc# extension:
 
 * _M-mode timer_: The first approach is the using the cycle count (with the
 `RDCYCLE` instruction) and the wall clock (with the `RDTIME` instruction).
@@ -530,9 +530,9 @@ M-mode (or VS-mode requests to HS-mode, and then to M-mode).
 M-mode is then responsible for multiplexing these logical timers onto its single
  physical timer and routing timer interrupts back down to the appropriate lower
  privilege modes.
-* _Sstc extension_: The second approach is the RISC-V Sstc extension, which
-addresses the previous gap by allowing S-mode and VS-mode to manage their own
-timer services directly.
+* _[.extension]#Sstc# extension_: The second approach is the RISC-V
+[.extension]#Sstc# extension, which addresses the previous gap by allowing
+S-mode and VS-mode to manage their own timer services directly.
 It introduces two dedicated CSRs (`stimecmp` and `vstimecmp`), enabling these
 privilege modes to set and handle timer interrupts without involving M-mode.
 
@@ -625,16 +625,17 @@ supplied by software.
 Due to the need to improve latency, determinism, and safety (over GPOS),
 Real-Time operating systems (RTOS) typically rely on OS-managed memory
 protection primitives/facilities to enforce user-level application isolation.
-Consequently, the RISC-V community is working on the Sspmp extension cite:[sspmp:2025]
-that replaces the virtual memory infrastructure, i.e., the Memory Management
-Unit (MMU), with an S-Mode PMP (thus, SPMP), checking accesses from both User
-and Supervisor modes.
+Consequently, the RISC-V community is working on the [.extension]#Sspmp#
+extension cite:[sspmp:2025] that replaces the virtual memory infrastructure,
+i.e., the Memory Management Unit (MMU), with an S-Mode PMP (thus, SPMP),
+checking accesses from both User and Supervisor modes.
 The SPMP follows an identical design as the (e)PMP.
-As of this writing (05/05/2025), the Sspmp extension is near entering the final
-stages towards final ratification.
+As of this writing (05/05/2025), the [.extension]#Sspmp# extension is near
+entering the final stages towards final ratification.
 
 Also as part of the RISC-V privileged architecture specification, hardware
-virtualization support is specified through the Hypervisor (H) extension.
+virtualization support is specified through the hypervisor ([.extension]#H#)
+extension.
 As shown in <<#fig:partitioning:hypervisor-extension>> it allows virtualizing
 the supervisor-level architecture by changing the supervisor mode into
 hypervisor-extended supervisor mode (HS-mode, or hypervisor mode), where a
@@ -643,9 +644,9 @@ The hypervisor extension also adds another stage of address translation, from
 guest physical addresses to supervisor physical addresses, to virtualize the
 memory and memory-mapped I/O subsystems for a guest operating system and
 therefore providing a secure virtual interface for accessing such elements.
-Similarly, once ratified, the SPMP will be extended to support the Hypervisor
+Similarly, once ratified, the SPMP will be extended to support the hypervisor
 extension by defining a dual-stage PMP with the
-Shspmp extension cite:[shspmp:2025].
+[.extension]#Shspmp# extension cite:[shspmp:2025].
 
 .RISC-V privileged levels when the Hypervisor extension is enabled. When virtualization is enabled, the Supervisor mode (S mode) is augmented to an hypervisor-extended supervisor mode (HS mode) and the virtual user mode (VU mode) and a virtual supervisor mode (VS mode) are added.
 [#fig:partitioning:hypervisor-extension]
@@ -654,8 +655,8 @@ image::src/chapters/partitioning/hypervisor-extension.svg[Hypervisor extension,a
 In a multi-tenant platform, the PMP/Smepmp can also be leveraged by a Root
 Domain Security Manager (RDSM), running in M-Mode, to enforce physical memory
 isolation between supervisor domains.
-Supervisor Domain Access Protection (SmMTT) cite:[smmtt:2025] is a RISC-V
-privileged architecture extension, under development at the time of this
+Supervisor Domain Access Protection ([.extension]#SmMTT#) cite:[smmtt:2025] is a
+RISC-V privileged architecture extension, under development at the time of this
 writing, to support physical address space (memory and devices) isolation for
 more than one supervisor domain use case.
 Each supervisor domain is assigned a unique set of physical address regions,
@@ -669,7 +670,8 @@ properties, either established statically at boot or dynamically through
 attestation.
 
 For the memory that needs to be shared, and hence cannot be partitioned, the
-RISC-V user-level ISA defines the Atomic Instructions (A) extension.
+RISC-V user-level ISA defines the Atomic Instructions ([.extension]#A#)
+extension.
 It contains instructions that atomically read-modify-write memory to support
 synchronization between multiple RISC-V harts running in the same memory space,
 effectively preventing memory access conflicts and simplifying semaphore
@@ -702,10 +704,11 @@ any support for interrupt virtualization.
 
 Regarding the upcoming SmMTT specification, there are other resources that can
 be isolated between Supervisor Domains.
-For example, the specification defines the IO-MPT non-ISA extension to associate
-an IOMMU and the devices in scope of that IOMMU with a supervisor domain.
-Similarly, the Smsdia ISA extension enables the assignment of IMSIC interrupt
-file(s) or an APLIC domain to a supervisor domain.
+For example, the specification defines the [.extension]#IO-MPT# non-ISA
+extension to associate an IOMMU and the devices in scope of that IOMMU with a
+supervisor domain.
+Similarly, the [.extension]#Smsdia# ISA extension enables the assignment of
+IMSIC interrupt file(s) or an APLIC domain to a supervisor domain.
 
 [#sec:partitioning:recom]
 ### Recommendations
