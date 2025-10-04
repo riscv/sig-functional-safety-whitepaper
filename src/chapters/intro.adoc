@@ -81,8 +81,8 @@ adoption of RISC-V on safety critical domains.
 This document does not try address all the functional safety mechanisms and
 methods, neither to fully discuss the ones addressed.
 Furthermore, the specifications issued by RISC-V International being
-continuously amended, updated and extended the identified gaps, recommendations
-and solutions discussed in this document might be incomplete or outdated.
+continuously amended, updated and extended the identified solutions and
+recommendations discussed in this document might be incomplete or outdated.
 
 Finally, the contents of this document are limited to the knowledge of its
 contributors.
@@ -125,8 +125,11 @@ All the chapters follow the same structure:
 * The *RISC-V solutions* section identifies current RISC-V specifications that
   address the chapter topic.
 * The *Recommendations* section provides some recommendations on how the current
-  RISC-V specifications can be exploited to address the chapter topic and
-  identifies potential gaps in current specifications.
+  and on-going RISC-V specifications can be exploited to address the chapter
+  topic.
+  These recommendations are both at hardware level, for the design of SoCs
+  targeting safety critical systems, and software, for how mechamisms
+  implementating those specifications should be used.
 * The *Related activities* section provides links to external bodies addressing
   the chapter topic and other chapters related to the topic.
 
