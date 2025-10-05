@@ -1,0 +1,5 @@
+[#sec:intro]
+## Introduction
+
+This document presents the gaps identified by the Functional Safety SIG and
+could be considered for new extensions or revisions of current specifications.

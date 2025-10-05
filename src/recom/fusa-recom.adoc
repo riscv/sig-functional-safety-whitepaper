@@ -1,0 +1,100 @@
+= Functional Safety Recommendations Document
+Editors: Jérôme Quévremont (Thales), Amit Pabalkar (NVIDIA Corporation), Jaume Abella (Barcelona Supercomputing Center), Daniel Gracia Pérez (Thales)
+include::../../docs-resources/global-config.adoc[]
+:docgroup: RISC-V Functional Safety Special Interest Group
+:description: RISC-V Functional Safety Recommendations Document
+:revdate: 11/2024
+:revnumber: 1.0
+ifndef::norevremark[]
+ifndef::revremark[]
+:revremark: This document is under development. Expect potential changes.
+// Visit http://riscv.org/spec-state for further details.
+endif::[]
+endif::[]
+ifndef::no-draft-watermark[]
+:page-background-image: image:docs-resources/images/draft.png[]
+endif::[]
+:revinfo:
+:preface-title: Preamble
+:colophon:
+:appendix-caption: Appendix
+// https://docs.asciidoctor.org/asciidoc/latest/macros/images-directory/
+:imagesdir: ../..
+:title-logo-image: image:docs-resources/images/risc-v_logo.png["RISC-V International Logo",pdfwidth=3.25in,align=center]
+// Settings:
+:experimental:
+:reproducible:
+//:WaveDromEditorApp: app/wavedrom-editor.app
+// imagesoutdir is overridden in Makefile
+:imagesoutdir: images
+//:srcdir: src
+:bibtex-file: src/fusa-whitepaper.bib
+:bibtex-order: alphabetical
+// :bibtex-style: apa
+:bibtex-style: ieee
+:icons: font
+:lang: en
+:listing-caption: Listing
+:sectnums:
+:sectnumlevels: 4
+:toc: left
+:toclevels: 4
+:source-highlighter: pygments
+ifdef::backend-pdf[]
+:source-highlighter: coderay
+endif::[]
+:data-uri:
+// :hide-uri-scheme:
+:stem: latexmath
+:footnote:
+:xrefstyle: short
+
+[preface]
+== List of figures
+list-of::image[hide_empty_section=true, enhanced_rendering=true]
+
+[preface]
+== List of tables
+list-of::table[hide_empty_section=true, enhanced_rendering=true]
+
+[preface]
+== List of listings
+list-of::listing[hide_empty_section=true, enhanced_rendering=true]
+
+[preface]
+== Copyright and license information
+// This document is licensed under the Creative Commons
+// Attribution 4.0 International License (CC-BY 4.0). The full
+// license text is available at
+// https://creativecommons.org/licenses/by/4.0/.
+
+Copyright 2025 by RISC-V International.
+
+[WARNING]
+.This document is work document.
+====
+This is a work document of the Functional Safety SIG.
+Contents are not fully verified and can change without further notice.
+This document should not be referenced by other documents.
+====
+
+[preface]
+include::../contributors.adoc[]
+
+include::intro.adoc[]
+
+include::caches.adoc[]
+
+include::pmc.adoc[]
+
+include::qos.adoc[]
+
+// No gaps identified for redundancy
+// include::redundancy.adoc[]
+
+include::partitioning.adoc[]
+
+// The index must precede the bibliography
+include::../index.adoc[]
+
+include::../bibliography.adoc[]

@@ -449,80 +449,6 @@ does not apply to the mandatory `cycle` and `instret` counters.
 [#sec:pmc:recom]
 ### Recommendations
 
-ifdef::recommendations-old[]
-[#sec:pmc:recom:spec-gaps]
-#### Identified gaps in existing specifications
-
-The standard Hardware Performance Monitoring facility and extensions defined by
-the RISC-V specifications, see previous section, provide an important base to
-address the implementation of safety-related hardware performance counters.
-The following desirable features, not addressed by the RISC-V specification,
-can be highlighted:
-
-1. Event specification: besides the identification of specific events causing a
-  counter to increment, it would be desirable to provide the possibility of
-  specifying a family of events (i.e. events that have to be recorded at the
-  same time) or specifying non-event conditions (i.e. counting the number of
-  clock cycles for which a certain event does not occur).
-2. Filtering capabilities: the [.extension]#Sscofpmf# extension provides
-  mode-filtering capabilities, nevertheless it would be desirable to provide
-  other event-filtering capabilities, such as comparison or edge detection, or
-  the initiator/target of the transaction (core ID for instance).
-3. Linked counters: it would be desirable to provide the capability of linking
-  multiple counters, defining chains of events to be monitored.
-4. Quota allocation (see
-  xref:sec:pmc:safety:justification:uses:quota[Example 4: quota allocation]
-  above):
-  upon reaching the defined threshold, an interrupt would be triggered.
-  An implementation would be to preload a value in the counter and trigger an
-  interrupt when the counter overflows as provided by the [.extension]#Sscofpmf#
-  extension.
-5. Standardized event description: the description of events should be
-  standardized as much as possible among the different RISC-V processor
-  implementations.
-  This is important to allow the development of software solutions (e.g.
-  hypervisors) capable of addressing the different processor implementations as
-  long as the events are available in those cores.
-  At the time of this writing the Performance Events TG is already addressing
-  this feature at the core level.
-
-[#sec:pmc:recom:impl-gaps]
-#### Possible gaps in implementation
-
-1. Availability of SoC-level counters: monitoring harts or SoC resource usage
-  (e.g. use of shared resources) requires the definition of counters outside the
-  core.
-  A MMIO architecture could be considered for the implementation, with Machine
-  Timer Registers (`mtime` and `mtimecmp`) constituting a valuable reference in
-  this sense.
-2. Support for counter management: support at software and configuration level
-  to guarantee the availability of safety related counters (e.g. preventing
-  disabling the counters) while granting the user access to specific resources.
-  It should be noted that some degree of protection is already guaranteed by the
-  existing privileged architecture, as remarked in the previous section.
-
-[#sec:pmc:recom:safety]
-#### Safety usage
-
-1. `mcountinhibit`: While this register allows stopping the counter from
-  incrementing to save energy consumption or to prevent side channel security
-  attacks, it may result in violation of some safety requirements or usage which
-  depends on the counter being always active.
-  The designer of a combined hardware/software system using this CSR from
-  machine mode to do the deactivation should weigh the tradeoffs depending on
-  the overall system requirements before using this register and/or device
-  additional logic such as authentication of the client(s) that has access to
-  this register.
-endif::[]
-
-ifdef::recommendations-old+recommendations-new[]
-WARNING: End of old recommendations, new recommendations hereafter.
-endif::[]
-ifndef::recommendations-old,recommendations-new[]
-WARNING: Recommendations section empty.
-endif::[]
-
-ifdef::recommendations-new[]
 [#sec:pmc:recom:safety]
 #### Safety usage
 
@@ -591,7 +517,6 @@ Particularly for resources shared among multiple harts, like buses and shared
 memory structures.
 Processors for safety critical systems should consider the implementation of
 dedicated SoC-level counters.
-endif::[]
 
 [#sec:pmc:activities]
 ### Relevant activities
