@@ -1,0 +1,208 @@
+[#sec:error-reporting]
+## Error reporting and management
+
+An essential aspect of Functional Safety is to ensure that sources of harm are
+addressed.
+This links directly to the need to detect and control faults/errors/failures of
+the technology (hardware, software, data) deployed, where many safety standards
+such as ISO 26262 cite:[iso26262:2018] and IEC 61508 cite:[iec16508-1:2010]
+define methods and metrics to determine the effectiveness of the system's safety
+mechanisms/functions.
+There are subtleties in this that are out of scope of this chapter, such as the
+relationship between faults, errors, and failures and causal models such as
+common cause, cascading etc.
+Additionally what is deemed as a safety related fault or failure is dependent on
+the use case of the system and its design and implementation.
+
+However a RISC-V processor can be considered as a safety related element of a
+safety related system and as such this chapter will discuss considerations for
+error management, in terms of detection, control and reporting and perspectives
+of the higher order system.
+
+[#sec:error-reporting:safety]
+### Safety needs
+
+In some instances error detection mechanisms may be independently testable at
+run-time to ensure correct operation, e.g. periodic tests, run time fault
+injection, boot-up or power-down tests.
+
+Different error management mechanisms differ in their ability to detect and
+correct errors.
+For instance, dual core lock-step (DCLS) offers error detection but no
+correction capabilities on its own since, as which "`Core`" is in error can not
+be determined with only one redundant core.
+On the other hand, redundancy with a higher cardinality, such as triple core
+lock-step (TCLS) provides some level of correction.
+Similarly, memory solutions such as single-error correction double-error
+detection (SECDED) can detect and correct single-bit errors, but only detect
+double-bit errors and a fraction of higher bit count errors.
+
+The actions to take upon the detection of a correctable error (by the hardware
+only) and an uncorrectable one (i.e. the hardware cannot correct it on its own)
+are generally different:
+
+* Uncorrectable errors: typically require stopping the operation of the affected
+components (e.g. stopping the process running in DCLS or avoiding reading a
+SECDED protected memory with a 2-bit error) to avoid or limit error propagation,
+and then reporting the error, in order to trigger necessary corrective actions.
+The latter can be implemented at software level, but the detection is usually
+done by the hardware by, for instance, raising an interrupt.
++
+NOTE: Note that uncorrectable errors can be further classified to "`deferred`"
+errors, where no further action is needed, or "`urgent`" errors where
+containment or recovery action is needed.
+* Correctable errors: Correct operation can be continued if the hardware is
+able to correct an error (e.g. a single-bit error affecting a SECDED protected
+memory).
+Records are often kept of the number of those events, and potentially the source
+of the error.
+The aim of recording errors is to help determine if additional actions are
+needed.
+For instance, frequent single-bit errors in a SECDED protected memory location,
+though correctable, may indicate the existence of a partially defective bit
+cell, which may require decommissioning or if possible, replacement of such
+memory entry (e.g. disabling a faulty cache line and, if possible, replacing it
+with a spare one).
+
+Note that, while some errors may be correctable at system level, they may not be
+correctable at hardware-only level.
+In this case, these are regarded as uncorrectable errors in the discussion
+above.
+For instance, snapshots of the state can be collected periodically at system
+level and, upon the detection of a hardware uncorrectable error, restore the
+last snapshot and resume execution.
+
+It is highly preferable to implement error detection at the hardware level,
+which leads to a better understanding of the cause of the error and limits error
+propagation due to the ability to detect the error at source and to report the
+error.
+However, including error correction features in hardware may incur significant
+overheads.
+Therefore, it is common to have a number of error detection features without
+explicit hardware support for correction.
+Yet, some errors may be easy to correct at hardware level (e.g. single-bit
+errors affecting SECDED protected memories) and be corrected by hardware-only
+means.
+
+When considering the type of ISA support needed for error management, the
+following features should be considered:
+
+* Support to configure error detection and correction mechanisms and reporting.
+For instance, a feature to enable/disable DCLS execution, or to set a threshold
+for correctable errors of some type, such that an interrupt is raised if the
+threshold is exceeded.
+* Support for inspecting error-related information.
+Software may want to read error statistics periodically for health monitoring
+purposes and to take specific actions based on the number and/or type of errors
+that occurred.
+* Support for the immediate reporting of uncorrectable errors.
+Upon an uncorrectable error, typically operation of the affected task(s) is
+stopped to limit or fully avoid propagation.
+Since such tasks may be performing a critical service, immediate notification is
+often needed.
+Interrupts are a common mechanism to report immediately those types of events so
+that corrective actions can be taken within predictable time bounds to preserve
+system safety at all times.
+
+[#sec:error-reporting:safety:level]
+#### Level
+
+Error reporting and management are usually done on all levels, by the RISC-V
+processor itself, by other elements in the SoC, as well as in software.
+
+[#sec:error-reporting:safety:importance]
+#### Importance
+
+Systems with safety requirements must avoid failures (or at least reduce the
+chance of occurrence).
+In addition, error detection and reporting also contributes to safe operation of
+the system under error conditions e.g. for the system to fail in a safe state.
+For other aspects of dependability, some aspects may be required to improve
+availability (i.e. triggering recovery), while other aspects can be for
+information e.g. debugging but are generally considered less critical than
+errors related to safety.
+
+[#sec:error-reporting:safety:justification]
+#### Justification
+
+For the timeliness of error management, ISO 26262 for the automotive domain
+imposes managing faults within a Fault-Tolerant Time Interval (FTTI), which is
+typically specified at the vehicle level and is application dependent.
+This implies that safety related faults must be addressed by either correcting
+them, or reaching a safe state (which relies on error detection), and such
+actions must occur within these specified application-dependent time bounds
+that, if exceeded, could lead to harm.
+Therefore, appropriate hardware support for managing errors caused by those
+faults in a timely manner is needed.
+
+[#sec:error-reporting:rv]
+### RISC-V solutions
+
+Whilst CSR and Performance Counters exist they are not specifically dedicated to
+error management though could be used to implement it.
+
+[#sec:error-reporting:rv:ras]
+#### RAS
+
+RAS (Reliability, Availability and Serviceability) is a concept of measuring
+hardware reliability by counting hardware errors which have been corrected,
+deferred (deferred errors that are passed to a receiving component are marked by
+an indicator as "`poisoned`"), or have led to component recovery action.
+The RAS concept has support from the server and supercomputing community
+cite:[radojkovic:hal-02922257].
+As related work, the
+https://developer.arm.com/documentation/ddi0487/latest/[ARM specification for
+the A-profile] starting with version
+J.a from April 21st 2023 also specifies a RAS architecture.
+
+// (“Arm Architecture Reference Manual for A-profile architecture”, starting with Version J.a from 21 April 2023 https://developer.arm.com/documentation/ddi0487/latest/ Section I5.8 “RAS register description”) also specifies a RAS architecture.
+
+Within RISC-V the RERI (RAS Error Record Register Interface) TG has produced the
+RERI specification cite:[reri:2024].
+The specification distinguishes corrected, uncorrected deferred and uncorrected
+urgent errors and specifies error record formats for the recorded error
+including among others severity/priority level, error types and interfaces to
+control error handling.
+It provides flexibility to scale from small to large systems, e.g. by the number
+of error records and the detail of information captured in each error record.
+Such flexibility should enable the applicability of RERI on resource-constrained
+RISC-V processors for embedded systems.
+
+[#sec:error-reporting:recom]
+### Recommendations
+
+When integrating RERI, see <<sec:error-reporting:rv:ras>>, in a processor
+design the number of error records and features supported should be carefully
+balanced to address the target domain (e.g. automotive, space, avionics, cloud,
+etc) requirements and constraints.
+Furthermore, some domains might require the RERI mechanism to implement a SECDED
+solution to ensure that the RERI mechanism is the cause of a system malfunction
+itself, for example because an error record has suffered radiation caused bit
+flip which causes the RERI mechanism to notify a non-existent error in another
+element of the processor.
+
+Error management is likely to be dependent on other resources such as
+interaction and interfacing with standardized interrupts and exceptions.
+This in turn, will depend on the software stack and the supported privilege
+modes M/S/U of the processor where error notification and subsequent error
+management will need to be handled from M mode to other privilege levels as
+necessary.
+
+Another issue to be considered is to provide a method to discover hardware
+resources, particularly those used for error reporting and management, e.g. how
+many scrubbers, what do they do, etc.
+
+[#sec:error-reporting:activities]
+### Relevant activities
+
+#### Related external bodies
+
+None identified.
+
+#### Related chapters
+
+Redundancy can be seen as an error management method.
+Refer to xref:sec:redundancy[xrefstyle=full].
+
+Performance counters can be used to collect statistics on errors.
+Refer to xref:sec:pmc[xrefstyle=full].

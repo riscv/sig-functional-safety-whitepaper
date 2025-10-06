@@ -243,7 +243,8 @@ None identified.
 
 #### Related chapters
 
-Potentially the error management chapter (to be released), for errors detected
-and/or corrected by means of redundancy.
+Errors detected and/or corrected by means of redundancy might need to be
+reported to the higher order system, e.g. the operating system.
 For instance, to program actions to take upon unrecoverable errors, and to
 collect statistics about corrected errors.
+Refer to xref:sec:error-reporting[xrefstyle=full].
