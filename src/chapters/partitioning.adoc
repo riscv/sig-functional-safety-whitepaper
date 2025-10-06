@@ -741,7 +741,7 @@ mature.
 It provides support for performance counters which should be implemented for
 processors targeting the safety critical products, see <<sec:pmc>>.
 When the IOMMU supports PCIe ATS (Address Translation Services) it should be
-disabled by default to ensure that the memory partitioning enforcement.
+disabled by default to ensure the memory partitioning enforcement.
 If PCIe ATS is required and the IOMMU PCIe ATS support enabled then options like
 the usage of the IOMMU `T2GPA` control bit should be enabled (see the RISC-V
 IOMMU cite:[rviommu:2025] for further details) or a SoC design provide other
