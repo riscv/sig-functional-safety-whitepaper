@@ -71,7 +71,7 @@ list-of::listing[hide_empty_section=true, enhanced_rendering=true]
 Copyright 2025 by RISC-V International.
 
 [WARNING]
-.This document is work document.
+.This document is a work document.
 ====
 This is a work document of the Functional Safety SIG.
 Contents are not fully verified and can change without further notice.
@@ -89,10 +89,11 @@ include::pmc.adoc[]
 
 include::qos.adoc[]
 
-// No gaps identified for redundancy
-// include::redundancy.adoc[]
+include::redundancy.adoc[]
 
 include::partitioning.adoc[]
+
+include::error-reporting.adoc[]
 
 // The index must precede the bibliography
 include::../index.adoc[]

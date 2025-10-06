@@ -3,3 +3,5 @@
 
 This document presents the gaps identified by the Functional Safety SIG and
 could be considered for new extensions or revisions of current specifications.
+This document is to be read with the "`Functional Safety White Paper`", each
+chapter in this document matching the same chapter in the white paper.
