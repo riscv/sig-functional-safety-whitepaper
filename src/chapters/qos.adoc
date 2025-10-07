@@ -195,12 +195,13 @@ The two types of identifiers defined by the [.extension]#Ssqosid# extension are:
 ** One could create multiple virtual components with QoS support (e.g. as many
    as monitors required) and make RCIDs have no effect on those components,
    but let them have a monitor each.
-   Yet, while feasible, this is an anomalous use of MCIDs.
+   Yet, while feasible, this might be considered an anomalous use of MCIDs.
 
 Overall, RCIDs need to be carefully set and allocated, and modified dynamically
 in a controlled fashion (if at all modified).
-MCIDs could serve the purpose of accessing safety-relevant monitors, but they do
-not generally match safety needs.
+MCIDs could serve the purpose of accessing safety-relevant monitors,
+but their manipulation might be slightly complex when requiring components with
+multiple monitors.
 
 [#sec:qos:recom]
 ### Recommendations
