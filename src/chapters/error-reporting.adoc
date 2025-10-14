@@ -14,8 +14,8 @@ common cause, cascading etc.
 Additionally what is deemed as a safety related fault or failure is dependent on
 the use case of the system and its design and implementation.
 
-However a RISC-V processor can be considered as a safety related element of a
-safety related system and as such this chapter will discuss considerations for
+However a RISC-V processor can be considered as a safety-related element of a
+safety-related system and as such this chapter will discuss considerations for
 error management, in terms of detection, control and reporting and perspectives
 of the higher order system.
 
@@ -29,7 +29,7 @@ injection, boot-up or power-down tests.
 Different error management mechanisms differ in their ability to detect and
 correct errors.
 For instance, dual core lock-step (DCLS) offers error detection but no
-correction capabilities on its own since, as which "`Core`" is in error can not
+correction capabilities on its own, since as which "`Core`" is in error can not
 be determined with only one redundant core.
 On the other hand, redundancy with a higher cardinality, such as triple core
 lock-step (TCLS) provides some level of correction.
@@ -138,8 +138,8 @@ faults in a timely manner is needed.
 [#sec:error-reporting:rv]
 ### RISC-V solutions
 
-Whilst CSR and Performance Counters exist they are not specifically dedicated to
-error management though could be used to implement it.
+Whilst CSR and Performance Counters exist, they are not specifically dedicated to
+error management, though could be used to implement it.
 
 [#sec:error-reporting:rv:ras]
 #### RAS
@@ -176,7 +176,7 @@ design the number of error records and features supported should be carefully
 balanced to address the target domain (e.g. automotive, space, avionics, cloud,
 etc) requirements and constraints.
 Furthermore, some domains might require the RERI mechanism to implement a SECDED
-solution to ensure that the RERI mechanism is the cause of a system malfunction
+solution to ensure that the RERI mechanism is not the cause of a system malfunction
 itself, for example because an error record has suffered radiation caused bit
 flip which causes the RERI mechanism to notify a non-existent error in another
 element of the processor.
@@ -190,7 +190,7 @@ necessary.
 
 Another issue to be considered is to provide a method to discover hardware
 resources, particularly those used for error reporting and management, e.g. how
-many scrubbers, what do they do, etc.
+many scrubbers there are, what do they do, etc.
 
 [#sec:error-reporting:activities]
 ### Relevant activities
