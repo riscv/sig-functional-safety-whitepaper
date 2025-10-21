@@ -723,12 +723,9 @@ making dirty cache contents become clean, and locking cache contents (e.g.
 including probe instructions or other mechanisms to check whether specific cache
 lines are stored in cache or not).
 The [.extension]#Zicbom# extension provides such kind of instructions.
-However, as pointed in <<sec:caches:recom:isa>>, when using these instructions
-to reset the state of the cache to a now state (e.g. by flushing its contents
-with the `cbo.flush` instruction) it is recommended to perform a cache state
-analysis (probably an offline analysis) to selectively issue these instructions
-to achieve the cache reset, instead of just issuing them for the entire memory
-space of the context being removed from the cache.
+However, as pointed in <<sec:caches:recom:isa>>, the developer should be aware
+that the [.extension]#Zicbom# extension instructions operate on cache blocks
+with a size that is implementation-specific.
 
 [#sec:partitioning:recom:mem]
 #### Memory partitioning
@@ -740,12 +737,11 @@ Among these, the RISC-V IOMMU specification has been ratified and is now quite
 mature.
 It provides support for performance counters which should be implemented for
 processors targeting the safety critical products, see <<sec:pmc>>.
-When the IOMMU supports PCIe ATS (Address Translation Services) it should be
-disabled by default to ensure the memory partitioning enforcement.
-If PCIe ATS is required and the IOMMU PCIe ATS support enabled then options like
-the usage of the IOMMU `T2GPA` control bit should be enabled (see the RISC-V
-IOMMU cite:[rviommu:2025] for further details) or a SoC design provide other
-means to ensure the memory partitioning enforcement, like the usage of IOPMPs.
+PCIe ATS (Address Translation Services) support should be disabled by default
+when available, but if required then the user should consider enabling the IOMMU
+`T2GPA` control bit (see the RISC-V IOMMU cite:[rviommu:2025] for further
+details) or alternatively, when available, using other means provided by the
+SoC to ensure the memory partititioning enforcement, like the usage of IOPMPs.
 IOPMP is a RISC-V specification, which is near to ratification, providing PMP
 like memory partitioning for non-CPU initiators.
 

@@ -461,7 +461,13 @@ being always active.
 The designer of a combined hardware/software system using this CSR from machine
 mode to do the deactivation should weigh the tradeoffs depending on the overall
 system requirements before using this register and/or device additional logic
-such as authentication of the client(s) that has access to this register.
+such as authentication of the lower privilege level client(s) that has access to
+this register through the `scountinhibit` CSR.
+The `mcounteren` CSR controls what the lower privilege can directly access.
+
+The designer should also be aware that the cycle counter may be shared between
+harts, and configuring `mcountinhibit.CY` to control the cycle count on one hart
+will propagate the configuration to all shared harts.
 
 [#sec:pmc:recom:newext]
 #### New extensions

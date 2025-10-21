@@ -62,8 +62,8 @@ near ratification, while a task group works on the integration and extension of
 the WorldGuard solution, to be named _RISC-V Worlds_.
 Key recommendations for RISC-V Worlds include:
 
-* WorldGuard itself offers a lean, easy model for initiator-side identification
-on privilege-level granularity.
+* RISC-V Worlds itself offers a lean, easy model for initiator-side
+identification on privilege-level granularity.
 However, the current specification lacks support for virtualized environments.
 This aspect is especially important for bare-metal applications without
 address-translation (so called 'real-time virtualization'), where the Hypervisor
@@ -71,7 +71,9 @@ plays an essential role in the safety/security-concept.
 Although some reference is made in the original specification, it maps the same
 ID to both VS/VU-levels which is insufficient, if distinction between OS- and
 User-level tasks in virtualized environments are required.
-* In the real-time/mixed-criticality domain, support for more than 32 WIDs
+The TG is aware of this issue, and currently plans to defer it to a fast track
+extension.
+* In the real-time/mixed-criticality domain, support for more than `XLEN` WIDs
 (World IDs) is needed.
 This need is driven by growing MCU-complexity, integrating more and more (at
 least partially virtualizable) initiators and cross-combinations of different
