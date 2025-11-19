@@ -305,27 +305,31 @@ Alternatively, set/way operations should be supported, which can be used to
 synthesize such entire cache/partition operations.
 +
 The ability to control (clean/invalidate) caches is provided in the (ratified)
-"Cache Management Operations" extensions, more specifically the
+"`Cache Management Operations`" extensions, more specifically the
 [.extension]#Zicbom# (Cache Block Management) extension.
-These specify "block operations" -- operations related to a particular
+These specify "`block operations`" -- operations related to a particular
 physical address range.
 This mechanism is suitable for implementing a software cache coherency scheme
 in situations where software knows that an external agent (that is not
 hardware-coherent with the cache) may have written to (for the invalidate
 operation) or is about to read from (for the clean operation) a specific
 buffer of data.
-However, it is not well suited to resetting the cache to a known state to
-provide the temporal isolation discussed here, as one can expect the size of
-a [.extension]#Zicbom# block to be too small to effectively use the entire
+If used to reset the cache to a known state to provide the temporal isolation
+discussed in this chapter, it is recommended to perform a cache state analysis
+(probably an offline analysis) to selectively issue the [.extension]#Zicbom#
+instructions required to achieve the cache reset instead of just issuing
+[.extension]#Zicbom# instructions for the entire context, e.g. an application,
 address space.
+The latter might have an important negative performance impact when the size
+of the cache blocks is small compared to the entire context address space size.
 . Traditionally, safe processors required the ability to remove or disable
-caches to ensure maximal predictability. Other solutions have emerged since,
-to avoid the drastic induced performance loss.
-However a standard mechanism for globally disabling and enabling the caches
-could be considered in future RISC-V specifications to embrace all approaches.
-Note that there are two standard ways to achieve this with current
-specifications, but both have significant drawbacks (there may also be
-implementation specific mechanisms):
+caches to ensure maximal predictability.
+Other solutions have emerged since, to avoid the drastic induced performance
+loss.
+We have identified two standard ways for globally disabling and enabling the
+caches with the current RISC-V specifications:
++
+--
 .. If the [.extension]#Svpbmt# (Page-Based Memory Types) extension is
 implemented, memory pages can be marked as non-cacheable in the page table,
 overriding the PMA attributes.
@@ -338,10 +342,14 @@ This functionality is platform defined (so may not be configurable for all or
 any memory regions), and it is not consistent with the intended use-model for
 PMA as described in the RISC-V Privileged ISA Specification
 cite:[rv-priv-spec:2024] Section 3.6:
-"PMAs are inherent properties of the underlying hardware and rarely change
+"`PMAs are inherent properties of the underlying hardware and rarely change
 during system operation.
 Unlike Physical Memory Protection (PMP) values described in Section 3.7, PMAs
-do not vary by execution context".
+do not vary by execution context`".
+--
++
+Other ways may exist, be proposed by future extensions or provided by
+implementation specific mechanisms.
 
 Standardized control and discovery mechanisms for TCM (and other memory
 architectures) can be considered.

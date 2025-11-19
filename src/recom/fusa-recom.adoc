@@ -1,8 +1,8 @@
-= Functional Safety White Paper
+= Functional Safety Recommendations Document
 Editors: Jérôme Quévremont (Thales), Amit Pabalkar (NVIDIA Corporation), Jaume Abella (Barcelona Supercomputing Center), Daniel Gracia Pérez (Thales)
-include::../docs-resources/global-config.adoc[]
+include::../../docs-resources/global-config.adoc[]
 :docgroup: RISC-V Functional Safety Special Interest Group
-:description: RISC-V Functional Safety Whitepaper
+:description: RISC-V Functional Safety Recommendations Document
 :revdate: 11/2024
 :revnumber: 1.0
 ifndef::norevremark[]
@@ -19,7 +19,7 @@ endif::[]
 :colophon:
 :appendix-caption: Appendix
 // https://docs.asciidoctor.org/asciidoc/latest/macros/images-directory/
-:imagesdir: ../
+:imagesdir: ../..
 :title-logo-image: image:docs-resources/images/risc-v_logo.png["RISC-V International Logo",pdfwidth=3.25in,align=center]
 // Settings:
 :experimental:
@@ -61,40 +61,41 @@ list-of::table[hide_empty_section=true, enhanced_rendering=true]
 == List of listings
 list-of::listing[hide_empty_section=true, enhanced_rendering=true]
 
-[WARNING]
-.This document is in the link:http://riscv.org/spec-state[Development state]
-====
-Expect potential changes. This draft whitepaper is likely to evolve before
-it is accepted for publication. Citation test: RISC-V Unprivileged Specification cite:[rv-unpriv-spec:2024], RISC-V Privileged Specification cite:[rv-priv-spec:2024].
-====
-
 [preface]
 == Copyright and license information
-This white paper is licensed under the Creative Commons
-Attribution 4.0 International License (CC-BY 4.0). The full
-license text is available at
-https://creativecommons.org/licenses/by/4.0/.
+// This document is licensed under the Creative Commons
+// Attribution 4.0 International License (CC-BY 4.0). The full
+// license text is available at
+// https://creativecommons.org/licenses/by/4.0/.
 
 Copyright 2025 by RISC-V International.
 
+[WARNING]
+.This document is a work document.
+====
+This is a work document of the Functional Safety SIG.
+Contents are not fully verified and can change without further notice.
+This document should not be referenced by other documents.
+====
+
 [preface]
-include::contributors.adoc[]
+include::../contributors.adoc[]
 
-include::chapters/intro.adoc[]
+include::intro.adoc[]
 
-include::chapters/caches.adoc[]
+include::caches.adoc[]
 
-include::chapters/pmc.adoc[]
+include::pmc.adoc[]
 
-include::chapters/qos.adoc[]
+include::qos.adoc[]
 
-include::chapters/redundancy.adoc[]
+include::redundancy.adoc[]
 
-include::chapters/partitioning.adoc[]
+include::partitioning.adoc[]
 
-include::chapters/error-reporting.adoc[]
+include::error-reporting.adoc[]
 
 // The index must precede the bibliography
-include::index.adoc[]
+include::../index.adoc[]
 
-include::bibliography.adoc[]
+include::../bibliography.adoc[]

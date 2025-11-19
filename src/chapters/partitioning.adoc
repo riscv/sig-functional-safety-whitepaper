@@ -513,7 +513,7 @@ Partitioning is likely to be mandated as an outcome of this analysis.
 The RISC-V unprivileged architecture specification cite:[rv-unpriv-spec:2024]
 provides instructions to access some base counters and timers.
 While several approaches exist, it might be useful to take into account the more
-recent Sstc extension:
+recent [.extension]#Sstc# extension:
 
 * _M-mode timer_: The first approach is the using the cycle count (with the
 `RDCYCLE` instruction) and the wall clock (with the `RDTIME` instruction).
@@ -530,9 +530,9 @@ M-mode (or VS-mode requests to HS-mode, and then to M-mode).
 M-mode is then responsible for multiplexing these logical timers onto its single
  physical timer and routing timer interrupts back down to the appropriate lower
  privilege modes.
-* _Sstc extension_: The second approach is the RISC-V Sstc extension, which
-addresses the previous gap by allowing S-mode and VS-mode to manage their own
-timer services directly.
+* _[.extension]#Sstc# extension_: The second approach is the RISC-V
+[.extension]#Sstc# extension, which addresses the previous gap by allowing
+S-mode and VS-mode to manage their own timer services directly.
 It introduces two dedicated CSRs (`stimecmp` and `vstimecmp`), enabling these
 privilege modes to set and handle timer interrupts without involving M-mode.
 
@@ -611,7 +611,8 @@ address space, the operating system can effectively change the page tables while
 ensuring that a user process can access only the storage provided to it by the
 operating system.
 Memory accesses from IO devices controlled by the Supervisor (e.g., OS or
-hypervisor) or controlled by User-mode can be mediated via the RISC-V IOMMU.
+hypervisor) or controlled by User-mode can be mediated via the RISC-V IOMMU
+cite:[rviommu:2025].
 This hardware primitive virtualizes the memory seen by bus masters, performing
 permission checks and address translation the same way the MMU does within a
 RISC-V core.
@@ -625,16 +626,17 @@ supplied by software.
 Due to the need to improve latency, determinism, and safety (over GPOS),
 Real-Time operating systems (RTOS) typically rely on OS-managed memory
 protection primitives/facilities to enforce user-level application isolation.
-Consequently, the RISC-V community is working on the Sspmp extension cite:[sspmp:2025]
-that replaces the virtual memory infrastructure, i.e., the Memory Management
-Unit (MMU), with an S-Mode PMP (thus, SPMP), checking accesses from both User
-and Supervisor modes.
+Consequently, the RISC-V community is working on the [.extension]#Sspmp#
+extension cite:[sspmp:2025] that replaces the virtual memory infrastructure,
+i.e., the Memory Management Unit (MMU), with an S-Mode PMP (thus, SPMP),
+checking accesses from both User and Supervisor modes.
 The SPMP follows an identical design as the (e)PMP.
-As of this writing (05/05/2025), the Sspmp extension is near entering the final
-stages towards final ratification.
+As of this writing (05/05/2025), the [.extension]#Sspmp# extension is near
+entering the final stages towards final ratification.
 
 Also as part of the RISC-V privileged architecture specification, hardware
-virtualization support is specified through the Hypervisor (H) extension.
+virtualization support is specified through the hypervisor ([.extension]#H#)
+extension.
 As shown in <<#fig:partitioning:hypervisor-extension>> it allows virtualizing
 the supervisor-level architecture by changing the supervisor mode into
 hypervisor-extended supervisor mode (HS-mode, or hypervisor mode), where a
@@ -643,9 +645,9 @@ The hypervisor extension also adds another stage of address translation, from
 guest physical addresses to supervisor physical addresses, to virtualize the
 memory and memory-mapped I/O subsystems for a guest operating system and
 therefore providing a secure virtual interface for accessing such elements.
-Similarly, once ratified, the SPMP will be extended to support the Hypervisor
+Similarly, once ratified, the SPMP will be extended to support the hypervisor
 extension by defining a dual-stage PMP with the
-Shspmp extension cite:[shspmp:2025].
+[.extension]#Shspmp# extension cite:[shspmp:2025].
 
 .RISC-V privileged levels when the Hypervisor extension is enabled. When virtualization is enabled, the Supervisor mode (S mode) is augmented to an hypervisor-extended supervisor mode (HS mode) and the virtual user mode (VU mode) and a virtual supervisor mode (VS mode) are added.
 [#fig:partitioning:hypervisor-extension]
@@ -654,8 +656,8 @@ image::src/chapters/partitioning/hypervisor-extension.svg[Hypervisor extension,a
 In a multi-tenant platform, the PMP/Smepmp can also be leveraged by a Root
 Domain Security Manager (RDSM), running in M-Mode, to enforce physical memory
 isolation between supervisor domains.
-Supervisor Domain Access Protection (SmMTT) cite:[smmtt:2025] is a RISC-V
-privileged architecture extension, under development at the time of this
+Supervisor Domain Access Protection ([.extension]#SmMTT#) cite:[smmtt:2025] is a
+RISC-V privileged architecture extension, under development at the time of this
 writing, to support physical address space (memory and devices) isolation for
 more than one supervisor domain use case.
 Each supervisor domain is assigned a unique set of physical address regions,
@@ -669,7 +671,8 @@ properties, either established statically at boot or dynamically through
 attestation.
 
 For the memory that needs to be shared, and hence cannot be partitioned, the
-RISC-V user-level ISA defines the Atomic Instructions (A) extension.
+RISC-V user-level ISA defines the Atomic Instructions ([.extension]#A#)
+extension.
 It contains instructions that atomically read-modify-write memory to support
 synchronization between multiple RISC-V harts running in the same memory space,
 effectively preventing memory access conflicts and simplifying semaphore
@@ -700,12 +703,13 @@ supported via the IMSIC.
 Thus, RISC-V implementations featuring exclusively the APLIC will not provide
 any support for interrupt virtualization.
 
-Regarding the upcoming SmMTT specification, there are other resources that can
-be isolated between Supervisor Domains.
-For example, the specification defines the IO-MPT non-ISA extension to associate
-an IOMMU and the devices in scope of that IOMMU with a supervisor domain.
-Similarly, the Smsdia ISA extension enables the assignment of IMSIC interrupt
-file(s) or an APLIC domain to a supervisor domain.
+Regarding the upcoming [.extension]#SmMTT# specification, there are other
+resources that can be isolated between Supervisor Domains.
+For example, the specification defines the [.extension]#IO-MPT# non-ISA
+extension to associate an IOMMU and the devices in scope of that IOMMU with a
+supervisor domain.
+Similarly, the [.extension]#Smsdia# ISA extension enables the assignment of
+IMSIC interrupt file(s) or an APLIC domain to a supervisor domain.
 
 [#sec:partitioning:recom]
 ### Recommendations
@@ -718,28 +722,10 @@ features may be convenient, such as those related to flushing cache contents,
 making dirty cache contents become clean, and locking cache contents (e.g.
 including probe instructions or other mechanisms to check whether specific cache
 lines are stored in cache or not).
-Also, instructions to reset the contents of branch predictors, the cache
-replacement state and any other cache-like feature (e.g. branch target buffers)
-may be convenient, to enforce a known processor state whenever needed.
-
-These features refer to specific hardware components whose existence depends on
-the actual implementation of the processor (e.g., first level, second level,
-third level cache).
-Hence, from a RISC-V point of view it may be convenient defining global
-instructions (e.g., to flush all caches) and a framework to define
-implementation specific instructions for processors, potentially as a new ISA
-extension.
-
-Although the `cbo.flush` instruction can be used to flush cache content, it is
-an instruction defined from a software perspective, hence able to target memory
-ranges and addresses.
-Therefore, the size of the blocks being flushed as well as their initial
-addresses will have a significant impact on the ability to flush the whole
-cache.
-An additional command to flush or invalidate a complete cache, with visibility
-of the hardware implementation (i.e. being able to consider specific cache
-memories) would help implement the typical application addressed in this
-white paper.
+The [.extension]#Zicbom# extension provides such kind of instructions.
+However, as pointed in <<sec:caches:recom:isa>>, the developer should be aware
+that the [.extension]#Zicbom# extension instructions operate on cache blocks
+with a size that is implementation-specific.
 
 [#sec:partitioning:recom:mem]
 #### Memory partitioning
@@ -749,42 +735,25 @@ side, incorporating diverse mechanisms at both the core and system levels to
 isolate and protect multiple memory regions.
 Among these, the RISC-V IOMMU specification has been ratified and is now quite
 mature.
-However, several enhancements could further strengthen the standard:
+It provides support for performance counters which should be implemented for
+processors targeting the safety critical products, see <<sec:pmc>>.
+PCIe ATS (Address Translation Services) support should be disabled by default
+when available, but if required then the user should consider enabling the IOMMU
+`T2GPA` control bit (see the RISC-V IOMMU cite:[rviommu:2025] for further
+details) or alternatively, when available, using other means provided by the
+SoC to ensure the memory partititioning enforcement, like the usage of IOPMPs.
+IOPMP is a RISC-V specification, which is near to ratification, providing PMP
+like memory partitioning for non-CPU initiators.
 
-* Defense mechanisms against IOTLB-based side-channel attacks, for example,
-using the IOMMU's HPM to identify suspicious DMA access patterns.
-* Rethinking some in-memory data structures for better memory utilization and
-granularity.
-For instance, segregating DC MSI translation data into a separate structure
-would enable efficient sharing of the IOMMU between MSI-capable and
-MSI-incapable devices without wasting MSI fields in the DC.
-* The current IOMMU specification envisions a monolithic architecture, where the
-internal translation logic includes memory walkers and the caches/IOTBs.
-This design could generate contention among devices as IOATCs (IOMMU Address
-Translation Caches) are shared between them.
-As a solution, the option of a distributed IOMMU architecture could be included,
-i.e. a dedicated IOATC per device (or group of devices) and a central
-translation unit containing the memory walkers.
-
-In terms of ongoing developments, the RISC-V IOPMP and SPMP specifications are
-near ratification, while a task group works on the integration and extension of
-the WorldGuard solution, to be named _RISC-V Worlds_.
-Key recommendations for RISC-V Worlds include:
-
-* WorldGuard itself offers a lean, easy model for initiator-side identification
-on privilege-level granularity.
-However, the current specification lacks support for virtualized environments.
-This aspect is especially important for bare-metal applications without
-address-translation (so called 'real-time virtualization'), where the Hypervisor
-plays an essential role in the safety/security-concept.
-Although some reference is made in the original specification, it maps the same
-ID to both VS/VU-levels which is insufficient, if distinction between OS- and
-User-level tasks in virtualized environments are required.
-* In the real-time/mixed-criticality domain, support for more than 32 WIDs
-(World IDs) is needed.
-This need is driven by growing MCU-complexity, integrating more and more (at
-least partially virtualizable) initiators and cross-combinations of different
-criticality/integrity levels.
+Two other ongoing developments near ratification should be considered in the
+design of SoCs for safety critical domains: the RISC-V SPMP and RISC-V
+Worlds.
+They provide mechanisms extending the memory partitioning capabilities.
+RISC-V SPMP (S-level PMP) should be used on MMU-less SoC designs to enforce
+S-mode software (e.g. operating systems) isolation from U-mode applications.
+RISC-V Worlds, based on the WorldGuard solution cite:[worldguard:2023],
+provides a hardware mechanism to enforce software context isolation in addition
+to the address partitioning provided by PMPs and IOPMPs.
 
 [#sec:partitioning:recom:other]
 #### Partitioning resources other than memory
@@ -829,16 +798,11 @@ However, this may lead to abundant time interferences at a very fine grain,
 which are hard to master - if possible at all. In safety-critical systems this
 feature should be disabled.
 
-Some cores may share some "complex units" (e.g. a vector unit, floating point
+Some cores may share some "`complex units`" (e.g. a vector unit, floating point
 units for complex math functions).
 Uncontrolled sharing must be avoided, generally by software means such as
 avoiding the use of those units altogether, allowing only one core to use them,
 or explicitly time-sharing them so that concurrent accesses cannot occur.
-
-The management of cache coherency could be expanded in the CMO task group, in
-order to mitigate either the added traffic on the interconnect (in
-directory-based cache coherency) or the interference channel of a shared bus (in
-case of snooping).
 
 [#sec:partitioning:activities]
 ### Relevant activities
@@ -846,10 +810,11 @@ case of snooping).
 #### Related external bodies
 
 Partitioning has traditionally been used in avionics systems and the reader
-might be interested in the ARINC 653 "_Avionics Application Software Standard
-Interface_" cite:[arinc653p0:2021,arinc653p1:2024,arinc653p2:2024] specification
-and in the DO-297 "_Integrated Modular Avionics (IMA) Development Guidance and
-Certification Considerations_" cite:[do297:2005] document.
+might be interested in the ARINC 653 "`__Avionics Application Software Standard
+Interface__`" cite:[arinc653p0:2021,arinc653p1:2024,arinc653p2:2024]
+specification and in the DO-297 "`__Integrated Modular Avionics (IMA)
+Development Guidance and Certification Considerations__`" cite:[do297:2005]
+document.
 
 #### Related chapters
 

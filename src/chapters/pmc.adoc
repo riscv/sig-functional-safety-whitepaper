@@ -449,69 +449,80 @@ does not apply to the mandatory `cycle` and `instret` counters.
 [#sec:pmc:recom]
 ### Recommendations
 
-[#sec:pmc:recom:spec-gaps]
-#### Identified gaps in existing specifications
+[#sec:pmc:recom:safety]
+#### Safety usage
+
+Version 1.11 of the RISC-V privileged architecture specification introduced the
+Machine Counter-Inhibit (`mcountinhibit`) CSR.
+While this register allows stopping the counter from incrementing to save energy
+consumption or to prevent side channel security attacks, it may result in
+violation of some safety requirements or usage which depends on the counter
+being always active.
+The designer of a combined hardware/software system using this CSR from machine
+mode to do the deactivation should weigh the tradeoffs depending on the overall
+system requirements before using this register and/or device additional logic
+such as authentication of the lower privilege level client(s) that has access to
+this register through the `scountinhibit` CSR.
+The `mcounteren` CSR controls what the lower privilege can directly access.
+
+The designer should also be aware that the cycle counter may be shared between
+harts, and configuring `mcountinhibit.CY` to control the cycle count on one hart
+will propagate the configuration to all shared harts.
+
+[#sec:pmc:recom:newext]
+#### New extensions
 
 The standard Hardware Performance Monitoring facility and extensions defined by
 the RISC-V specifications, see previous section, provide an important base to
 address the implementation of safety-related hardware performance counters.
-The following desirable features, not addressed by the RISC-V specification,
-can be highlighted:
+Working groups within RISC-V International _Performance Analysis_ Special
+Interest Group are working on new extensions that can allow more efficient
+and new implementation of functional safety mechanisms relying on performance
+counters.
+New processor implementations targetting the safety critical domains should
+consider their integration.
+Examples of such works are:
 
-1. Event specification: besides the identification of specific events causing a
-  counter to increment, it would be desirable to provide the possibility of
-  specifying a family of events (i.e. events that have to be recorded at the
-  same time) or specifying non-event conditions (i.e. counting the number of
-  clock cycles for which a certain event does not occur).
-2. Filtering capabilities: the [.extension]#Sscofpmf# extension provides
-  mode-filtering capabilities, nevertheless it would be desirable to provide
-  other event-filtering capabilities, such as comparison or edge detection, or
-  the initiator/target of the transaction (core ID for instance).
-3. Linked counters: it would be desirable to provide the capability of linking
-  multiple counters, defining chains of events to be monitored.
-4. Quota allocation (see
-  xref:sec:pmc:safety:justification:uses:quota[Example 4: quota allocation]
-  above):
-  upon reaching the defined threshold, an interrupt would be triggered.
-  An implementation would be to preload a value in the counter and trigger an
-  interrupt when the counter overflows as provided by the [.extension]#Sscofpmf#
-  extension.
-5. Standardized event description: the description of events should be
-  standardized as much as possible among the different RISC-V processor
-  implementations.
-  This is important to allow the development of software solutions (e.g.
-  hypervisors) capable of addressing the different processor implementations as
-  long as the events are available in those cores.
-  At the time of this writing the Performance Events TG is already addressing
-  this feature at the core level.
+* An extension providing standarized naming and definiton of the most frequent
+performance events that can be found in different implementations.
+* The performance events sampling extensions provide (1) precise attribution of
+the instruction that caused a performance counter to overflow and (2) sampling
+of instructions and/or uops, with collection of runtime metadata for the
+instruction/uop, including data virtual address, select event occurrences, and
+latencies incurred.
+* The self-hosted trace extension providing debug like functionalities but
+exploitable by the core itself and the software running on it without having
+to rely on an external debugger.
 
-[#sec:pmc:recom:impl-gaps]
-#### Possible gaps in implementation
+The former, performance events standardized naming and definition, is specially
+interesting in safety critical domains as it ensures that functional safety
+software using performance counters can be reused in different RISC-V processor
+implementations with little to no effort.
+This will additionally reduce the time for the verification, validation and
+certification activities required when developing safety critical systems, as
+the software will not need to be modified.
+Obviously, this requires that the different RISC-V processor implementations
+follow this extension.
 
-1. Availability of SoC-level counters: monitoring harts or SoC resource usage
-  (e.g. use of shared resources) requires the definition of counters outside the
-  core.
-  A MMIO architecture could be considered for the implementation, with  Machine
-  Timer Registers (`mtime` and `mtimecmp`) constituting a valuable reference in
-  this sense.
-2. Support for counter management: support at software and configuration level
-  to guarantee the availability of safety related counters (e.g. preventing
-  disabling the counters) while granting the user access to specific resources.
-  It should be noted that some degree of protection is already guaranteed by the
-  existing privileged architecture, as remarked in the previous section.
+The latter extensions, performance events sampling and self-hosted trace, will
+open opportunities for new functional safety mechanisms and/or more efficient
+implementations of existing ones.
+Processors implementing these extensions should consider dedicated resources
+(memory and paths to get to that memory) to keep the produced samples and
+traces, otherwise if those resources are shared with the rest of the system then
+the applications could suffer interferences,
+see xref:sec:partitioning[xrefstyle=full].
 
-[#sec:pmc:recom:safety]
-#### Safety usage
+[#sec:pmc:recom:socpmc]
+#### SoC-level counters
 
-1. `mcountinhibit`: While this register allows stopping the counter from
-  incrementing to save energy consumption or to prevent side channel security
-  attacks, it may result in violation of some safety requirements or usage which
-  depends on the counter being always active.
-  The designer of a combined hardware/software system using this CSR from
-  machine mode to do the deactivation should weigh the tradeoffs depending on
-  the overall system requirements before using this register and/or device
-  additional logic such as authentication of the client(s) that has access to
-  this register.
+The RISC-V specifications provide performance counters for hart related events.
+However, safety critical systems, specially those using complex SoCs (e.g.
+multicores), require the observation of events outside of the harts.
+Particularly for resources shared among multiple harts, like buses and shared
+memory structures.
+Processors for safety critical systems should consider the implementation of
+dedicated SoC-level counters.
 
 [#sec:pmc:activities]
 ### Relevant activities
@@ -535,8 +546,8 @@ Refer to xref:sec:caches[xrefstyle=full].
 
 Performance counters can be used to measure the occurrences of certain
 (obviously not fatal) errors.
-Such errors could be managed by an error management mechanism (related chapter
-to be released).
+Such errors could be managed by an error management mechanism.
+Refer to xref:sec:error-reporting[xrefstyle=full].
 
 SoC-level performance counters and monitoring are needed to implement some
 features identified to monitor the multicore interference.

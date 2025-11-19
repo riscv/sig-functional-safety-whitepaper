@@ -15,6 +15,11 @@
 DOCS := \
 	fusa-whitepaper.adoc
 
+BUILD_RECOMDOC ?= 0
+ifeq ($(BUILD_RECOMDOC),1)
+  DOCS += recom/fusa-recom.adoc
+endif
+
 DATE ?= $(shell date +%Y-%m-%d)
 VERSION ?= v0.0.0
 # Leaving the REVMARK unset will put the document in draft state and the
@@ -36,6 +41,7 @@ REVMARK ?=
 # To remove it launch the Makefile with `NODRAFTWATERMARK=1`. E.g.:
 # ```NODRAFTWATERMARK=1 make```
 NODRAFTWATERMARK ?=
+
 DOCKER_IMG := riscvintl/riscv-docs-base-container-image:latest
 ifneq ($(SKIP_DOCKER),true)
   DOCKER_IS_PODMAN = \
