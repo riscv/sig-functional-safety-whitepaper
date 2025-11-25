@@ -9,7 +9,7 @@
 
 // https://www.electropedia.org/iev/iev.nsf/display?openform&ievref=192-01-22
 Functional safety is one aspect of system design that ensures electronic and
-electrical systems operate safety even when faults occur.
+electrical systems operate safely even when faults occur.
 It is particularly critical in industries where failure can lead to serious
 consequences to people, the environment and equipment.
 
@@ -65,9 +65,10 @@ The following is a non-exhaustive list of those solutions:
   and observability in general.
 * Debug interfaces for the external observability of the SoCs.
 * Extensive use of documentation, including complete design descriptions,
-  -- sometimes only available under NDA -- providing detailed description
-  of the SoC functional and time behavior required to ensure the explainability
-  of the isolation between the different software running on top of it.
+  -- sometimes only available under non-disclosure agreement (NDA) -- providing
+  detailed description of the SoC functional and time behavior required to
+  ensure the explainability of the isolation between the different software
+  running on top of it.
 
 The purpose of this document is to describe different mechanisms and methods
 used in the safety critical domain industry to assess these functional safety
@@ -81,7 +82,7 @@ adoption of RISC-V on safety critical domains.
 This document does not try address all the functional safety mechanisms and
 methods, neither to fully discuss the ones addressed.
 Furthermore, the specifications issued by RISC-V International being
-continuously amended, updated and extended the identified solutions and
+continuously amended, updated, and extended the identified solutions and
 recommendations discussed in this document might be incomplete or outdated.
 
 Finally, the contents of this document are limited to the knowledge of its
