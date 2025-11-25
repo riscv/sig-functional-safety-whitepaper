@@ -65,9 +65,10 @@ The following is a non-exhaustive list of those solutions:
   and observability in general.
 * Debug interfaces for the external observability of the SoCs.
 * Extensive use of documentation, including complete design descriptions,
-  -- sometimes only available under NDA -- providing detailed description
-  of the SoC functional and time behavior required to ensure the explainability
-  of the isolation between the different software running on top of it.
+  -- sometimes only available under non-disclosure agreement (NDA) -- providing
+  detailed description of the SoC functional and time behavior required to
+  ensure the explainability of the isolation between the different software
+  running on top of it.
 
 The purpose of this document is to describe different mechanisms and methods
 used in the safety critical domain industry to assess these functional safety
