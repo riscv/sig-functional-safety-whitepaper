@@ -82,7 +82,7 @@ adoption of RISC-V on safety critical domains.
 This document does not try address all the functional safety mechanisms and
 methods, neither to fully discuss the ones addressed.
 Furthermore, the specifications issued by RISC-V International being
-continuously amended, updated and extended the identified solutions and
+continuously amended, updated, and extended the identified solutions and
 recommendations discussed in this document might be incomplete or outdated.
 
 Finally, the contents of this document are limited to the knowledge of its
