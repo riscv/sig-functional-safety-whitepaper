@@ -133,8 +133,9 @@ determinism.
 
 TCM is often private to a single core, which is a useful property to allow
 processing in isolation.
-A TCM that is shared may enable this by allowing the core to disable external
-access (after initialization, for example).
+A TCM that is shared may implement mechanisms to provide isolation, such as
+disabling external access after initialization, or partitioning and banking the
+TCM.
 
 Some systems allow the configuration of the same fast memory area either fully
 or partially to either cache or scratchpad mode of operation.
