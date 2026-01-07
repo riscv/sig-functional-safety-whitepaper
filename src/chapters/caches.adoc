@@ -80,8 +80,8 @@ This means any attempt to analyze the cache behavior for a single software
 thread is complicated by a dependence on unrelated activity in the system (for
 example: other software running, DMA transfers or system IO occurring).
 
-Cache partitioning allows some portion of a cache (for example, specific ways)
-to be allocated to a specific core, hart, or software thread.
+Cache partitioning allows some portion of a cache (for example, specific ways or
+lines) to be allocated to a specific core, hart, or software thread.
 This can significantly reduce performance dependencies between software threads,
 and simplifies cache-related performance analysis.
 It is likely, however, to reduce the overall efficiency of the cache allocation
