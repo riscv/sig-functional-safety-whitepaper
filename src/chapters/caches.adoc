@@ -6,7 +6,7 @@
 
 Caches and Tightly Coupled Memories (TCMs, also known as Closely-Coupled
 Memories (CCMs), scratchpad memories, local memories, Tightly Integrated
-Memories, or local store) are important components, particularly in high
+Memories (TIMs), or local store) are important components, particularly in high
 performance CPUs, for mitigating the effects of difference in speed between the
 processor and main memory.
 These kinds of memories provide relatively small, fast on-chip storage close to
