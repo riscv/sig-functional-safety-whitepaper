@@ -10,8 +10,8 @@ Memories (TIMs), or local store) are important components, particularly in high
 performance CPUs, for mitigating the effects of difference in speed between the
 processor and main memory.
 These kinds of memories provide relatively small, fast on-chip storage close to
-the processor to reduce the frequency of accesses to main memory, in order to
-improve performance and reduce power consumption.
+the processor to reduce the number of accesses to main memory, which can improve
+performance and reduce power consumption
 
 Caches offer a very convenient method to access data.
 They are accessed implicitly -- software does not address them directly.
