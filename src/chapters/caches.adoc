@@ -45,8 +45,7 @@ same data are stored in different locations.
 These issues can become very complex where multiple agents access the same
 memory, and where multiple caches exist in a system.
 While these issues are predictable and can be avoided with correct software
-design, the requirements to achieve this may be non-trivial, and any bugs
-introduced can be difficult to test for or identify.
+design, the requirements to achieve this may be non-trivial.
 Furthermore, coherency management may further increase the non-uniformity of
 memory access times, for example directory-based cache coherency incurs
 additional traffic on the interconnect, increasing risks of timing
