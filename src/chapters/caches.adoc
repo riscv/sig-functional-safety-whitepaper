@@ -64,8 +64,8 @@ in storing a bit value.
 Functionally safe systems must be able to provide enough temporal isolation (a
 lack of interference of a software task by the previous state of the cache) or
 sufficient temporal guarantees to satisfy the intended use-case's requirements.
-Thus, functionally safe systems should address the aforementioned issues when
-using caches.
+Thus, functionally safe systems should address at hardware, software, or through
+a combination of both the aforementioned issues when using caches.
 
 TCMs are accessed explicitly by software, and therefore provide more control to
 the software over their use than caches do.
