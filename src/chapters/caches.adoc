@@ -28,14 +28,21 @@ that may be needed to ensure consistency (especially in a copy-back cache) are
 usually not exposed in higher-level programming languages.
 * While the average memory access time is reduced, variability of access time is
 increased.
-Multiple accesses to the same memory location may have widely differing access
-times, depending upon cache state that is not easily predictable or
-controllable by software.
-* Concurrent access to different memory areas by different cores may be cached
+Multiple accesses to the same memory location, even from the same instruction,
+may have widely differing access times, depending upon cache state that is not
+easily predictable or controllable by software.
+* Concurrent access to different memory areas from the same core (e.g. a
+superscalear core with multiple cache ports) or different cores may be cached
 in the same area (depending on cache associativity).
 While the cache control hardware ensures the correct data is always returned,
 this can result in one process affecting the timing and performance of another
 process (e.g. through mutual eviction of data).
+* The cache usage behavior of one core may affect the processes' performance and
+execution time variability in another core.
+This may be due to the above mentioned cache state and concurrent access, but
+also due to the caches capabilities to handle the cores' requests, e.g.
+due to the maximum number of misses the cache can handle a core might need to
+wait for the misses of another core to be serviced before handling its requests.
 * The cache replacement (or eviction) policy may have an impact on the ability
 to perform timing analysis.
 For example a PLRU (pseudo least-recently used) algorithm can be more
