@@ -6,12 +6,12 @@
 
 Caches and Tightly Coupled Memories (TCMs, also known as Closely-Coupled
 Memories (CCMs), scratchpad memories, local memories, Tightly Integrated
-Memories, or local store) are important components, particularly in high
+Memories (TIMs), or local store) are important components, particularly in high
 performance CPUs, for mitigating the effects of difference in speed between the
 processor and main memory.
 These kinds of memories provide relatively small, fast on-chip storage close to
-the processor to reduce the frequency of accesses to main memory, in order to
-improve performance and reduce power consumption.
+the processor to reduce the number of accesses to main memory, which can improve
+performance and reduce power consumption.
 
 Caches offer a very convenient method to access data.
 They are accessed implicitly -- software does not address them directly.
@@ -28,14 +28,21 @@ that may be needed to ensure consistency (especially in a copy-back cache) are
 usually not exposed in higher-level programming languages.
 * While the average memory access time is reduced, variability of access time is
 increased.
-Multiple accesses to the same memory location may have widely differing access
-times, depending upon cache state that is not easily predictable or
-controllable by software.
-* Concurrent access to different memory areas by different cores may be cached
+Multiple accesses to the same memory location, even from the same instruction,
+may have widely differing access times, depending upon cache state that is not
+easily predictable or controllable by software.
+* Concurrent access to different memory areas from the same core (e.g. a
+superscalar core with multiple cache ports) or different cores may be cached
 in the same area (depending on cache associativity).
 While the cache control hardware ensures the correct data is always returned,
 this can result in one process affecting the timing and performance of another
 process (e.g. through mutual eviction of data).
+* The cache usage behavior of one core may affect the processes' performance and
+execution time variability in another core.
+This may be due to the above mentioned cache state and concurrent access, but
+also due to the caches capabilities to handle the cores' requests, e.g.
+due to the maximum number of misses the cache can handle a core might need to
+wait for the misses of another core to be serviced before handling its requests.
 * The cache replacement (or eviction) policy may have an impact on the ability
 to perform timing analysis.
 For example a PLRU (pseudo least-recently used) algorithm can be more
@@ -45,8 +52,7 @@ same data are stored in different locations.
 These issues can become very complex where multiple agents access the same
 memory, and where multiple caches exist in a system.
 While these issues are predictable and can be avoided with correct software
-design, the requirements to achieve this may be non-trivial, and any bugs
-introduced can be difficult to test for or identify.
+design, the requirements to achieve this may be non-trivial.
 Furthermore, coherency management may further increase the non-uniformity of
 memory access times, for example directory-based cache coherency incurs
 additional traffic on the interconnect, increasing risks of timing
@@ -55,8 +61,11 @@ interference.
 increased susceptibility to soft errors, due to the very low charge involved
 in storing a bit value.
 
-Functionally safe systems must be able to provide temporal isolation (a lack of
-interference of a software task by the previous state of the cache).
+Functionally safe systems must be able to provide enough temporal isolation (a
+lack of interference of a software task by the previous state of the cache) or
+sufficient temporal guarantees to satisfy the intended use-case's requirements.
+Thus, functionally safe systems should address at hardware, software, or through
+a combination of both the aforementioned issues when using caches.
 
 TCMs are accessed explicitly by software, and therefore provide more control to
 the software over their use than caches do.
@@ -77,8 +86,8 @@ This means any attempt to analyze the cache behavior for a single software
 thread is complicated by a dependence on unrelated activity in the system (for
 example: other software running, DMA transfers or system IO occurring).
 
-Cache partitioning allows some portion of a cache (for example, specific ways)
-to be allocated to a specific core, hart, or software thread.
+Cache partitioning allows some portion of a cache (for example, specific ways or
+lines) to be allocated to a specific core, hart, or software thread.
 This can significantly reduce performance dependencies between software threads,
 and simplifies cache-related performance analysis.
 It is likely, however, to reduce the overall efficiency of the cache allocation
@@ -130,8 +139,9 @@ determinism.
 
 TCM is often private to a single core, which is a useful property to allow
 processing in isolation.
-A TCM that is shared may enable this by allowing the core to disable external
-access (after initialization, for example).
+A TCM that is shared may implement mechanisms to provide isolation, such as
+disabling external access after initialization, or partitioning and banking the
+TCM.
 
 Some systems allow the configuration of the same fast memory area either fully
 or partially to either cache or scratchpad mode of operation.
