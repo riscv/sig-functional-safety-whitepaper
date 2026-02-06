@@ -143,8 +143,7 @@ operating systems, by allowing them to run on the same host hardware.
 
 | TCM
 | Tightly Coupled Memory. Also known as Closely-Coupled Memories (CCMs),
-  scratchpad memories, local memories, Tightly Integrated Memories (TIMs), or
-  local memories.
+  scratchpad memories, Tightly Integrated Memories (TIMs), or local memories.
 
 | WCET
 | Worst-Case Execution Time.

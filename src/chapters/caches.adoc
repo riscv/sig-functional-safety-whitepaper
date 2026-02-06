@@ -11,7 +11,7 @@ performance CPUs, for mitigating the effects of difference in speed between the
 processor and main memory.
 These kinds of memories provide relatively small, fast on-chip storage close to
 the processor to reduce the number of accesses to main memory, which can improve
-performance and reduce power consumption
+performance and reduce power consumption.
 
 Caches offer a very convenient method to access data.
 They are accessed implicitly -- software does not address them directly.
@@ -32,7 +32,7 @@ Multiple accesses to the same memory location, even from the same instruction,
 may have widely differing access times, depending upon cache state that is not
 easily predictable or controllable by software.
 * Concurrent access to different memory areas from the same core (e.g. a
-superscalear core with multiple cache ports) or different cores may be cached
+superscalar core with multiple cache ports) or different cores may be cached
 in the same area (depending on cache associativity).
 While the cache control hardware ensures the correct data is always returned,
 this can result in one process affecting the timing and performance of another
