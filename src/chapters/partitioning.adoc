@@ -505,6 +505,12 @@ Partitioning is likely to be mandated as an outcome of this analysis.
 [#sec:partitioning:rv]
 ### RISC-V solutions
 
+CAUTION: The following sections introduce some well-advanced specifications
+currently under development by RISC-V International.
+Beware, that while minimal, there might be some differences between the final
+ratified version of these specifications and the text in these sections.
+The text will be updated as these specifications get ratified.
+
 [#sec:partitioning:rv:time]
 #### Time partitioning
 
@@ -583,10 +589,15 @@ PMP rules are critical for enforcing memory isolation: because of such mode
 priority, lower-priority software (such as the OS), running in S-mode, is never
 allowed to access the memory space allocated to higher-privilege software
 running in M-mode, such as the kernel or the bootloader.
-At the system level, M-mode memory is safeguarded from non-CPU initiators
-controlled by lower privileges via the RISC-V IOPMP.
-The current IOPMP specification, near ratification (18/03/2025), introduces a
-Request Role Identifier (RRID) for each bus initiator.
+At the system level, the upcoming non-ISA IOPMP specification will provide means
+to safeguard M-mode memory from non-CPU initiators controlled by lower
+privileges.
+// At the system level, M-mode memory is safeguarded from non-CPU initiators
+// controlled by lower privileges via the RISC-V IOPMP.
+The IOPMP specification, currently near ratification, introduces a Request Role
+Identifier (RRID) for each bus initiator.
+// The current IOPMP specification, near ratification (18/03/2025), introduces a
+// Request Role Identifier (RRID) for each bus initiator.
 This identifier associates an initiator to one or more memory domains, which
 define physical address ranges and specify rules for validating transactions in
 memory-mapped registers.
@@ -630,8 +641,8 @@ extension cite:[sspmp:2025] that replaces the virtual memory infrastructure,
 i.e., the Memory Management Unit (MMU), with an S-Mode PMP (thus, SPMP),
 checking accesses from both User and Supervisor modes.
 The SPMP follows an identical design as the (e)PMP.
-As of this writing (05/05/2025), the [.extension]#Sspmp# extension is near
-entering the final stages towards final ratification.
+// As of this writing (05/05/2025), the [.extension]#Sspmp# extension is near
+// entering the final stages towards final ratification.
 
 Also as part of the RISC-V privileged architecture specification, hardware
 virtualization support is specified through the hypervisor ([.extension]#H#)
@@ -644,20 +655,27 @@ The hypervisor extension also adds another stage of address translation, from
 guest physical addresses to supervisor physical addresses, to virtualize the
 memory and memory-mapped I/O subsystems for a guest operating system and
 therefore providing a secure virtual interface for accessing such elements.
-Similarly, once ratified, the SPMP will be extended to support the hypervisor
-extension by defining a dual-stage PMP with the
-[.extension]#Shspmp# extension cite:[shspmp:2025].
+// Similarly, once ratified, the SPMP will be extended to support the hypervisor
+// extension by defining a dual-stage PMP with the
+// [.extension]#Shspmp# extension cite:[shspmp:2025].
+Similarly, the group working on the [.extension]#Sspmp# extension has already
+envisioned its extension to provide hypervisor support by defining a dual-stage
+PMP  cite:[shspmp:2025].
 
 .RISC-V privileged levels when the Hypervisor extension is enabled. When virtualization is enabled, the Supervisor mode (S mode) is augmented to an hypervisor-extended supervisor mode (HS mode) and the virtual user mode (VU mode) and a virtual supervisor mode (VS mode) are added.
 [#fig:partitioning:hypervisor-extension]
 image::src/chapters/partitioning/hypervisor-extension.svg[Hypervisor extension,align="center",pdfwidth=80%]
 
-In a multi-tenant platform, the PMP/Smepmp can also be leveraged by a Root
+In a multi-tenant platform, the PMP/[.extension]#Smepmp# can also be leveraged by a Root
 Domain Security Manager (RDSM), running in M-Mode, to enforce physical memory
 isolation between supervisor domains.
-Supervisor Domain Access Protection ([.extension]#SmMTT#) cite:[smmtt:2025] is a
-RISC-V privileged architecture extension, under development at the time of this
-writing, to support physical address space (memory and devices) isolation for
+// Supervisor Domain Access Protection (SmMTT) cite:[smmtt:2025] is a
+// RISC-V privileged architecture extension, under development at the time of this
+// writing, to support physical address space (memory and devices) isolation for
+// more than one supervisor domain use case.
+The under development Supervisor Domain Access Protection (SmMTT)
+specification cite:[smmtt:2025] defines a RISC-V privileged architecture
+extension to support physical address space (memory and devices) isolation for
 more than one supervisor domain use case.
 Each supervisor domain is assigned a unique set of physical address regions,
 isolated from other domains, with the RDSM maintaining centralized control over
@@ -702,8 +720,10 @@ supported via the IMSIC.
 Thus, RISC-V implementations featuring exclusively the APLIC will not provide
 any support for interrupt virtualization.
 
-Regarding the upcoming [.extension]#SmMTT# specification, there are other
-resources that can be isolated between Supervisor Domains.
+// Regarding the upcoming [.extension]#SmMTT# specification, there are other
+// resources that can be isolated between Supervisor Domains.
+Regarding the under development SmMTT specification, there are
+other resources that can be isolated between Supervisor Domains.
 For example, the specification defines the [.extension]#IO-MPT# non-ISA
 extension to associate an IOMMU and the devices in scope of that IOMMU with a
 supervisor domain.
@@ -712,6 +732,12 @@ IMSIC interrupt file(s) or an APLIC domain to a supervisor domain.
 
 [#sec:partitioning:recom]
 ### Recommendations
+
+CAUTION: The following sections introduce some well-advanced specifications
+currently under development by RISC-V International.
+Beware, that while minimal, there might be some differences between the final
+ratified version of these specifications and the text in these sections.
+The text will be updated as these specifications get ratified.
 
 [#sec:partitioning:recom:time]
 #### Time partitioning
@@ -736,13 +762,21 @@ Among these, the RISC-V IOMMU specification has been ratified and is now quite
 mature.
 It provides support for performance counters which should be implemented for
 processors targeting the safety critical products, see <<sec:pmc>>.
+// PCIe ATS (Address Translation Services) support should be disabled by default
+// when available, but if required then the user should consider enabling the IOMMU
+// `T2GPA` control bit (see the RISC-V IOMMU cite:[rviommu:2025] for further
+// details) or alternatively, when available, using other means provided by the
+// SoC to ensure the memory partititioning enforcement, like the usage of IOPMPs.
 PCIe ATS (Address Translation Services) support should be disabled by default
 when available, but if required then the user should consider enabling the IOMMU
 `T2GPA` control bit (see the RISC-V IOMMU cite:[rviommu:2025] for further
 details) or alternatively, when available, using other means provided by the
-SoC to ensure the memory partititioning enforcement, like the usage of IOPMPs.
-IOPMP is a RISC-V specification, which is near to ratification, providing PMP
-like memory partitioning for non-CPU initiators.
+SoC to ensure the memory partititioning enforcement, like the usage of the
+under specification IOPMP modules.
+// IOPMP is a RISC-V specification, which is near to ratification, providing PMP
+// like memory partitioning for non-CPU initiators.
+IOPMP is an under development RISC-V specification providing PMP like memory
+partitioning for non-CPU initiators.
 
 Two other ongoing developments near ratification should be considered in the
 design of SoCs for safety critical domains: the RISC-V SPMP and RISC-V
