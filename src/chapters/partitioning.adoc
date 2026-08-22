@@ -443,9 +443,8 @@ be used.
 * Cache coherency mechanisms, centralized (e.g. snooping) vs. distributed (e.g.
 directory-based) and the associated additional traffic should be considered when
 analyzing interference channels.
-* In addition, performance counters (see other chapter) can be used to implement
-interference monitoring (refer to the chapter memdedicated to performance
-counters).
+* In addition, performance counters can be used to implement
+interference monitoring (refer to xref:sec:pmc[xrefstyle=full]).
 
 [#sec:partitioning:safety:other:level]
 ##### Level
