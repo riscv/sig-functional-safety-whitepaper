@@ -62,8 +62,11 @@ true theoretical value/condition) which can ultimately provoke a permanent or
 transient _failure_ on the system, that is the termination of the system
 intended behavior.
 
+| GPOS
+| General Purpose Operating System.
+
 | IEC
-| International Electrotechnical Commission
+| International Electrotechnical Commission.
 
 | Interference
 | Interference refers to the impact an event or task can have in the
