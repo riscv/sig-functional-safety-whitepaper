@@ -222,11 +222,7 @@ memory.
 ### RISC-V solutions
 
 Given that redundancy is intended to be completely transparent, no RISC-V
-specific features have been devised to our knowledge.
-However, it has to be noted that control- and capture-interfaces will add to
-register-interface (core and uncore-IP), and consequently a standardized minimal
-set (ideally mapped against safety requirements from various standards), will
-improve consideration of RISC-V by Safety-System vendors.
+specific features have been devised.
 
 [#sec:redundancy:recom]
 ### Recommendations
