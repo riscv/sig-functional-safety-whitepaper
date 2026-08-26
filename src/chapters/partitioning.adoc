@@ -34,7 +34,7 @@ the system designer, such as the criticality level and priority.
 
 Space partitioning refers to the exclusive assignment of a subset of the
 hardware resources to each task.
-In traditional single-core systems, the term “space partitioning” only implies
+In traditional single-core systems, the term "`space partitioning`" only implies
 memory space partitioning, as the allocation of the single processor core for
 some time also grants access to all other resources of the system.
 This is no longer the case in multicore systems where several cores can
@@ -142,7 +142,7 @@ task.
 Otherwise, effects like unforeseen systematic branch mispredictions or
 unfortunate cache miss patterns could occur if the execution of another task is
 started or resumed with the processor state (e.g. branch predictor state, cache
-replacement state) "as is" after the execution of a previous task.
+replacement state) "`as is`" after the execution of a previous task.
 The time required for resetting, flushing or freezing processor states should be
 accounted for in the scheduling.
 +
@@ -195,8 +195,8 @@ The highest degree of isolation is achieved with a non-work conserving approach,
 where slots are allocated exclusively regardless of whether they are used or
 not.
 However, such a policy has low efficiency since cores willing to access the TDMA
-"protected" resource may be waiting for their slots to arrive while the resource
-is idle.
+"`protected`" resource may be waiting for their slots to arrive while the
+resource is idle.
 A work-conserving approach allocates slots following the TDMA scheme, but if a
 core is not using the resource whenever granted access, the grant is given to
 the following core in the TDMA order.
@@ -443,9 +443,8 @@ be used.
 * Cache coherency mechanisms, centralized (e.g. snooping) vs. distributed (e.g.
 directory-based) and the associated additional traffic should be considered when
 analyzing interference channels.
-* In addition, performance counters (see other chapter) can be used to implement
-interference monitoring (refer to the chapter memdedicated to performance
-counters).
+* In addition, performance counters can be used to implement
+interference monitoring (refer to xref:sec:pmc[xrefstyle=full]).
 
 [#sec:partitioning:safety:other:level]
 ##### Level
@@ -506,6 +505,12 @@ Partitioning is likely to be mandated as an outcome of this analysis.
 [#sec:partitioning:rv]
 ### RISC-V solutions
 
+CAUTION: The following sections introduce some well-advanced specifications
+currently under development by RISC-V International.
+Beware, that while minimal, there might be some differences between the final
+ratified version of these specifications and the text in these sections.
+This document will be updated as these specifications get ratified.
+
 [#sec:partitioning:rv:time]
 #### Time partitioning
 
@@ -520,8 +525,8 @@ recent [.extension]#Sstc# extension:
 This feature can be used to assess whether the bounds of a time partition have
 been exceeded and hence, whether a deadline overrun occurred.
 Also, the RISC-V privileged architecture specification provides a real-time
-counter that can be set and read as needed, under the section “Machine Timer
-Registers (`mtime` and `mtimecmp`)”.
+counter that can be set and read as needed, under the section "`Machine Timer
+Registers (`mtime` and `mtimecmp`)`".
 However, the Machine Timer approach introduces substantial overhead, as all
 timer services for S-mode, HS-mode, and VS-mode must be handled indirectly
 through M-mode.
@@ -542,7 +547,7 @@ There are some features potentially useful to flush cache contents:
 * In the RISC-V architecture privileged specification cite:[rv-priv-spec:2024],
 Section 3.6.6 _Coherence and Cacheability PMAs_, there is a feature that, if
 implemented by the underlying hardware, could be used for that purpose: the
-“configurable cacheability settings” for a memory region.
+"`configurable cacheability settings`" for a memory region.
 It allows specifying whether a memory region is cacheable or not and, upon
 making a region non-cacheable, enforces that all contents belonging to that
 region not yet in memory are propagated to memory and removed from cache
@@ -584,10 +589,11 @@ PMP rules are critical for enforcing memory isolation: because of such mode
 priority, lower-priority software (such as the OS), running in S-mode, is never
 allowed to access the memory space allocated to higher-privilege software
 running in M-mode, such as the kernel or the bootloader.
-At the system level, M-mode memory is safeguarded from non-CPU initiators
-controlled by lower privileges via the RISC-V IOPMP.
-The current IOPMP specification, near ratification (18/03/2025), introduces a
-Request Role Identifier (RRID) for each bus initiator.
+At the system level, the upcoming non-ISA IOPMP specification will provide means
+to safeguard M-mode memory from non-CPU initiators controlled by lower
+privileges.
+The IOPMP specification, currently pending ratification, introduces a Request
+Role Identifier (RRID) for each bus initiator.
 This identifier associates an initiator to one or more memory domains, which
 define physical address ranges and specify rules for validating transactions in
 memory-mapped registers.
@@ -631,8 +637,6 @@ extension cite:[sspmp:2025] that replaces the virtual memory infrastructure,
 i.e., the Memory Management Unit (MMU), with an S-Mode PMP (thus, SPMP),
 checking accesses from both User and Supervisor modes.
 The SPMP follows an identical design as the (e)PMP.
-As of this writing (05/05/2025), the [.extension]#Sspmp# extension is near
-entering the final stages towards final ratification.
 
 Also as part of the RISC-V privileged architecture specification, hardware
 virtualization support is specified through the hypervisor ([.extension]#H#)
@@ -645,20 +649,17 @@ The hypervisor extension also adds another stage of address translation, from
 guest physical addresses to supervisor physical addresses, to virtualize the
 memory and memory-mapped I/O subsystems for a guest operating system and
 therefore providing a secure virtual interface for accessing such elements.
-Similarly, once ratified, the SPMP will be extended to support the hypervisor
-extension by defining a dual-stage PMP with the
-[.extension]#Shspmp# extension cite:[shspmp:2025].
 
 .RISC-V privileged levels when the Hypervisor extension is enabled. When virtualization is enabled, the Supervisor mode (S mode) is augmented to an hypervisor-extended supervisor mode (HS mode) and the virtual user mode (VU mode) and a virtual supervisor mode (VS mode) are added.
 [#fig:partitioning:hypervisor-extension]
 image::src/chapters/partitioning/hypervisor-extension.svg[Hypervisor extension,align="center",pdfwidth=80%]
 
-In a multi-tenant platform, the PMP/Smepmp can also be leveraged by a Root
+In a multi-tenant platform, the PMP/[.extension]#Smepmp# can also be leveraged by a Root
 Domain Security Manager (RDSM), running in M-Mode, to enforce physical memory
 isolation between supervisor domains.
-Supervisor Domain Access Protection ([.extension]#SmMTT#) cite:[smmtt:2025] is a
-RISC-V privileged architecture extension, under development at the time of this
-writing, to support physical address space (memory and devices) isolation for
+The development Supervisor Domain Access Protection (SmMTT) specification
+draft cite:[smmtt:2025] defines a RISC-V privileged architecture
+extension to support physical address space (memory and devices) isolation for
 more than one supervisor domain use case.
 Each supervisor domain is assigned a unique set of physical address regions,
 isolated from other domains, with the RDSM maintaining centralized control over
@@ -703,8 +704,8 @@ supported via the IMSIC.
 Thus, RISC-V implementations featuring exclusively the APLIC will not provide
 any support for interrupt virtualization.
 
-Regarding the upcoming [.extension]#SmMTT# specification, there are other
-resources that can be isolated between Supervisor Domains.
+Regarding the SmMTT specification draft, there are
+other resources that can be isolated between Supervisor Domains.
 For example, the specification defines the [.extension]#IO-MPT# non-ISA
 extension to associate an IOMMU and the devices in scope of that IOMMU with a
 supervisor domain.
@@ -713,6 +714,12 @@ IMSIC interrupt file(s) or an APLIC domain to a supervisor domain.
 
 [#sec:partitioning:recom]
 ### Recommendations
+
+CAUTION: The following sections introduce some well-advanced specifications
+currently under development by RISC-V International.
+Beware, that while minimal, there might be some differences between the final
+ratified version of these specifications and the text in these sections.
+This document will be updated as these specifications get ratified.
 
 [#sec:partitioning:recom:time]
 #### Time partitioning
@@ -741,9 +748,10 @@ PCIe ATS (Address Translation Services) support should be disabled by default
 when available, but if required then the user should consider enabling the IOMMU
 `T2GPA` control bit (see the RISC-V IOMMU cite:[rviommu:2025] for further
 details) or alternatively, when available, using other means provided by the
-SoC to ensure the memory partititioning enforcement, like the usage of IOPMPs.
-IOPMP is a RISC-V specification, which is near to ratification, providing PMP
-like memory partitioning for non-CPU initiators.
+SoC to ensure the memory partititioning enforcement, like the usage of the
+under specification IOPMP modules.
+IOPMP is aRISC-V specification draft providing PMP like memory
+partitioning for non-CPU initiators.
 
 Two other ongoing developments near ratification should be considered in the
 design of SoCs for safety critical domains: the RISC-V SPMP and RISC-V
