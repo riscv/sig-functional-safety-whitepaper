@@ -1,5 +1,5 @@
 :version: 0.1
-:project-name: DMS-1084 Automotive SIG Cybersecurity Section
+:project-name: Automotive SIG Cybersecurity Section
 = {project-name} v{version}
 :imagesdir: ./
 :toc:
@@ -14,12 +14,8 @@
 |===
 |Document Declaration |
 
-|Document ID |DMS-1084-Undeclared-CX-CUSD
-|Document Control |CONFIDENTIAL
-|Associated Program |Undeclared
 |Title |Automotive SIG Cybersecurity Section
 |Description |This document is the Cybersecurity Section of the Automotive SIG White Paper
-|DMS Jira Key |https://sifive.atlassian.net/browse/DMS-1084[DMS-1084]
 |Current Version |0.2
 |Revision Author |Yann LOISEL
 |Revision Date |2-sep-2026
@@ -37,7 +33,7 @@
 Revision History
 
 * 0.2
-** Update to aligne with Thomas Roecker (Infineon), Sam Visalli (Tenstorrent) and Richard's comments
+** Update to align with Thomas Roecker (Infineon), Sam Visalli (Tenstorrent) and Richard York (SiFive) comments
 
 * 0.1
 ** Create initial draft
@@ -175,7 +171,7 @@ Interpreting technical specifications or architectural extensions in isolation o
 In a restricted software environment (Small-Code Model):
 
 ** The system utilizes Machine (M) and User (U) privilege modes, as operating solely in M-mode presents an unacceptable risk profile. Executing the majority of application tasks in U-mode effectively mitigates the danger of privilege escalation during a breach.
-** The M-mode environment is reserved for a minimal task scheduler and critical hardware abstraction firmware. Adopting micro-kernel architectures can further reduce this footprint by delegating driver execution to U-mode.
+** The M-mode environment is reserved for a minimal task scheduler or compact RTOS and critical hardware abstraction firmware. Adopting micro-kernel architectures can further reduce this footprint by delegating driver execution to U-mode.
 ** The M-mode firmware manages Physical Memory Protection (PMP) configurations, ensuring strict isolation between the kernel and tasks, as well as between individual tasks. Smart PMP slot management facilitates highly efficient reconfiguration during context switches.
 ** Should a U-mode task be compromised, the exploit remains contained, preventing lateral movement to other tasks or elevation to M-mode. This compartmentalization ensures that the broader codebase maintains operational integrity even under active local attack.
 
