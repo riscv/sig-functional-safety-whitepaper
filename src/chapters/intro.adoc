@@ -22,14 +22,14 @@ safety management, system architecture, testing, and validation and are aimed
 at achieving a specified Safety Integrity Level (SIL) or Automotive SIL (ASIL), as
 in the case of ISO 26262 cite:[iso26262:2018].
 
-At its core, functional safety is about identifying safety-related risks, 
-defining and implementing appropriate risk responses, and detecting, preventing, 
+At its core, functional safety is about identifying safety-related risks,
+defining and implementing appropriate risk responses, and detecting, preventing,
 and mitigating the risks caused by unexpected behavior.
 Fundamentally, it involves designing systems that are robust to systematic and
 random failures, such as systems that are unlikely to fail in an unsafe manner or
 they can enter a safe state when a safety-related failure occurs.
 
-Safety requirements play a key role across all safety-related industries, where 
+Safety requirements play a key role across all safety-related industries, where
 requirements that are derived from system design and analysis are
 cascaded to the computing elements of the system, such as the processors and
 operating systems.
@@ -55,7 +55,7 @@ The following is a non-exhaustive list of those solutions:
 * Use of memory management units (MMU) or physical memory protection (PMP) to
   ensure memory-space isolation.
 * Use of designs providing spatial redundancy (e.g. lockstep) or temporal
-  redundancy (e.g. replay), allowing continuous operation in the presence of 
+  redundancy (e.g. replay), allowing continuous operation in the presence of
   a fault to improve reliability.
   These redundancy solutions can be augmented with diversity or dissimilarity to
   minimize common failure modes.
@@ -66,8 +66,8 @@ The following is a non-exhaustive list of those solutions:
 * Debug interfaces for the external observability of the SoCs.
 * Extensive use of documentation, including complete design descriptions,
   which are sometimes only available under a non-disclosure agreement (NDA), provides
-  a detailed description of the SoC functional and timing behavior required to 
-  demonstrate the isolation between the different software components that are 
+  a detailed description of the SoC functional and timing behavior required to
+  demonstrate the isolation between the different software components that are
   running on top of it.
 
 The purpose of this document is to describe different mechanisms and methods
@@ -79,14 +79,14 @@ adoption of RISC-V in safety-critical domains.
 
 ### Disclaimer
 
-This document does not try to address all functional safety mechanisms and 
-methods, nor does it fully discuss those that are addressed. Furthermore, the 
-specifications issued by RISC-V International are  continuously amended, 
-updated, and extended. Therefore, the solutions and recommendations identified 
+This document does not try to address all functional safety mechanisms and
+methods, nor does it fully discuss those that are addressed. Furthermore, the
+specifications issued by RISC-V International are  continuously amended,
+updated, and extended. Therefore, the solutions and recommendations identified
 and discussed in this document might be incomplete or outdated.
 
 Finally, the contents of this document are limited to the knowledge of its
-contributors. If you find missing, incomplete, or outdated information in this document, 
+contributors. If you find missing, incomplete, or outdated information in this document,
 please contact the Functional Safety Special Interest Group (Functional Safety SIG) at
 https://lists.riscv.org/g/sig-safety and contribute to the completeness and
 accuracy of this document.
@@ -110,7 +110,7 @@ This white paper currently includes chapters for the following topics:
 Additional chapters will be added in the future to address additional functional
 safety topics.
 Likewise, existing chapters will be updated and/or extended as required, e.g.
-adding references to new RISC-V specifications that address topics covered in 
+adding references to new RISC-V specifications that address topics covered in
 these chapters.
 
 // =============================================================================
@@ -121,16 +121,16 @@ these chapters.
 
 All of the chapters follow the same structure:
 
-* The *Safety needs* section describes the relationship between the chapter 
+* The *Safety needs* section describes the relationship between the chapter
   topic and safety requirements for safety-critical systems.
-* The *RISC-V solutions* section identifies current RISC-V specifications that 
+* The *RISC-V solutions* section identifies current RISC-V specifications that
   address the chapter topic.
-* The *Recommendations* section provides recommendations on how current and 
+* The *Recommendations* section provides recommendations on how current and
   ongoing RISC-V specifications can be used to address the chapter topic.
-  These recommendations apply both at the hardware level, for the design of SoCs 
-  targeting safety-critical systems, and at the software level, for how mechanisms 
+  These recommendations apply both at the hardware level, for the design of SoCs
+  targeting safety-critical systems, and at the software level, for how mechanisms
   implementing those specifications should be used.
-* The *Related activities* section provides links to external bodies that address 
+* The *Related activities* section provides links to external bodies that address
   the chapter topic, as well as other chapters related to the topic.
 
 include::intro/glossary.adoc[]
