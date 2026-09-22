@@ -4,302 +4,309 @@
 [#sec:caches:safety]
 ### Safety needs
 
-Caches and Tightly Coupled Memories (TCMs, also known as Closely-Coupled
+Caches and Tightly Coupled Memories (TCMs), also known as Closely-Coupled
 Memories (CCMs), scratchpad memories, local memories, Tightly Integrated
-Memories (TIMs), or local store) are important components, particularly in high
-performance CPUs, for mitigating the effects of difference in speed between the
+Memories (TIMs), or local stores, are important components, particularly in 
+high-performance CPUs, for mitigating the effects of differences in speed between the
 processor and main memory.
-These kinds of memories provide relatively small, fast on-chip storage close to
-the processor to reduce the number of accesses to main memory, which can improve
+These kinds of memories provide relatively small, fast, on-chip storage close to
+the processor, reducing the number of accesses to main memory, which can improve
 performance and reduce power consumption.
 
 Caches offer a very convenient method to access data.
-They are accessed implicitly -- software does not address them directly.
-Hardware mechanisms take care of keeping copies of appropriate data in these
-memories, and tracking which data is stored where.
-However, they introduce a number of potential functional and safety related
+They are accessed implicitly; software does not address them directly.
+Hardware mechanisms take care of keeping copies of appropriate data in 
+these memories and tracking where the data is stored.
+However, caches introduce a number of potential functional and safety-related
 issues:
 
-* The implicit nature of the memory access through a cache memory, while very
-convenient from a programming point of view (for non-safety-critical systems),
-means there is little control over the transaction.
-Dedicated instructions such as the [.extension]#CMO# extensions or memory fences
-that may be needed to ensure consistency (especially in a copy-back cache) are
+* The implicit nature of memory access through a cache, while very convenient 
+from a programming perspective (particularly for non-safety-critical systems), 
+means there is little control over the transaction. 
+Dedicated instructions, such as the [.extension]#CMO# extensions, or memory fences 
+that may be needed to ensure consistency (especially in a write-back cache), are 
 usually not exposed in higher-level programming languages.
-* While the average memory access time is reduced, variability of access time is
-increased.
-Multiple accesses to the same memory location, even from the same instruction,
-may have widely differing access times, depending upon cache state that is not
+
+* While the average memory access time is reduced, the variability of access time is increased. 
+Multiple accesses to the same memory location, even from the same instruction, 
+may have widely differing access times, depending on the cache state, which is not 
 easily predictable or controllable by software.
-* Concurrent access to different memory areas from the same core (e.g. a
-superscalar core with multiple cache ports) or different cores may be cached
-in the same area (depending on cache associativity).
-While the cache control hardware ensures the correct data is always returned,
-this can result in one process affecting the timing and performance of another
-process (e.g. through mutual eviction of data).
-* The cache usage behavior of one core may affect the processes' performance and
-execution time variability in another core.
-This may be due to the above mentioned cache state and concurrent access, but
-also due to the caches capabilities to handle the cores' requests, e.g.
-due to the maximum number of misses the cache can handle a core might need to
-wait for the misses of another core to be serviced before handling its requests.
-* The cache replacement (or eviction) policy may have an impact on the ability
-to perform timing analysis.
-For example a PLRU (pseudo least-recently used) algorithm can be more
-difficult to analyze than true LRU (least-recently used).
-* Coherency issues can occur as multiple (sometimes different) copies of the
-same data are stored in different locations.
-These issues can become very complex where multiple agents access the same
-memory, and where multiple caches exist in a system.
-While these issues are predictable and can be avoided with correct software
-design, the requirements to achieve this may be non-trivial.
-Furthermore, coherency management may further increase the non-uniformity of
-memory access times, for example directory-based cache coherency incurs
-additional traffic on the interconnect, increasing risks of timing
-interference.
-* The type of fast memories that are required to implement caches, have an
-increased susceptibility to soft errors, due to the very low charge involved
+
+* Concurrent accesses to different memory areas from the same core (e.g., a 
+superscalar core with multiple cache ports) or from different cores may be cached 
+in the same area (depending on cache associativity). 
+While the cache control hardware ensures that the correct data is always returned, 
+this can result in one process affecting the timing and performance of another 
+process (e.g., through mutual eviction of data).
+
+* The cache usage behavior of one core may affect the performance and execution-time 
+variability of processes running on another core. 
+This may be due to the cache state and concurrent access previously described, but 
+also to the cache's ability to handle requests from multiple cores. For example, if 
+a cache can handle only a maximum number of misses, a core might need to 
+wait for misses from another core to be serviced before its own requests 
+can be handled.
+
+* The cache replacement (or eviction) policy may affect the ability to perform 
+timing analysis. 
+For example, a PLRU (pseudo-least-recently-used) algorithm can be more 
+difficult to analyze than true LRU (least-recently-used).
+
+* Coherency issues can occur when multiple (sometimes different) copies of the 
+same data are stored in different locations. 
+These issues can become very complex when multiple agents access the same 
+memory and multiple caches exist in a system. 
+While these issues are predictable and can be avoided with correct software 
+design, the requirements for achieving this may be non-trivial. 
+Furthermore, coherency management may further increase the non-uniformity of 
+memory access times. For example, directory-based cache coherency incurs additional 
+traffic on the interconnect, increasing the risk of timing interference.
+
+* The types of fast memories that are required to implement caches have an 
+increased susceptibility to soft errors due to the very low charge involved 
 in storing a bit value.
 
-Functionally safe systems must be able to provide enough temporal isolation (a
-lack of interference of a software task by the previous state of the cache) or
-sufficient temporal guarantees to satisfy the intended use-case's requirements.
-Thus, functionally safe systems should address at hardware, software, or through
-a combination of both the aforementioned issues when using caches.
+Functionally safe systems must be able to provide sufficient temporal isolation 
+(i.e., a lack of interference with a software task caused by the previous state of 
+the cache) or sufficient temporal guarantees to satisfy the requirements of the 
+intended use case. Thus, functionally safe systems should address, at the hardware 
+level, software level, or through a combination of both, the aforementioned issues when 
+using caches.
 
-TCMs are accessed explicitly by software, and therefore provide more control to
-the software over their use than caches do.
-If used appropriately, a TCM can avoid or reduce the non-determinism that caches
-can introduce.
-There is however an additional burden on the software to manage this usage (for
-example copying data into and out of the TCM).
+TCMs are accessed explicitly by software and therefore provide more control over their 
+use than caches do. 
+If used appropriately, a TCM can avoid or reduce the non-determinism that caches 
+can introduce. 
+However, there is an additional burden on the software to manage this usage, for 
+example, by copying data into and out of the TCM.
 
 [#sec:caches:safety:features]
 #### Features
 
 ##### Cache partitioning
 
-A cache memory may be shared between several processors (or other agents).
-Even if a cache is private to a single core, it will normally be shared by all
-harts and separate software threads time-multiplexed onto that hart.
-This means any attempt to analyze the cache behavior for a single software
-thread is complicated by a dependence on unrelated activity in the system (for
-example: other software running, DMA transfers or system IO occurring).
+A cache memory may be shared between several processors (or other agents). 
+Even if a cache is private to a single core, it will normally be shared by all 
+harts and separate software threads time-multiplexed onto that hart. 
+This means that any attempt to analyze the cache behavior for a single software 
+thread is complicated by its dependence on unrelated activity in the system (for 
+example, other software running, DMA transfers, or system I/O).
 
-Cache partitioning allows some portion of a cache (for example, specific ways or
-lines) to be allocated to a specific core, hart, or software thread.
-This can significantly reduce performance dependencies between software threads,
-and simplifies cache-related performance analysis.
-It is likely, however, to reduce the overall efficiency of the cache allocation
-mechanisms and therefore overall performance.
+Cache partitioning allows some portion of a cache (for example, specific ways or 
+lines) to be allocated to a specific core, hart, or software thread. 
+This can significantly reduce performance dependencies between software threads 
+and simplify cache-related performance analysis. 
+However, it is likely to reduce the overall efficiency of the cache allocation 
+mechanisms and, therefore, overall performance.
 
 ##### Cache lockdown
 
-A cache implementation may include a facility to load data (or instructions)
-into specific ways of the cache, then '_lock_' those ways, preventing them from
-being selected for cache allocations and evictions.
-This mechanism allows software to guarantee that accesses to particular
-data/instructions will hit in the cache, improving determinism.
-This can also improve the performance of a particular function.
-Cache locking does, however, reduce the amount of cache available for other
-data, thus reducing overall system performance.
+A cache implementation may include a facility to load data (or instructions) 
+into specific ways of the cache and then '_lock_' those ways, preventing them from 
+being selected for cache allocation or eviction. 
+This mechanism allows software to guarantee that accesses to particular 
+data or instructions will hit in the cache, improving determinism. 
+It can also improve the performance of a particular function. 
+However, cache locking reduces the amount of cache available for other data, 
+thereby reducing overall system performance.
 
-Data locked into a cache in this manner incurs the area and power overheads
-associated with tag RAMs and cache lookups, so it is a relatively inefficient
-method of storing critical data.
-However, it does provide flexibility to divide cache resources dynamically
-between standard cached and selected critical data.
-In practice this allocation is likely to be a static configuration during
-run-time.
+Data locked into a cache in this manner incurs the area and power overheads 
+associated with tag RAMs and cache lookups, making it a relatively inefficient 
+method of storing critical data. 
+However, it provides flexibility to divide cache resources dynamically 
+between standard cached data and selected critical data. 
+In practice, this allocation is likely to be a static configuration during runtime.
 
-Cache lockdown should not generally be used for data that is not exclusively
-accessed through the same cache, for example memory that may also be directly
-updated by a DMA controller.
-If it is, any software coherency management schemes may need to unlock, reload
-and relock such data.
-Hardware cache coherency mechanisms may not be constrained by cache locking and
-still perform evictions, possibly requiring manual reloading and relocking.
+Cache lockdown should not generally be used for data that is not accessed 
+exclusively through the same cache, for example, memory that may also be directly 
+updated by a DMA controller. 
+If it is, software coherency management schemes may need to unlock, reload, and relock 
+such data. 
+Hardware cache coherency mechanisms may not be constrained by cache locking and 
+may still perform evictions, possibly requiring manual reloading and relocking.        
 
 ##### Tightly Coupled Memory
 
-Tightly Coupled Memory (TCM) provides deterministic (usually fast) access to a
-defined area of the address space.
-The physical memory address space it is mapped to will usually be configurable
-at run time.
-TCM is typically implemented as SRAM, but there can also be other types of
-memory, such as flash or ROM.
-If the TCM is implemented as volatile memory, an external access mechanism may
-allow the TCM to be initialized before the processor comes out of reset,
-allowing boot from the TCM.
-Alternatively, the CPU may boot from external memory, and load the TCM (using a
+Tightly Coupled Memory (TCM) provides deterministic (usually fast) access to a 
+defined area of the address space. 
+The physical memory address space to which it is mapped will usually be configurable 
+at runtime. 
+TCM is typically implemented as SRAM, but it can also be implemented using other 
+types of memory, such as flash or ROM.
+
+If the TCM is implemented as volatile memory, an external access mechanism may 
+allow the TCM to be initialized before the processor comes out of reset, 
+allowing the processor to boot from the TCM. 
+Alternatively, the CPU may boot from external memory and load the TCM (using a 
 bootloader or dynamically when creating a task) before executing code from it.
-While many topologies are possible and widely used, TCM is often implemented
-with separate instruction and data memories, offering improved performance and
+
+While many topologies are possible and widely used, TCM is often implemented 
+with separate instruction and data memories, offering improved performance and 
 determinism.
 
-TCM is often private to a single core, which is a useful property to allow
-processing in isolation.
-A TCM that is shared may implement mechanisms to provide isolation, such as
-disabling external access after initialization, or partitioning and banking the
+TCM is often private to a single core, which is a useful property to allow 
+processing in isolation. 
+A shared TCM may implement mechanisms to provide isolation, such as 
+disabling external access after initialization or partitioning and banking the 
 TCM.
 
-Some systems allow the configuration of the same fast memory area either fully
-or partially to either cache or scratchpad mode of operation.
-For example, three-quarters may be used as cache and the remaining quarter as
+Some systems allow the same fast memory area to be configured, either fully 
+or partially, as either cache or scratchpad memory. 
+For example, three-quarters may be used as cache and the remaining quarter as 
 TCM.
 
 ##### Fast System Memory
 
-High performance compute systems usually have a complex memory system which can
-concurrently process multiple outstanding accesses from multiple processor cores
-and other agents, and complete them out-of-order (within defined constraints).
-This can deliver high performance while making efficient use of shared resources
+High-performance compute systems usually have a complex memory system that can 
+concurrently process multiple outstanding accesses from multiple processor cores 
+and other agents and complete them out of order (within defined constraints). 
+This can deliver high performance while making efficient use of shared resources, 
 such as communication paths through an interconnect.
-However, this introduces another potential source of interference between
-processes.
-If one process floods the memory system with many requests, another may be
-forced to wait for the completion of an access which could otherwise have
+
+However, this introduces another potential source of interference between 
+processes. If one process floods the memory system with many requests, another may be 
+forced to wait for the completion of an access that could otherwise have 
 completed quickly.
 
-Processors may implement additional memory interfaces to provide a dedicated
-path to memory or peripherals for specific address spaces, avoiding influence
-from the main memory subsystem.
-Alternatively, priority and QoS signaling on the main system bus can work in
-conjunction with the system interconnect to similarly ensure deterministic
-accesses.
+Processors may implement additional memory interfaces to provide a dedicated 
+path to memory or peripherals for specific address spaces, avoiding influence 
+from the main memory subsystem. 
+Alternatively, priority and QoS signaling on the main system bus can work in 
+conjunction with the system interconnect to similarly provide deterministic 
+access.
 
 ##### Fault tolerance
 
-Cache and TCM memories are inherently vulnerable to random errors and some form
-of redundancy will typically be required to mitigate the risk introduced by
-these (see <<sec:redundancy>>).
+Cache and TCM memories are inherently vulnerable to random errors, and some form 
+of redundancy will typically be required to mitigate the risk introduced by 
+these errors (see <[sec:redundancy](sec:redundancy)>).
+
 This is usually implemented in the form of parity bits or ECC.
-Instruction caches and write-through data caches store copies of data that are
-also valid in external memory (possibly subject to various buffers being
-drained).
-In these cases, error detection without hardware correction is often sufficient
-(though multi-bit error detection may still be required) as the correct data can
+
+Instruction caches and write-through data caches store copies of data that are 
+also valid in external memory, possibly subject to various buffers being drained. 
+In these cases, error detection without hardware correction is often sufficient 
+(although multi-bit error detection may still be required), as the correct data can 
 be reloaded from main memory.
-TCM and copy-back data/combined caches may contain the only valid copy of active
-data, so error correction is often required (SECDED protection is common for
-ISO 26262 cite:[iso26262:2018]).
+
+TCMs and copy-back data or combined caches may contain the only valid copy of active 
+data, so error correction is often required. SECDED protection is common for 
+ISO 26262 cite:[iso26262:2018].
 
 ##### Address translation
 
-For systems implementing virtual to physical address translation, a translation
-lookaside buffer (TLB) is frequently used to cache address translations stored
-in tables in external memory.
-TCMs and caches are usually physically addressed (or at least physically
-tagged), so a TLB miss can introduce non-deterministic response times, in a
-similar way to a cache miss.
-In systems where a TLB miss is managed in hardware (also known as hardware page
-table walks), additional implicit traffic on the interconnect is generated, and
-it may also evict data from other tasks in data caches.
+For systems implementing virtual-to-physical address translation, a translation 
+lookaside buffer (TLB) is frequently used to cache address translations stored 
+in page tables in external memory.
 
-TLB lockdown (similar to cache lockdown) or a software-controlled section of the
-TLB are possible solutions to this.
+TCMs and caches are usually physically addressed (or at least physically 
+tagged), so a TLB miss can introduce non-deterministic response times, similar 
+to a cache miss. 
+In systems where a TLB miss is managed in hardware (also known as a hardware 
+page-table walk), additional implicit traffic is generated on the interconnect, 
+and it may also evict data from other tasks in data caches.
+
+TLB lockdown (similar to cache lockdown) or a software-controlled section of the 
+TLB are possible solutions to these issues.
 
 [#sec:caches:safety:level]
 #### Level
 
-Level 1 caches (which may be the only caches in simpler systems) are generally
-associated with a single core.
-Larger systems may contain several levels of cache, where the higher levels may
-be shared among several processors, a larger subsystem, or the entire SoC.
-Cache partitioning is more common in caches shared between multiple processors
-but could also be implemented in a single-core cache with a partition devoted to
-either a single hart or a subset of software threads scheduled to run on that
-single hart.
-Cache lockdown could be used in any level of cache.
+Level 1 caches (which may be the only caches in simpler systems) are generally 
+associated with a single core. 
+Larger systems may contain several levels of cache, with the higher levels shared 
+among several processors, a larger subsystem, or the entire SoC.
 
-TCMs may have different coupling tightness, from tight core integration, to L1
-bus connection, to L2 or L3 interconnect, and therefore may be associated with a
-single core (and shared among harts within that core), shared between several
-cores, or the entire SoC.
+Cache partitioning is more common in caches shared between multiple processors, 
+but it could also be implemented in a single-core cache, with a partition devoted to 
+either a single hart or a subset of software threads scheduled to run on that hart. 
+Cache lockdown could be used at any level of the cache hierarchy.
 
-While caches, TCMs and their integration within an SoC are hardware concerns,
-all of them have an important impact at the software level.
-Software typically has to manage the capabilities offered by these components
-and their integration in the SoC. Examples include but are not limited to:
+TCMs may have different degrees of coupling, ranging from tight integration with a core, 
+to connection to an L1 bus, to connection to an L2 or L3 interconnect. They may therefore 
+be associated with a single core (and shared among harts within that core), shared between 
+several cores, or shared across the entire SoC.
 
-* Managing the cache capabilities like locking and partitioning.
-* Managing cache coherency, e.g. defining which data needs hardware coherency
-management.
+While caches, TCMs, and their integration within an SoC are hardware concerns, 
+all of them have an important impact at the software level. 
+Software typically has to manage the capabilities offered by these components 
+and their integration into the SoC. Examples include, but are not limited to:
+
+* Managing cache capabilities, such as locking and partitioning.
+* Managing cache coherency, e.g., defining which data requires hardware coherency management.
 * Managing which data needs to be stored in a TCM and when.
-* Performing appropriate cache maintenance operations, for example cleaning the
-data cache and invalidating the instruction cache after code is written to
+* Performing appropriate cache maintenance operations, for example, cleaning 
+the data cache and invalidating the instruction cache after code is written to 
 memory.
 
 [#sec:caches:safety:importance]
 #### Importance
 
-Caches are not a requirement originating from safety considerations -- indeed
-they introduce additional safety concerns.
-However, caches often provide essential improvements in system performance and
-reduction in power consumption, and shared caches (usually at the L2 level and
+Caches are not a requirement originating from safety considerations; indeed, 
+they introduce additional safety concerns. 
+However, caches often provide essential improvements in system performance and 
+reductions in power consumption, and shared caches (usually at the L2 level and 
 deeper) are required to support symmetric multiprocessing (SMP) efficiently.
 
-Deterministic response times, even in the presence of caches, is often a
-"Must Have" requirement, and many of the mechanisms here are approaches to
+Deterministic response times, even in the presence of caches, are often a 
+“Must Have” requirement, and many of the mechanisms described here are approaches to 
 help achieve this.
 
-TCMs are often a “Must Have” requirement, in order to provide the fast,
-deterministic behavior required by many safety-critical applications, and to
+TCMs are often a “Must Have” requirement because they provide the fast, 
+deterministic behavior required by many safety-critical applications and 
 help ensure freedom from interference between processes.
 
 [#sec:caches:safety:justification]
 #### Justification
 
-Caches, TCMs, and the memory subsystem are some of the main shared components
-in a system.
-As such, they are important contention points to be considered in its design.
+Caches, TCMs, and the memory subsystem are some of the main shared components 
+in a system. As such, they are important contention points to consider in its design.
 
-In avionics, the CAST 32-A cite:[cast32:2016] guideline mandates that the interference channels are
-identified and mitigated.
-Caches, as a shared resource between different tasks in a hart or between harts,
+In avionics, the CAST 32-A cite:[cast32:2016] guideline mandates that interference channels 
+be identified and mitigated. 
+Caches, as a shared resource between different tasks within a hart or between harts, 
 represent a significant interference channel.
-TCMs, being typically attached to a single core, naturally mitigate most of the
-interferences, however the software running in the core should ensure its
-management to mitigate interferences between the different tasks that might use
-them (and between the harts within the core, if more than one hart accesses the
-TCM).
 
-Likewise, in the automotive domain, the ISO 26262 cite:[iso26262:2018] part 6
-(software) requires freedom from interference across different software
-partitions.
-Caches and TCMs are a potential source of dependent failures and/or interference
+TCMs, being typically attached to a single core, naturally mitigate most interference. 
+However, the software running on the core should ensure that TCMs are managed to mitigate 
+interference between the different tasks that might use them, as well as between 
+harts within the core if more than one hart accesses the TCM.
+
+Likewise, in the automotive domain, ISO 26262 cite:[iso26262:2018] Part 6 (Software) 
+requires freedom from interference across different software partitions. 
+Caches and TCMs are potential sources of dependent failures and/or interference 
 through resource sharing, which should be mitigated.
 
 [#sec:caches:rv]
 ### RISC-V solutions
 
-The RISC-V Privileged ISA Specification cite:[rv-priv-spec:2024] Section 3.6.6
-describes Physical Memory Attributes (PMAs) including cacheability, and allows
-for a platform-specific scheme to mark particular areas of physical memory as
-non-cacheable.
-This scheme may be either fixed or configurable by Machine Mode Software.
-This satisfies safety requirements for disabling the effect of caches for
-particular data areas (though not through a standardized mechanism).
-For paged virtual-memory systems, if implemented the [.extension]#Svpbmt#
-(Page-Based Memory Types) extension (see RISC-V Privileged ISA Specification
-cite:[rv-priv-spec:2024] Chapter 12) provides a more suitable and standardized
+The RISC-V Privileged ISA Specification cite:[rv-priv-spec:2024] Section 3.6.6 
+describes Physical Memory Attributes (PMAs), including cacheability, and allows 
+for a platform-specific scheme to mark particular areas of physical memory as 
+non-cacheable. 
+This scheme may be either fixed or configurable by Machine Mode software. 
+This satisfies safety requirements for disabling the effects of caches for 
+particular data areas, although not through a standardized mechanism. 
+For systems that implement paged virtual memory, the [.extension]#Svpbmt# 
+(Page-Based Memory Types) extension (see RISC-V Privileged ISA Specification 
+cite:[rv-priv-spec:2024] Chapter 12) provides a more suitable and standardized 
 method for achieving the same objective.
 
-The RISC-V Unprivileged ISA Specification cite:[rv-unpriv-spec:2024] Chapter 17
-defines the RISC-V Weak Memory Ordering model, applied to main memory.
-The weak ordering model can improve overall performance, but provides less
+The RISC-V Unprivileged ISA Specification cite:[rv-unpriv-spec:2024] Chapter 17 
+defines the RISC-V Weak Memory Ordering model, which is applied to main memory. 
+The weak ordering model can improve overall performance, but provides less 
 predictability than a strongly ordered model.
 
-In the RISC-V Unprivileged ISA Specification cite:[rv-unpriv-spec:2024] Chapter
-19, the Cache Management Operations TG specified instructions to manage a Cache
-Block (with architecture-dependant block size):
+In Chapter 19 of the RISC-V Unprivileged ISA Specification cite:[rv-unpriv-spec:2024], 
+the Cache Management Operations TG specifies instructions to manage cache 
+blocks (with an architecture-dependent block size):
 
-* The [.extension]#Zicbom# extension defines a set of cache-block management
-instructions: `CBO.INVAL`, `CBO.CLEAN`, and `CBO.FLUSH`
-* The [.extension]#Zicboz# extension defines a cache-block zero instruction:
-`CBO.ZERO`
-* The [.extension]#Zicbop# extension defines a set of cache-block prefetch
-instructions: `PREFETCH.R`, `PREFETCH.W`, and `PREFETCH.I`
+* The [.extension]#Zicbom# extension defines a set of cache-block management 
+instructions: `CBO.INVAL`, `CBO.CLEAN`, and `CBO.FLUSH`.
+* The [.extension]#Zicboz# extension defines a cache-block zero instruction: 
+`CBO.ZERO`.
+* The [.extension]#Zicbop# extension defines a set of cache-block prefetch 
+instructions: `PREFETCH.R`, `PREFETCH.W`, and `PREFETCH.I`.
 
 [#sec:caches:recom]
 ### Recommendations
@@ -307,114 +314,118 @@ instructions: `PREFETCH.R`, `PREFETCH.W`, and `PREFETCH.I`
 [#sec:caches:recom:isa]
 #### RISC-V ISA specification recommendations
 
-. In order to provide temporal isolation (a lack of interference of a software
-task by the previous state of the cache), operations to clean and invalidate
-the entirety of the  cache should be supported.
-If the cache is partitioned, these operations could act on a single partition.
-Alternatively, set/way operations should be supported, which can be used to
-synthesize such entire cache/partition operations.
+. In order to provide temporal isolation (that is, a lack of interference from 
+the previous state of the cache), operations to clean and invalidate the 
+entirety of the cache should be supported. 
+If the cache is partitioned, these operations could act on a single partition. 
+Alternatively, set/way operations should be supported, which can be used to 
+synthesize such entire-cache or partition operations.
 +
-The ability to control (clean/invalidate) caches is provided in the (ratified)
-"`Cache Management Operations`" extensions, more specifically the
-[.extension]#Zicbom# (Cache Block Management) extension.
-These specify "`block operations`" -- operations related to a particular
+The ability to control caches (clean/invalidate) is provided by the ratified 
+"`Cache Management Operations`" extensions, more specifically the 
+[.extension]#Zicbom# (Cache Block Management) extension. 
+These define "`block operations`" -- operations related to a particular 
 physical address range.
-This mechanism is suitable for implementing a software cache coherency scheme
-in situations where software knows that an external agent (that is not
-hardware-coherent with the cache) may have written to (for the invalidate
-operation) or is about to read from (for the clean operation) a specific
-buffer of data.
-If used to reset the cache to a known state to provide the temporal isolation
-discussed in this chapter, it is recommended to perform a cache state analysis
-(probably an offline analysis) to selectively issue the [.extension]#Zicbom#
-instructions required to achieve the cache reset instead of just issuing
-[.extension]#Zicbom# instructions for the entire context, e.g. an application,
-address space.
-The latter might have an important negative performance impact when the size
-of the cache blocks is small compared to the entire context address space size.
-. Traditionally, safe processors required the ability to remove or disable
-caches to ensure maximal predictability.
-Other solutions have emerged since, to avoid the drastic induced performance
-loss.
-We have identified two standard ways for globally disabling and enabling the
-caches with the current RISC-V specifications:
+This mechanism is suitable for implementing a software cache coherency scheme 
+in situations where software knows that an external agent (that is, an agent that 
+is not hardware-coherent with the cache) may have written to (for the invalidate 
+operation) or is about to read from (for the clean operation) a specific 
+data buffer.
+If used to reset the cache to a known state to provide the temporal isolation 
+discussed in this chapter, it is recommended that a cache state analysis 
+(probably an offline analysis) be performed to selectively issue the [.extension]#Zicbom# 
+instructions required to achieve the cache reset, rather than simply issuing 
+[.extension]#Zicbom# instructions for the entire context, such as an application or 
+address space. 
+The latter approach might have a significant negative performance impact when the 
+cache block size is small compared to the size of the entire context address space.
+. Traditionally, safety-critical processors required the ability to remove or 
+disable caches to ensure maximum predictability. 
+Other solutions have since emerged to avoid the resulting drastic performance 
+loss. 
+We have identified two standard ways to globally disable and enable caches by 
+using the current RISC-V specifications:
 +
 --
-.. If the [.extension]#Svpbmt# (Page-Based Memory Types) extension is
-implemented, memory pages can be marked as non-cacheable in the page table,
-overriding the PMA attributes.
-While in some situations this may be feasible, it either requires maintaining
-an alternate set of page tables, or updating existing page tables.
-It should be possible to activate or deactivate temporarily and temporally
-the cacheability of memory regions.
-.. Marking all memory locations as non-cacheable using the PMA mechanism.
-This functionality is platform defined (so may not be configurable for all or
-any memory regions), and it is not consistent with the intended use-model for
-PMA as described in the RISC-V Privileged ISA Specification
+.. If the [.extension]#Svpbmt# (Page-Based Memory Types) extension is 
+implemented, memory pages can be marked as non-cacheable in the page table, 
+overriding the PMA attributes. 
+While this may be feasible in some situations, it either requires maintaining 
+an alternate set of page tables or updating existing page tables. 
+This makes it possible to temporarily and temporally change the cacheability 
+of memory regions.
+.. All memory locations can be marked as non-cacheable by using the PMA mechanism. 
+This functionality is platform-defined, so it may not be configurable for all 
+or any memory regions, and it is not consistent with the intended use model for 
+PMAs, as described in the RISC-V Privileged ISA Specification 
 cite:[rv-priv-spec:2024] Section 3.6:
-"`PMAs are inherent properties of the underlying hardware and rarely change
-during system operation.
-Unlike Physical Memory Protection (PMP) values described in Section 3.7, PMAs
-do not vary by execution context`".
+## "`PMAs are inherent properties of the underlying hardware and rarely change 
+during system operation. 
+Unlike Physical Memory Protection (PMP) values described in Section 3.7, PMAs 
+do not vary by execution context.`"
 --
 +
-Other ways may exist, be proposed by future extensions or provided by
-implementation specific mechanisms.
+Other approaches may exist, may be proposed by future extensions, or may be 
+provided by implementation-specific mechanisms.
 
-Standardized control and discovery mechanisms for TCM (and other memory
-architectures) can be considered.
+Standardized control and discovery mechanisms for TCMs and other memory architectures 
+can also be considered.
 These are not, however, considered important in a safety context.
-Safety-critical code using TCM for determinism purposes will need to be targeted
-and extensively analyzed for a particular hardware platform -- this design
-methodology is not consistent with software auto-discovering hardware features
-and adapting behavior accordingly.
+Safety-critical code using TCMs for determinism will need to be targeted
+and extensively analyzed for a particular hardware platform. This design 
+methodology is not consistent with software automatically discovering hardware 
+features and adapting its behavior accordingly.
 
 [#sec:caches:recom:non-isa]
 #### Non-ISA recommendations
 
-. As they are susceptible to random errors, the memories used to implement
-caches (including tag/valid RAMs) and TCMs should be analyzed thoroughly for
-the effects of potential errors on the functional safety of the system.
-It is highly likely that these memories will need to be protected by some form
-of redundancy -- often an ECC scheme is the most efficient way to meet these
-safety requirements.
 . Many safety-critical systems require isolation from interference from other
 software tasks (maybe with a lower safety integrity level).
 TCM that is private to a particular core can be extremely useful in delivering
 this isolation.
-If a TCM is accessible from other cores or agents (for example, can be
-accessed over the system bus by a DMA) it should be possible to disable this
-external access when required for isolation.
-. In order to allow thorough safety analysis, the cache replacement policy,
-associativity, and effect of cache-related instructions should be precisely
-documented, including scope of achievable isolation, e.g. in mixed-criticality
-systems.
+. As they are susceptible to random errors, the memories used to implement 
+caches (including tag/valid RAMs) and TCMs should be thoroughly analyzed for 
+the effects of potential errors on the functional safety of the system. 
+It is highly likely that these memories will need to be protected by some form 
+of redundancy. An ECC scheme is often the most efficient way to meet these 
+safety requirements.
+. Many safety-critical systems require isolation from interference by other 
+software tasks, possibly with a lower safety integrity level. 
+A TCM that is private to a particular core can be extremely useful in providing 
+this isolation. 
+If a TCM is accessible from other cores or agents (for example, over the system 
+bus by a DMA), it should be possible to disable this external access when 
+required for isolation.
+. In order to allow thorough safety analysis, the cache replacement policy, 
+associativity, and effects of cache-related instructions should be precisely 
+documented, including the scope of achievable isolation, for example, in 
+mixed-criticality systems. 
 An analyzable cache replacement policy is desirable.
-. A shared cache should have as many access ports (and associated request
-queues) as independent paths in the corresponding interconnect, in order to
-identify and minimize interference channels.
-. If cache partitioning is supported, the number of ways in a shared cache is
-typically a multiple of the number of harts that are sharing that level of
-cache, so that a way can uniquely be assigned to a hart.
-. Cache locking can be a way of implementing TCM-like functionality.
+. A shared cache should have as many access ports (and associated request 
+queues) as there are independent paths in the corresponding interconnect, 
+in order to identify and minimize interference channels.
+. If cache partitioning is supported, the number of ways in a shared cache is 
+typically a multiple of the number of harts sharing that level of cache, 
+so that a way can be uniquely assigned to a hart.
+. Cache locking can be used to implement TCM-like functionality.
 
 [#sec:caches:activities]
 ### Relevant activities
 
 #### Related external bodies
 
-The memory hierarchy, including the caches and TCMs, is very specific on
-each processor (Power, Intel, AMD, ...).
+The memory hierarchy, including caches and TCMs, is highly 
+specific to each processor architecture (Power, Intel, AMD, ...).
 
 #### Related chapters
 
-Caches have an important impact on the performance of system which needs to be
-carefully managed on safety critical systems.
-Performance counters are frequently used to monitor cache performance,
-refer to xref:sec:pmc[xrefstyle=full].
-Furthermore, Quality of Service (QoS) policies can be applied to control the
-caches behavior and performance, refer to xref:sec:qos[xrefstyle=full].
+Caches have an important impact on system performance, which needs to be 
+carefully managed in safety-critical systems. 
+Performance counters are frequently used to monitor cache performance; 
+refer to xref:sec:pmc[xrefstyle=full]. 
+Furthermore, Quality of Service (QoS) policies can be applied to control 
+cache behavior and performance. Refer to xref:sec:qos[xrefstyle=full].
 
-Partitioning (spatial and temporal) of caches is frequently required to
-manage the impact of caches on the different tasks executed in the processor.
+Partitioning (spatial and temporal) of caches is frequently required to 
+manage the impact of caches on the different tasks executed by the processor. 
 Refer to xref:sec:partitioning[xrefstyle=full].
