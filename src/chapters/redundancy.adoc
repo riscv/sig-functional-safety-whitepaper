@@ -152,7 +152,7 @@ implementations exist by different independent providers.
 Different implementations can be combined in a system to provide a level of
 diverse (microarchitectural) redundancy.
 However, while this kind of redundancy will detect (and possibly correct)
-failures due to the implementation, it assumes that the ISA itself does not 
+failures due to the implementation, it assumes that the ISA itself does not
 contain any faults.
 
 Traditionally, heterogeneous systems imply diversity of ISAs. ISA diversity
