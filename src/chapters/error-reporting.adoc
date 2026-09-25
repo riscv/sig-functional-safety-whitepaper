@@ -57,7 +57,7 @@ memory.
 The number of those events, and potentially the source of the error are often recorded.
 The aim of recording errors is to determine if additional actions are needed.
 For example, frequent single-bit errors in a SECDED-protected memory location,
-although correctable, may indicate a partially defective bit cell. This can 
+although correctable, may indicate a partially defective bit cell. This can
 require the memory location to be decommissioned or, where possible, replaced
 with a spare location, such as by disabling a faulty cache line and replacing
 it with a spare one.
@@ -70,9 +70,9 @@ level and, when a hardware uncorrectable error is detected, restore the
 last snapshot and resume execution.
 
 Error detection is generally preferable at the hardware level because it
-provides better understanding into the cause of an error and limits error 
+provides better understanding into the cause of an error and limits error
 propagation by enabling the error to be detected at its source and reported.
-However, implementing error correction in hardware may incur significant overhead. 
+However, implementing error correction in hardware may incur significant overhead.
 It is therefore common to provide hardware support for error detection without
 explicit hardware support for correction.
 Some errors may nevertheless be straightforward to correct at the hardware level,
@@ -161,7 +161,7 @@ including severity/priority level, error types, and interfaces to
 control error handling.
 It provides flexibility to scale from small to large systems, for example,
 through the number of error records and the amount of information captured in
-each record. 
+each record.
 This flexibility should enable RERI to be used on resource-constrained
 RISC-V processors in embedded systems.
 
