@@ -3,8 +3,8 @@
 
 Safety standards define processes of safety assessment and hazard analysis to
 allow each task to be categorized according to its criticality, e.g. ASIL levels
-in ISO 26262, DAL levels in DO-178, software criticality categories in ECSS.
-In a given system, if the tasks that share hardware resources vary in their
+in ISO 26262 and DAL levels in DO-178, software criticality categories in ECSS.
+In a system, if the tasks that share hardware resources vary in their
 criticality levels, or if safety critical and non-safety critical tasks can
 coexist, the system is said to be of mixed-criticality.
 
@@ -12,43 +12,44 @@ The criticality of a task and the standard according to which its code is
 developed have a direct impact on the number of safety mechanisms that need to
 be implemented. As a consequence, the acceptable error rates of the tasks differ
 according to their criticality level.
-To prevent a less/non critical task from interfering with the execution of a
+To prevent a less critical or non critical task from interfering with the execution of a
 more critical task, it is therefore required to ensure freedom from such
 interference.
 
 Even if the tasks have the same criticality level, it is sometimes necessary to
 ensure freedom from interference if the tasks rely on each other to perform some
 safety function.
-Such cases could be exposed, for example, by a dependent failure analysis, as it
+Such cases can be exposed, for example, by a dependent failure analysis, as it
 is the case with ISO 26262.
 
 Freedom from interference can be implemented by space partitioning, time
 partitioning, or a mixture of the two.
 
-In time partitioning, the hardware resources are only used by one task at any
-given time, but during that time each task is able to make use of all the
+In time partitioning, the hardware resources are used by only one task at any
+given time, but during that time, each task is able to make use of all the
 resources available.
 This requires a task scheduler, for example as part of a real-time operating
-system, to ensure tasks are prioritized according to the properties defined by
-the system designer, such as the criticality level and priority.
+system, to schedule tasks according to properties defined by the system designer,
+such as criticality level and priority.
 
-Space partitioning refers to the exclusive assignment of a subset of the
+Space partitioning refers to the exclusive assignment of a subset of
 hardware resources to each task.
-In traditional single-core systems, the term "`space partitioning`" only implies
-memory space partitioning, as the allocation of the single processor core for
+In traditional single-core systems, the term "`space partitioning`" implies to
+only memory space partitioning, as the allocation of the single processor core for
 some time also grants access to all other resources of the system.
 This is no longer the case in multicore systems where several cores can
 simultaneously access shared hardware resources.
-The space partitioning could be statically defined at configuration time, or it
-could be dynamically chosen at execution time. Space partitioning is sometimes
+The space partitioning can be statically defined at configuration time or it
+can be dynamically chosen at execution time. Space partitioning is sometimes
 supported in software through the use of a hypervisor or directly by the
 operating system.
 
-Hardware resources to be partitioned may include processing capacity (e.g.,
+Hardware resources to be partitioned can include processing capacity (e.g.,
 CPUs, GPUs, NPUs, TPUs, etc.), memory, cache, interconnect and I/O devices.
 
-In this document, we cover memory space partitioning as well as the partitioning
-of other resources as part of the space partitioning.
+This document covers memory space partitioning as well as the partitioning of
+other resources as part of space partitioning.
+
 
 [#sec:partitioning:safety]
 ### Safety needs
@@ -66,122 +67,122 @@ running on the shared resource at a given point in time.
 Time partitioning is an essential method in safety-critical systems that is used
 to enable the integration of multiple applications and/or tasks, generally with
 real-time requirements, on the same system.
-Time partitioning, if enforced to a sufficient extent, provides a number of
+When enforced to a sufficient extent, time partitioning provides a number of
 advantages:
 
-* It allows verifying each application independently - in the time domain - and
-  integrating them together in a time-composable or, at least, in a
+* It allows each application to be verified independently in the time domain, and
+  then integrated with other applications in a time-composable or, at least, in a
   time-compositional manner.
   In particular, time composability is achieved when the timing bounds obtained
-  in isolation hold upon integration.
-  Time compositionality, instead, holds when timing bounds can only change upon
-  composition in a controlled and known-beforehand manner, therefore, avoiding
-  the re-verification of the timing bounds of the composition.
-* It also allows decreasing the risk of deadline overruns during operation since
-  timing impacts  across different tasks are significantly decreased.
+  in isolation remain valid after integration.
+  Time compositionality, in contrast, is achieved when timing bounds can only change upon
+  composition, but the changes are controlled and known-in advance, therefore avoiding
+  the need to re-verify the timing bounds of the composition.
+* It also reduces the risk of deadline overruns during operation by significantly reducing
+  timing interference between tasks.
 
-On multicore SOCs, time partitioning of tasks should be applied individually to
+On multicore SOCs, time partitioning of tasks can be applied individually to
 a single core as well as combinations of multiple cores.
-Time partitioning is key to allow tasks to start, with some degree of precision,
-when required, as well as to ensure they make sufficient progress to meet their
+Time partitioning is key to allowing tasks to start, with some degree of precision
+when required and to ensuring that they make sufficient progress to meet their
 deadlines.
 
 [#sec:partitioning:safety:time:features]
 ##### Features
 
-The features to be addressed by time partitioning relate to guaranteeing
-specific start times and progress of tasks, as discussed above.
-In particular, time partitioning should provide the following features:
+The features addressed by time partitioning relate to guaranteeing
+specific task start times and sufficient task progress, as discussed previously.
+In particular, time partitioning provides the following features:
 
-* Periodic timer(s). Deadlines can only be respected if tasks' start times can
+* Periodic timer(s). Deadlines can be respected only if tasks start times can
 be enforced so that they start sufficiently ahead of their deadlines.
-Hence, controlling, with some degree of precision, when tasks are started is a
+Hence, controlling when tasks start with some degree of precision is a
 fundamental requirement.
 The existence of periodic timer(s) allows the task scheduler to have a precise
 notion of time.
-Hence, by properly configuring those timers, normally by means of primitives
-used by the scheduler, a given task schedule can be enforced.
+By properly configuring these timers, typically through scheduler primitives,
+a given task schedule can be enforced.
 +
-Timers must provide a sufficient degree of precision with respect to the
-granularity at which time must be controlled.
-For instance, a timer providing millisecond-level precision would be useless
+Timers must provide sufficient precision for the granularity at which time
+must be controlled.
+For example, a timer providing millisecond-level precision is unsuitable
 for decisions requiring microsecond-level precision.
 +
-Timing control is key across domains. For instance, Integrated Modular
+Timing control is key across domains. For example, Integrated Modular
 Avionics (IMA) relies on timing partitions referred to as MAjor Frames (MAFs)
 and MInor Frames (MIFs) whose duration is predetermined by the schedule.
-Hence, timers that allow the start of MAFs and MIFs at their required times
+Timers that allow MAFs and MIFs to start at their required times
 with sufficient precision are a mandatory feature.
-Analogously, in the automotive domain, applications may have different tasks
-running at different frequencies, which require either multiple timers or, at
-least, a sufficiently precise timer to trigger the start of all tasks when
-needed to meet their execution frequencies and deadlines.
+Similarly, in the automotive domain, applications might have different tasks
+running at different frequencies. These tasks require either multiple timers or, at
+a minimum, a sufficiently precise timer to trigger their execution at the required
+times to meet their execution frequencies and deadlines.
 +
 Depending on the technical solution, periodic timer(s) can be replaced by a
 one-shot timer that is reloaded on demand by the tickless scheduler, such as
 Linux CLOCK_EVT_FEAT_ONESHOT feature.
 
 * Intra-core time partitioning.
-Tasks' progress in a given core is impacted by the initial state of the
-allocated resources (e.g. cache memories), and also can be impacted if their
+Task progress in a core is impacted by the initial state of the
+allocated resources (e.g. cache memories) and also can be impacted if their
 execution can be preempted.
-Some of that impact, which causes a given task to be scheduled out of the core,
+Some of that impact, which causes a task to be scheduled out of the core,
 is unavoidable and the direct result of the scheduling decisions.
 However, other impacts are undesirable and potentially avoidable, such as those
-related to the change of the state of the processor between the instant when the
-task is scheduled out of it and the instant when it is scheduled back in.
-This state includes the contents of cache memories, the state of the replacement
-information in those caches, the contents of the branch predictors, occupancy of
-queues and buffers, etc.
+related to the change of the state of the processor between the time a task is
+scheduled out and the time it is scheduled back in.
+This state includes the contents of cache memories, replacement information in
+those caches, the contents of branch predictors, and the occupancy of queues and
+buffers.
 +
-Features related to the ability to reset, flush or freeze the state of the
-hardware resources in use by a given task provide support for time partitioning.
-For instance, the ability to reset the processor state to a given known state
-reduces time variability as the state is known when starting the execution of a
-task.
-Otherwise, effects like unforeseen systematic branch mispredictions or
-unfortunate cache miss patterns could occur if the execution of another task is
-started or resumed with the processor state (e.g. branch predictor state, cache
-replacement state) "`as is`" after the execution of a previous task.
-The time required for resetting, flushing or freezing processor states should be
+Features that allow the state of hardware resources used by a task to be
+reset, flush, or freeze can support time partitioning.
+For example, resetting the processor state to a known state reduces time
+variability because the state is known when task execution begins.
+Otherwise, effects such as systematic branch mispredictions or unfortunate cache
+miss patterns might occur when another task is started or resumed with the
+processor state, such as branch predictor state, cache replacement state, left
+unchanged after the execution of a previous task.
+The time required to reset, flush, or freeze the processor state should be
 accounted for in the scheduling.
 +
 In some specific domains, such as avionics, some of these features are often
 used across time partitions.
-For instance, flushing cache contents may be used across MAFs  so that all MAFs
+For example, flushing cache contents can be used across MAFs so that all MAFs
 start with the same initial state.
 +
-For the sake of illustration, we list some specific features contributing to
-intra-core time partitioning, although the list is non-exhaustive:
+For illustration, the following are some specific features that contribute to
+intra-core time partitioning; the list is non-exhaustive:
 
 ** Cache flushing is particularly useful to evict dirty lines in write-back
 caches after a task has executed, so that the associated overhead of those
 evictions does not impact the next task being scheduled.
-** Cache locking (of a line, way or the full cache) can be used to mitigate the
-impact of preemption with the side effect of having cache lines which cannot be
+** Cache locking (of a line, way, or the full cache) can be used to mitigate the
+impact of preemption with the side effect of having cache lines that cannot be
 used by other tasks (because they are locked).
-** Resetting the replacement policy (such as LRU) state and branch predictor
+** Resetting the replacement policy, such as LRU, state and branch predictor
 state avoids systematic bad behavior such as branch mispredictions or cache
 misses occurring unexpectedly.
-If the state reset has a negative impact on performance, such impact should
-already be accounted for during verification phases since such state is known.
-** Stateless features such as pseudo-random replacement policies for caches
-are preferred because every state of the replacement policy is probabilistically
-equivalent, so there is no need for resets.
+If resetting the state has a negative impact on performance, the impact should
+be accounted for during verification, since the state is known.
+
+** Stateless features, such as pseudo-random cache replacement policies, are preferred
+because the replacement behaviour does not depend on persistent state, eliminating
+the need for resets.
 
 * Inter-core time partitioning.
-Tasks' progress is also impacted by the software running concurrently on other
-cores, which may compete for shared resources (e.g. a shared peripheral).
+Task progress is also impacted by the software running concurrently on other
+cores, which can compete for shared resources such as a shared peripheral.
 The following time partitioning features can mitigate or remove altogether such
 mutual interference.
 +
 Often, time partitioning across cores is implemented at the software level (e.g.
 in the real-time operating system).
-For the sake of illustration, we list some specific techniques contributing to
-inter-core time partitioning, although the list is non-exhaustive:
+For illustration, the following are some specific techniques that contribute to
+inter-core time partitioning; the list is non-exhaustive:
 
 ** Time Division Multiple Access (TDMA), where resource ownership is allocated
-exclusively to each core for a given time duration, following specific
+exclusively to each core for a time duration, following specific
 allocation patterns.
 This technique is a way to provide time isolation across tasks running on
 different cores, which is a specific form of time partitioning.
@@ -189,7 +190,7 @@ The simplest scheme uses a round-robin algorithm with time slots of homogeneous
 duration.
 This scheme guarantees forward progress and bandwidth to each core.
 +
-There are two ways to realize TDMA: as a work conserving policy and as a
+There are two ways to realize TDMA: as a work conserving policy or as a
 non-work conserving policy.
 The highest degree of isolation is achieved with a non-work conserving approach,
 where slots are allocated exclusively regardless of whether they are used or
@@ -199,12 +200,12 @@ However, such a policy has low efficiency since cores willing to access the TDMA
 resource is idle.
 A work-conserving approach allocates slots following the TDMA scheme, but if a
 core is not using the resource whenever granted access, the grant is given to
-the following core in the TDMA order.
-Such a policy increases utilization, but may reduce isolation since a core
-requesting the resource may miss out on a slot because the request did not
-arrive in the first cycle of the slot, and the next core in the TDMA order had a
-request ready.
-In the worst case, specific access patterns may therefore systematically cause a
+the next core in the TDMA order.
+Such a policy increases resource utilization but can reduce isolation, since a
+core requesting the resource may miss its assigned slot if the request does not
+arrive during the first cycle of the slot and the next core in the TDMA schedule
+has a request ready.
+In the worst case, specific access patterns can therefore systematically cause a
 core to wait for all the other cores to access the resource first.
 +
 In any case, if TDMA is implemented at software level and sufficiently coarse
@@ -216,77 +217,79 @@ task execution.
 or usage quotas.
 This type of time partitioning provides generally higher efficiency than TDMA,
 but no isolation.
-In particular, tasks may be allocated a given number of accesses or time
-utilization for some shared resources (either hardware or software) during a
-given time period and, if a task exhausts its allocated amount (a.k.a. quota),
-then it is not allowed to further access the resource during the current time
-period.
+In particular, tasks can be allocated a number of accesses or a specified amount
+of resource utilization for shared resources, whether hardware or software, during
+a specific time period. If a task exhausts its allocation (i.e., its quota), it is not
+permitted to access the resource further during that time period.
 Note that, while quotas can be implemented at software level for resources whose
 utilization can be monitored in software, they may also require hardware support
-such as access counters and stall cycles which are monitored through performance
+such as access counters and stall cycles, which are monitored through performance
 monitoring counters.
 Building on those counters, and especially if they report separate events per
 core, software can easily allocate quotas and monitor utilization.
 
 * OS support for time partitioning.
-In the absence of appropriate hardware support, or if strict time partitioning
-is not needed at least for all tasks, some OSs can provide enough time
-partitioning support.
-For instance, priorities and preemption can allow critical tasks with real-time
-requirements achieve some degree of time partitioning (e.g. scheduled with the
-highest priority and with preemption enabled), while allowing other tasks (e.g.
-scheduled with lower priorities) to run with lower or no time guarantees at all.
+In the absence of appropriate hardware support, or when strict time partitioning
+is not required for all tasks, an operating system can provide a degree of time
+partitioning through scheduling mechanisms.
+For example, task priorities and preemption can provide critical tasks with real-time
+requirements a degree of timing isolation, such as by assigning them the highest
+priority and enabling preemption, while allowing other tasks, such as those with lower
+priorities, to execute with less stringent or no timing guarantees.
 
 [#sec:partitioning:safety:time:level]
 ##### Level
 
-Periodic timer(s) are generally implemented at SoC level to provide a
-homogeneous view of time across all components on chip (e.g. across all cores).
-It is also possible to have core-local timers, but they likely require some form
-of mutual synchronization, either directly among them or through a SoC-global
+Periodic timers are generally implemented at the SoC level to provide a
+common time base across components on the chip, such as across all cores.
+Core-local timers can also be used, but they may require some form of mutual
+synchronization, either directly between the timers or through a SoC-global
 timer.
 
-Intra-core time partitioning features are normally implemented at core level if
-resources are local to the core, or at SoC level if resources are shared across
+Intra-core time partitioning features are normally implemented at core level, if
+resources are local to the core or at SoC level, if resources are shared across
 cores.
-For instance, flushing cache contents for an on-core first level cache would be
+For instance, flushing cache contents for an on-core first level cache are
 a core-level feature, whereas flushing the buffers and queues of an interconnect
-would be a SoC-level feature.
+are a SoC-level feature.
 
 Inter-core time partitioning features are often implemented at software level,
-generally building on the aforementioned intra-core timers.
-For instance, the operating system may program a given peripheral to accept
+generally building on the intra-core timers.
+For example, the operating system can program a peripheral to accept
 requests from a single core (owner core) at a time, periodically switching the
 owner core.
-However, such features may also be implemented at SoC level.
-Some peripherals may implement TDMA or other arbitration policies providing some
+However, such features can also be implemented at SoC level.
+Some peripherals can implement TDMA or other arbitration policies providing some
 form of time partitioning.
 
 [#sec:partitioning:safety:mem]
 #### Memory space partitioning
 
-Much like time partitioning, memory space partitioning is a fundamental
-prerequisite for the integration of different applications in the same system in
-order to avoid unintended interference.
+Similar to time partitioning, memory space partitioning is a fundamental
+prerequisite for integrating different applications in the same system
+while avoiding unintended interference.
+
 Reliable protection at the spatial level ensures that one component cannot alter
 the code or private data of another component, which is a key requirement in
 safety-critical systems.
-Space partitioning also applies to memory-mapped peripherals and memory
-transactions initiated by peripherals (through DMA...).
-Memory space partitioning relies on the creation of a separate memory address
-space for each task and limiting or disabling the reading, writing or execution
-of code/data in address spaces that belong to different tasks.
+
+Space partitioning also applies to memory-mapped peripherals and to memory
+transactions initiated by peripherals, such as through DMA.
+
+Memory space partitioning relies on providing a separate memory address space
+for each task and restricting or preventing access to the address spaces
+belonging to other tasks, including read, write, and execute access.
 
 Additionally, main memory is a major shared resource among cores in a multicore
 system.
-If phenomena such as race conditions are not controlled in an effective way, the
-system can become highly unpredictable.
-Memory partitioning and sharing is therefore one of the critical aspects that
-have an impact on the predictability of systems making use of multicore
-processors.
+If phenomena such as race conditions are not effectively controlled, system
+behaviour can become highly unpredictable.
 
-However, in this section we are concerned not just with CPU memory but any kind
-of memory, e.g. supporting a GPU.
+Memory partitioning and sharing are therefore critical aspects of ensuring
+the predictability of systems using multicore processors.
+
+However, this section considers not only CPU memory but any type of memory,
+such as memory supporting a GPU.
 
 Other aspects, such as the management of the communication channels'
 interference or other shared resources besides memory are out of the scope of
@@ -298,32 +301,32 @@ this section.
 The features to be addressed related to memory space partitioning are heavily
 dependent on the design of the core/SoC and the rules enforced by the hypervisor
 or the operating system.
-The following is a subset of some suggested features that should be considered:
+The following list is a subset of some suggested features to consider:
 
-* Architecture primitives for space partitioning used to allow the firmware to
+* Architecture primitives for space partitioning allow firmware to
 specify physical memory regions and control the memory access permissions.
-Currently, most devices have a basic memory protection module, such as an MPU
-(Memory Protection Unit) or PMP (Physical Memory Protection) in the RISC-V
-lingo.
-Typically, such memory protection primitives are needed to restrict some memory
-regions to the software running under less privileged modes.
-This feature is especially useful in the scope of real-time operating systems,
-where it must provide space isolation for partitions that host different
+Most devices have a basic memory protection module, such as an Memory
+Protection Unit (MPU) or, in RISC-V terminology, Physical Memory Protection (PMP).
+These memory protection primitives are typically used to restrict access to
+certain memory regions by software running under less-privileged modes.
+This feature is especially useful in real-time operating systems,
+where it must provide space isolation between partitions hosting different
 applications.
 In addition, handlers that are triggered when memory access faults are produced
 can be considered.
 +
-Primitives for space partitioning can also apply for space separation of
-Input/Output (I/O) components: if a guest can directly access an I/O device,
-then it can potentially request the device to access memory that it is not
-entitled to via direct memory access.
-Ensuring that partitions do not access each other's memory indirectly through
-the shared I/O devices in the system, e.g. through an IOMPU (which can have many
-names and flavours across silicon makers but is standardized as IOPMP in the
-RISC-V lingo), is especially important in safety-critical systems.
+Space partitioning primitives can also be applied to I/O components. If a
+guest can directly access an I/O device, it might be able to instruct the device
+to access memory that the guest is not authorized to access through direct memory
+access (DMA).
+Ensuring that partitions cannot access each other’s memory indirectly through
+shared I/O devices is especially important in safety-critical systems. This can
+be achieved by using an I/O Memory Protection Unit (IOMPU), which has various names
+and implementations across silicon vendors but is standardized as the I/O Physical
+Memory Protection (IOPMP) extension in RISC-V.
 
 * A memory management unit with different privilege level access permissions is
-necessary when implementing a Linux-like OS, a separation kernel, a hypervisor
+necessary when implementing a Linux-like OS, a separation kernel, a hypervisor,
 or a virtualization solution.
 In virtualization, physical resources are shared among tasks, therefore it is a
 requirement that the virtualized hardware provides a similar level of isolation
@@ -332,44 +335,45 @@ This protection mechanism must ensure that although multiple tasks share the
 main memory, a task cannot write into the memory address space of another user
 task or the operating system.
 +
-Much like previously stated, memory protection from other devices can be
-provided at I/O management.
-I/O memory management units (IOMMUs) prevent partitions or guest operating
-systems from requesting I/O devices to access memory that are not entitled to
-access, while still allowing them to directly access the device.
-In addition, mechanisms may be required to ensure that table walks of lower
-priority tasks do not block the ones of safety-critical tasks, to avoid their
-starvation or a downgrade in their performance when accessing the IOMMU.
+As described previously, memory protection against access from other devices
+can also be provided at the I/O management level.
+I/O Memory Management Units (IOMMUs) prevent partitions or guest operating
+systems from instructing I/O devices to access memory that they are not
+authorized to access, while still allowing them to access the devices directly.
+In addition, mechanisms may be required to ensure that page-table walks
+initiated by lower-priority tasks do not block those of safety-critical tasks,
+thereby avoiding starvation or degradation of performance when accessing the IOMMU.
 
 * Memory modules that are more local to a core or a subset of cores, such as
-scratchpad memory (SPM), non-cached memories or private CPU memories, can be
+scratchpad memory (SPM), non-cached memories, or private CPU memories, can be
 used to enforce spatial isolation.
 
 These mechanisms can also be used to safely share memory areas when required by
 the system.
 
-To allow this, particularly in multicore systems, we require supporting features
-such as:
+To support this, particularly in multicore systems, features such as the following
+are required:
 
-* Protection of memory space and peripherals used by safety-critical tasks,
-which could be accomplished by means of hardware or software spinlocks,
-barriers, process affinity attributes and other synchronization and protection
-mechanisms at a SoC level;
+* Protection of the memory space and peripherals used by safety-critical tasks,
+which can be supported by hardware or software spinlocks, barriers, process
+affinity attributes, and other synchronization and protection mechanisms at the
+SoC level.
 * Atomic operations support at core level implement read-modify-write sequences
 that are performed without interference from another requester.
 
 [#sec:partitioning:safety:mem:level]
 ##### Level
 
-Solutions for memory partitioning will have an impact on the core, SoC, or
-software levels depending on the targeted resource/functionality (e.g.
-partitioning primitives, different types of memory, atomic operations,
-virtualization, etc.).
-Changes at the core and/or SoC levels could have an impact at the software
-level, which could be simple and of limited scope (e.g. adding some instructions
-in the code of the hypervisor/OS/RTOS) or complex and impact multiple elements
-of the software stack (e.g. major changes in the hypervisor/OS/RTOS and
-re-architecture of the applications code).
+Solutions for memory partitioning can affect the core, SoC, or
+software levels, depending on the targeted resource or functionality,
+such as partitioning primitives, different types of memory, atomic
+operations, and virtualization.
+Changes at the core and/or SoC levels can impact the the software
+level. The resulting software changes can be simple and limited in
+scope, such as adding instructions to the hypervisor, OS, or RTOS, or they
+can be more complex and affect multiple elements of the software stack, such
+as major changes in the hypervisor, OS, RTOS and re-architecting of the
+applications code.
 
 [#sec:partitioning:safety:other]
 #### Partitioning resources other than memory
@@ -378,69 +382,70 @@ The described time and memory space partitioning features are not always
 sufficient to ensure the determinism of a system. Interference can arise in
 systems for other reasons.
 The use of stateful and/or shared mechanisms in processor designs can cause
-interference that impacts the determinism of applications and the system.
-An example of a mechanism that falls under the two categories (stateful and
-shared) is the branch predictor.
-The stateful property of the branch predictor makes the computation of WCET
-difficult or inaccurate (overestimated), as the computation of all the possible
-states for each branch in an application is complex or impossible (e.g.
-interactive application).
-Furthermore, the shared property renders WCET computation even more complex.
+interference that affects the determinism of applications and the system.
+An example of a mechanism that is both stateful and shared is the branch predictor.
+The stateful property of the branch predictor makes the analysis of WCET
+difficult or inaccurate (overestimated), because determining all possible
+states for each branch in an application is complex or impractical, such as
+an interactive application.
+Furthermore, the shared property of a branch predictor can make WCET analysis
+even more complex, because its state can be affected by other applications or
+tasks.
 
-The impact of such interference doesn't need to be time, as in the above
-explained example of the branch predictor.
-For example, integrity of the data can also be impacted.
-In the security domain, attacks like RowHammer have shown that the data from one
-application could be corrupted by another application.
-While in the safety domain malicious actions from applications are not
-considered, the impact of such actions should be considered in order to maintain
+The impact of such interference isn't limited to time, as shown in the previous
+example of the branch predictor.
+For example, data integrity can also be impacted.
+In the security domain, attacks such as RowHammer have shown that the data from one
+application can corrupt data in another application.
+While malicious actions from applications are not considered in the safety domain,
+the impact of such actions should be considered in order to maintain
 the reliability of the memory and the integrity of the data of the different
 applications in the system.
-In fact, a number of safety and security concerns have analogous consequences,
-and differ only on whether the root cause is unintended (safety concern) or
-malicious (security concern).
+In fact, many safety and security concerns have analogous consequences
+and differ primarily on whether the root cause is unintended, as in a safety concern
+or malicious, as in a security concern.
 
 [#sec:partitioning:safety:other:features]
 ##### Features
 
-The features to be addressed concerning the partitioning of other resources are
-heavily dependent on the design of the core and SoC, and rules enforced by the
+The features to be addressed that concern the partitioning of other resources are
+heavily dependent on the design of the core and SoC, and by rules enforced by the
 hypervisor or the operating system.
 The following is a subset of some suggested features that should be considered:
 
 * Configuration of hardware prediction or speculative mechanisms typically used
-to enhance the core/processor performance.
+to enhance the core and processor performance.
 Some representative examples include the branch predictor, the speculative
 execution engine, and the memory transactions reordering mechanisms.
-When present these mechanisms should be configurable or have the capability to
+When present, these mechanisms should be configurable or have the capability to
 be deactivated in order to reduce their interferences and increase the
 determinism of the system.
 * In multicore SoCs, integrating applications of different criticality levels by
-having cores dedicated to certain criticality levels will reduce the impact of
+dedicating cores to certain criticality levels to reduce the impact of
 the less critical applications on the more critical ones.
 Alternatively, defining the core affinity of a task, or core(s) allocation to a
-partition by a hypervisor can enable the control of such interferences.
+partition by a hypervisor can control such interferences.
 * Interconnect minimizing interference channels, notably access ports where
 several paths can converge.
 A single bus is an important interference channel as it supports only one
-transaction at a time, whereas a network-on-chip with multiple paths may allow
+transaction at a time, whereas a network-on-chip with multiple paths can allow
 multiple simultaneous transactions without interference.
 * Ability to route interrupt sources to dedicated cores, to ensure that these
 interrupts are handled promptly and don't disrupt the execution of critical
 applications running in other cores.
-* Explicit communication between partitions, as any implicit mechanism (for
-example threads sharing global variables, or cache coherency) are difficult to
+* Explicit communication between partitions, as any implicit mechanism, such as
+threads sharing global variables, or cache coherency, are difficult to
 monitor and to predict.
 For example, critical systems hypervisors (e.g. ARINC 653 cite:[arinc653p0:2021]
-hypervisors) may provide inter-partition communication mechanisms such as
+hypervisors) can provide inter-partition communication mechanisms such as
 queueing ports and sampling ports.
 * Shared peripherals, including I/O interfaces, accelerators (such as DSP, GPU,
-neural network coprocessor, etc.) and DMAs.
-Transaction initiators could be considered like processor cores, as they may
-introduce concurrent traffic on interference channels.
-Peripherals could be allocated to a core, or specific sharing mechanisms could
+neural network coprocessor, etc.), and DMAs.
+Transaction initiators can be considered similar to processor cores, as
+they can introduce concurrent traffic on shared interference channels.
+Peripherals that are allocated to a core or a specific sharing mechanisms can
 be used.
-* Cache coherency mechanisms, centralized (e.g. snooping) vs. distributed (e.g.
+* Cache coherency mechanisms, centralized (snooping) vs. distributed (
 directory-based) and the associated additional traffic should be considered when
 analyzing interference channels.
 * In addition, performance counters can be used to implement
@@ -449,15 +454,19 @@ interference monitoring (refer to xref:sec:pmc[xrefstyle=full]).
 [#sec:partitioning:safety:other:level]
 ##### Level
 
-Like for memory partitioning, solutions for the partitioning of other resources
-will have an impact on the core, SoC, or software levels depending on the
-targeted resource/functionality (e.g. branch predictor, interconnect,
-interrupts, explicit communication, etc.).
-Changes at the core and/or SoC levels could have an impact at the software
-level, which could be simple and of limited scope (e.g. adding some instructions
-in the code of the hypervisor/OS/RTOS) or complex and impact multiple elements
-of the software stack (e.g. major changes in the hypervisor/OS/RTOS and
-re-architecture of the applications code).
+As with memory partitioning, solutions for partitioning other resources can affect the core, SoC, or software level, depending on the targeted resource or functionality, such as branch predictors, interconnects, interrupts, or explicit communication mechanisms.
+
+Changes at the core and/or SoC levels can impact the software level. The resulting software changes may be simple and limited in scope, such as adding instructions to the hypervisor, OS, or RTOS, or they may be more complex and affect multiple elements of the software stack, such as requiring major changes to the hypervisor, OS, or RTOS and re-architecting the application code.
+
+As with memory partitioning, solutions for the partitioning of other resources
+can affect the core, SoC, or software levels, depending on the
+targeted resource or functionality, such as branch predictor, interconnect,
+interrupts, or explicit communication.
+Changes at the core and/or SoC levels can impact the software level. The software
+changes may be simple and limited in scope, such as adding some instructions in
+the code of the hypervisor, OS, or RTOS, or they may be more complex and affect
+multiple elements of the software stack, such as major changes in the hypervisor,
+OS, or RTOS and re-architecting the applications code.
 
 [#sec:partitioning:safety:importance]
 #### Importance
@@ -470,12 +479,12 @@ interference channels, which is required at every criticality level.
 #### Justification
 
 Without partitioning, a task (referred to as application in CAST 32-A cite:[cast32:2016])
-may delay another by creating contention over a shared resource, which could be
+may delay another task by creating contention over a shared resource, such as
 processor cycles or any of the physical resources.
 This leads to a reduction in the availability of the system.
 
 Without partitioning, the integrity and confidentiality of each process may also
-be affected, for example if its memory is overwritten by another process.
+be affected, for example, if its memory is overwritten by another process.
 
 In avionics, the CAST 32-A guideline mandates that all interference channels
 must be identified and mitigated.
@@ -490,13 +499,13 @@ from interference as follows:
 * Timing and execution faults: blocking of execution, deadlocks, livelocks,
 incorrect allocation of execution time (i.e. exceeding allocated time budgets),
 and incorrect synchronization across software elements.
-* Memory: corruption of content, and read or write access to memory allocated
-to another software element (unauthorized access to memory regions with
-arbitrary consequences).
+* Memory: corruption of content and read or write access to memory allocated
+to another software element, such as unauthorized access to memory regions with
+arbitrary consequences.
 * Exchange of information: concerns such as repetition, loss, delay, insertion,
 masquerade, incorrect sequence, corruption, blocking access to a communication
-channel, and failure to send/receive information to/from appropriate
-receivers/senders.
+channel, and failure to send or receive information to or from appropriate
+receivers or senders.
 
 ISO 26262 also mandates dependent failure analysis to identify and limit the
 impact of a failure, which aims to make the system more reliable.
@@ -507,7 +516,7 @@ Partitioning is likely to be mandated as an outcome of this analysis.
 
 CAUTION: The following sections introduce some well-advanced specifications
 currently under development by RISC-V International.
-Beware, that while minimal, there might be some differences between the final
+Be aware, that while likely minimal, there might be some differences between the final
 ratified version of these specifications and the text in these sections.
 This document will be updated as these specifications get ratified.
 
@@ -520,9 +529,9 @@ provides instructions to access some base counters and timers.
 While several approaches exist, it might be useful to take into account the more
 recent [.extension]#Sstc# extension:
 
-* _M-mode timer_: The first approach is the using the cycle count (with the
-`RDCYCLE` instruction) and the wall clock (with the `RDTIME` instruction).
-This feature can be used to assess whether the bounds of a time partition have
+* _M-mode timer_: The first approach is the using the `RDCYCLE` instruction
+for cycle count and the `RDTIME` instruction for the wall clock.
+This feature can assess whether the bounds of a time partition have
 been exceeded and hence, whether a deadline overrun occurred.
 Also, the RISC-V privileged architecture specification provides a real-time
 counter that can be set and read as needed, under the section "`Machine Timer
@@ -548,11 +557,11 @@ There are some features potentially useful to flush cache contents:
 Section 3.6.6 _Coherence and Cacheability PMAs_, there is a feature that, if
 implemented by the underlying hardware, could be used for that purpose: the
 "`configurable cacheability settings`" for a memory region.
-It allows specifying whether a memory region is cacheable or not and, upon
-making a region non-cacheable, enforces that all contents belonging to that
-region not yet in memory are propagated to memory and removed from cache
+This feature specifies whether a memory region is cacheable or not and, if
+a region is non-cacheable, enforces that all contents belonging to that
+region that are not yet in memory are propagated to memory and removed from cache
 memories.
-Hence, if this feature can be used during operation, one could use it to set any
+Hence, if this feature can be used during operation, it can set any
 region (or all regions) to non-cacheable as a way to flush caches, and then set
 them back to cacheable again as needed.
 * The RISC-V Base Cache Management Operation (CMO) ISA Extensions define the
@@ -560,16 +569,16 @@ them back to cacheable again as needed.
 It allows cleaning and invalidating the contents of a cache block, which is
 identified by a physical address corresponding to the underlying memory
 locations, and whose size is implementation dependent.
-This feature can be used to flush cache, but how to do it is fully dependent on
-how cache blocks are defined since they can be potentially defined of any size
-subject to being a naturally-aligned power-of-two (NAPOT) range of memory
-locations, with such size being typically a power-of-two multiple of the cache
-line size.
-Hence, `cbo.flush` can be used to flush specific contents from cache providing
+This feature can be used to flush the cache, but how it is implemented depends
+entirely on how cache blocks are defined, since they can potentially be defined
+with any size subject to the range being a naturally aligned power-of-two (NAPOT)
+range of memory locations. The size is typically a power-of-two multiple of the
+cache line size.
+Hence, `cbo.flush` can be used to flush specific contents from cache, providing
 the instruction with the cache block memory address to be flushed (it is an
 input parameter), which is a strong requirement for cache flushing because
-either cache contents are known beforehand, or data are evicted speculatively
-with potential uncertainty on whether all cache contents have been effectively
+either cache contents are known, or data is evicted speculatively
+with potential uncertainty about whether all cache contents have been effectively
 flushed.
 
 [#sec:partitioning:rv:mem]
@@ -603,9 +612,9 @@ cores featuring S-mode can also use page-based virtual memory in any of the
 different schemes defined by the RISC-V privileged architecture (Sv39, Sv48 or
 Sv57), thus providing a portion of the processor state that a user process can
 read but not modify.
-Such state includes the page table pointer and a bit dictating whether the
+Such a state includes the page-table pointer and a bit dictating whether the
 processor is in user or supervisor mode.
-Each page table entry handles read/write permissions, as well as the permission
+Each page-table entry handles read/write permissions, as well as the permission
 that allows access to that entry from user mode.
 RISC-V also provides a mechanism that allows the processor to go from user mode
 to supervisor mode by means of a system call exception (the `ecall`
@@ -641,7 +650,7 @@ The SPMP follows an identical design as the (e)PMP.
 Also as part of the RISC-V privileged architecture specification, hardware
 virtualization support is specified through the hypervisor ([.extension]#H#)
 extension.
-As shown in <<#fig:partitioning:hypervisor-extension>> it allows virtualizing
+As shown in <<#fig:partitioning:hypervisor-extension>>, it allows virtualizing
 the supervisor-level architecture by changing the supervisor mode into
 hypervisor-extended supervisor mode (HS-mode, or hypervisor mode), where a
 type-1 or type-2 hypervisor or a hosting-capable operating system runs.
@@ -671,7 +680,7 @@ Sensitive data can be confined to specific domains based on their verified trust
 properties, either established statically at boot or dynamically through
 attestation.
 
-For the memory that needs to be shared, and hence cannot be partitioned, the
+For the memory that needs to be shared, and so, cannot be partitioned, the
 RISC-V user-level ISA defines the Atomic Instructions ([.extension]#A#)
 extension.
 It contains instructions that atomically read-modify-write memory to support
@@ -699,7 +708,7 @@ It defines two key components: the Advanced PLIC (APLIC) for wired interrupts
 and the Incoming Message-Signaled Interrupt Controller (IMSIC) for MSIs,
 enabling more efficient and flexible interrupt routing to harts.
 
-Virtualization support on the AIA (i.e., direct guest interrupt injection) is
+Virtualization support on the AIA, such as direct guest interrupt injection, is
 supported via the IMSIC.
 Thus, RISC-V implementations featuring exclusively the APLIC will not provide
 any support for interrupt virtualization.
@@ -717,7 +726,7 @@ IMSIC interrupt file(s) or an APLIC domain to a supervisor domain.
 
 CAUTION: The following sections introduce some well-advanced specifications
 currently under development by RISC-V International.
-Beware, that while minimal, there might be some differences between the final
+Be aware, that while minimal, there might be some differences between the final
 ratified version of these specifications and the text in these sections.
 This document will be updated as these specifications get ratified.
 
@@ -728,36 +737,36 @@ Instructions providing explicit control of the state of microarchitectural
 features may be convenient, such as those related to flushing cache contents,
 making dirty cache contents become clean, and locking cache contents (e.g.
 including probe instructions or other mechanisms to check whether specific cache
-lines are stored in cache or not).
+lines are stored in cache).
 The [.extension]#Zicbom# extension provides such kind of instructions.
-However, as pointed in <<sec:caches:recom:isa>>, the developer should be aware
+However, as pointed out in <<sec:caches:recom:isa>>, be aware
 that the [.extension]#Zicbom# extension instructions operate on cache blocks
 with a size that is implementation-specific.
 
 [#sec:partitioning:recom:mem]
 #### Memory partitioning
 
-The RISC-V ecosystem is quite comprehensive on the memory space partitioning
+The RISC-V ecosystem is comprehensive on the memory space partitioning
 side, incorporating diverse mechanisms at both the core and system levels to
 isolate and protect multiple memory regions.
-Among these, the RISC-V IOMMU specification has been ratified and is now quite
+Among these, the RISC-V IOMMU specification has been ratified and is
 mature.
-It provides support for performance counters which should be implemented for
+It provides support for performance counters that should be implemented for
 processors targeting the safety critical products, see <<sec:pmc>>.
 PCIe ATS (Address Translation Services) support should be disabled by default
-when available, but if required then the user should consider enabling the IOMMU
+when available, but if required then consider enabling the IOMMU
 `T2GPA` control bit (see the RISC-V IOMMU cite:[rviommu:2025] for further
-details) or alternatively, when available, using other means provided by the
-SoC to ensure the memory partititioning enforcement, like the usage of the
+details) or alternatively, when available, ensuring memory-partitioning
+enforcement through other means provided by the SoC, such as the
 under specification IOPMP modules.
-IOPMP is aRISC-V specification draft providing PMP like memory
+IOPMP is a RISC-V specification draft providing PMP such as memory
 partitioning for non-CPU initiators.
 
 Two other ongoing developments near ratification should be considered in the
 design of SoCs for safety critical domains: the RISC-V SPMP and RISC-V
 Worlds.
-They provide mechanisms extending the memory partitioning capabilities.
-RISC-V SPMP (S-level PMP) should be used on MMU-less SoC designs to enforce
+They provide mechanisms that extend the memory partitioning capabilities.
+RISC-V SPMP (S-level PMP) can be used on MMU-less SoC designs to enforce
 S-mode software (e.g. operating systems) isolation from U-mode applications.
 RISC-V Worlds, based on the WorldGuard solution cite:[worldguard:2023],
 provides a hardware mechanism to enforce software context isolation in addition
@@ -767,47 +776,43 @@ to the address partitioning provided by PMPs and IOPMPs.
 #### Partitioning resources other than memory
 
 The following options should be considered when drawing up designs integrating
-speculative mechanisms that modify the behavior of a unit based on the behavior
+speculative mechanisms that modify the behavior of a unit, based on the behavior
 of previously scheduled tasks:
 
-* avoid their integration;
-* provide support for their activation/deactivation;
-* provide control features to inhibit the impact of previously scheduled tasks;
-* or their internal operation should be made analyzable and their impact
-boundable.
+* avoid their integration
+* provide support for their activation/deactivation
+* provide control features to inhibit the impact of previously scheduled tasks
+* make their internal operation analyzable and their impact boundable
 
-To facilitate the implementation of processor affinity or allocation, `mhartid`
-should be a physical ID (not virtual or dynamically allocated).
+To facilitate the implementation of processor affinity or allocation, make `mhartid`
+a physical ID (not virtual or dynamically allocated).
 
 The interconnect should minimize interference channels (e.g. multi-path NoC
-instead of shared bus), allow analysis of arbitration mechanisms, and possibly
+instead of shared bus), support analysis of arbitration mechanisms, and possibly
 enforce isolation or budgeting mechanisms.
 Designs using private hart resources should avoid the usage of the shared
 interconnect for the communication between the hart and the private resource,
-e.g. hart and its scratchpad.
+e.g., hart and its scratchpad.
 
 The implementation of explicit communications may be eased by hardware
 mechanisms such as mailboxes with fast notification.
 
-When using a MSI controller, like the one provided by the AIA IMSIC (see
+When using a MSI controller, such as the one provided by the AIA IMSIC (see
 <<sec:partitioning:rv:other>>), consider the impact of interrupt communications
 in the shared interconnect.
-It is worth mentioning that the AIA specification suggests MSIs to be sent over
-the main system bus.
-We highlight that such design decision may be subject to sources of interference
-on the main bus, which may undermine the jitter and WCET guarantees of the
-interrupt latency.
-Designs might consider dedicated paths for interrupt communications, like using
+The AIA specification suggests MSIs to be sent over the main system bus.
+Such a design decision may expose interrupt delivery to interference
+on the main bus, which may affect guarantees on interrupt latency, including jitter and WCET.
+Designs might therefore consider dedicated paths for interrupt communications, such as
 dedicated level signals or dedicated buses for message interrupts.
 
-Simultaneous multithreading may be considered in some cores to enhance the
-system performance.
+Simultaneous multithreading in some cores can enhance system performance.
 However, this may lead to abundant time interferences at a very fine grain,
-which are hard to master - if possible at all. In safety-critical systems this
+which are hard to master - if possible at all. In safety-critical systems, this
 feature should be disabled.
 
-Some cores may share some "`complex units`" (e.g. a vector unit, floating point
-units for complex math functions).
+Some cores can share some "`complex units`", such as a vector unit or floating point
+units for complex math functions.
 Uncontrolled sharing must be avoided, generally by software means such as
 avoiding the use of those units altogether, allowing only one core to use them,
 or explicitly time-sharing them so that concurrent accesses cannot occur.
@@ -817,16 +822,16 @@ or explicitly time-sharing them so that concurrent accesses cannot occur.
 
 #### Related external bodies
 
-Partitioning has traditionally been used in avionics systems and the reader
-might be interested in the ARINC 653 "`__Avionics Application Software Standard
+Partitioning has traditionally been used in avionics systems. If interested, see
+the ARINC 653 "`__Avionics Application Software Standard
 Interface__`" cite:[arinc653p0:2021,arinc653p1:2024,arinc653p2:2024]
-specification and in the DO-297 "`__Integrated Modular Avionics (IMA)
+specification and the DO-297 "`__Integrated Modular Avionics (IMA)
 Development Guidance and Certification Considerations__`" cite:[do297:2005]
-document.
+documents.
 
 #### Related chapters
 
-The features presented in this section have relationships with Quality of
+The features presented in this section are related to Quality of
 Service enforcement, see <<sec:qos>>.
 
 Some partitioning features are also addressed in the

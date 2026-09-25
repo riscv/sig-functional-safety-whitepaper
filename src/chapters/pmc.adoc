@@ -35,17 +35,16 @@ comes.
 |*Performance counter type* |*Detail* |*Usual scope*
 
 |Local cache usage (hit, miss, ...)
-|Accesses broken down with enough detail to determine how many accesses remain
-local, and how many are propagated to the following cache/memory level (e.g.
-misses, dirty evictions), whether accesses are reads or writes.
-For those accesses propagated to the following level, enough information to
-break down across word-only and full-line accesses is needed, as well as whether
-they are reads or writes.
+|Accesses broken down with sufficient detail to determine how many remain
+local and how many are propagated to the following cache or memory level
+(e.g., misses and dirty evictions), and whether the accesses are reads or writes.
+For accesses propagated to the following level, sufficient information to
+distinguish word-only accesses from full-line accesses, as well as reads from writes.
 
-NOTE: Note that load and store accesses do not need
-to be necessarily the same as load and store instructions since instructions
-may be merged into fewer accesses (e.g. if accessing the same cache line),
-among other optimizations.
+NOTE: Load and store accesses do not necessarily correspond one-to-one with
+load and store instructions, since multiple instructions may be merged into
+fewer accesses (e.g., when accessing the same cache line), among other
+optimizations.
 
 |Core
 
@@ -54,11 +53,10 @@ among other optimizations.
 |SoC
 
 |Memory accesses
-|Number of transactions broken down across reads and writes, page hits and
-misses, and any other relevant parameters that may lead to significantly
+|Number of transactions broken down by reads and writes, page hits and
+misses, and any other relevant parameters that may result in significantly
 different latencies.
-Ideally, it may be interesting having those statistics per bank/rank
-separately.
+Ideally, these statistics can also be available separately for each bank and rank.
 |SoC
 
 |TLB usage (hit, miss…)
@@ -75,19 +73,18 @@ unauthorized address, etc).
 |Interrupts
 |Broken down per interrupt type and, if possible, by the source of such
 interrupts (e.g. a core, an external device, etc.).
-Note that statistics about when an interrupt is suspended due to the arrival of
-a higher priority interrupt, or whether an interrupt is ignored because it was
-already raised but not served yet (e.g. a timer interrupt arriving before the
-previous timing interrupt has been served) are also interesting.
+Note that statistics about interrupts that are suspended due to the arrival of
+a higher-priority interrupt, or ignored because the same interrupt is already
+pending, but has not yet been serviced, are also useful. For example, a
+timer interrupt may arrive before the previous timer interrupt has been serviced.
 |Core/SoC
 
 |Executed instructions
 |Broken down per instruction type, especially separating loads, stores, integer
 ALU, floating point ALU, branches. Further breakdowns (e.g. short latency vs.
 long latency ALU) may also be convenient.
-If instructions can be executed speculatively (e.g. after a predicted branch),
-then it may be convenient having separate counts for fetched/decoded and
-committed instructions.
+If instructions can be executed speculatively (e.g., following a predicted branch),
+it may be useful to have separate counts for fetched/decoded and committed instructions.
 
 From experience, loads and stores are particularly sensitive to multicore
 interference.
@@ -127,17 +124,17 @@ down across correctly predicted and mispredicted branch targets.
 |Multicore interference
 a|This category includes, for instance, the following:
 
-1. Core-to-core stalls: how many of the stalls experienced by a core have been
-   caused by another.
-   It may not always be easy to determine, but as far as it can be monitored, it
-   is valuable information for verification & validation, and diagnostics as
-   part of safety measures.
+1. Core-to-core stalls: The number of stalls experienced by a core that
+were caused by another core.
+Not always be easy to determine, but if it can be monitored, it provides
+valuable information for verification, validation, and diagnostics as
+part of safety measures.
 
-2. Latency measurement: ability to measure the latency of requests in specific
-   resources, typically, maximum latencies.
-   This is important for WCET (worst-case execution time) estimation, since
-   those latencies may be implementation dependent and difficult to document or
-   obtain from the documentation.
+2. Latency measurement: The ability to measure the latency of requests
+to specific resources, typically including maximum latencies.
+Important for WCET (worst-case execution time) estimation, because
+these latencies may be implementation-dependent and difficult to document
+or determine from the available documentation.
 |SoC
 
 |Peripheral and DMA controllers usage
@@ -149,147 +146,143 @@ Ethernet, UART, SPI, etc. as well as DMA controllers.
 |Error counts
 |Some components such as, for instance, caches and memories, include error
 detection and/or correction capabilities (e.g. SECDED).
-Counters for errors detected and corrected, optionally along with error logs,
+Counters for detected and corrected errors, optionally along with error logs,
 are convenient per component and, if possible, broken down across subcomponents
 (e.g. banks).
 |Core/SoC
 |===
 
-In addition to the performance counters a programmable threshold feature per
-performance counter should be provided.
-Programmable thresholds enable the association of actions whenever a counter
-exceeds its threshold.
-For example, a cache miss counter or a pipeline flush counter can have an
-associated programmable threshold that once exceeded raises an action (e.g. an
-interrupt).
-Frequently, this threshold feature can also be implemented as an overflow
-feature if the counters can also be set up programmatically.
-E.g. in some cases it can be used by software to enforce quotas by software.
-Note that resource allocation in safety-criticality systems also may need other
+In addition to performance counters, a programmable threshold feature
+should be provided for each performance counter.
+Programmable thresholds enable actions to be associated with a counter
+whenever it exceeds its threshold.
+For example, a cache-miss counter or pipeline-flush counter can have
+an associated programmable threshold. When the counter exceeds this
+threshold, an action (e.g., raising an interrupt) can be triggered.
+This threshold feature can often also be implemented as an overflow
+feature if the counters can be configured to overflow at a programmable value.
+For example, software can use this functionality to enforce quotas.
+Note that resource allocation in safety-critical systems may also require additional
 hardware support.
 
-Another feature useful for safety analysis and control is the programmable
-filtering of the performance counters when applicable.
-Following the cache miss counter example, the filtering capability causes the
-counter to only be updated on cache misses to specific address ranges.
-However, the kind of filtering provided heavily depends on the event semantic,
-e.g. address range, event source, etc.
+Another feature useful for safety analysis and control is programmable filtering
+of performance counters, where applicable.
+Following the cache-miss counter example, filtering allows the counter to be
+updated only for cache misses to specific address ranges.
+However, the filtering capabilities provided depend heavily on the semantics
+of the event, such as the address range or event source.
 
-Quota and filtering features can be helpful on software control mechanisms on
-mixed-criticality systems to ensure the safety of critical applications.
-For example, the software control mechanism can exploit both features to filter
-actions of the non-critical applications (e.g. in a cache miss counter only
-counting non-critical applications mapped addresses) and raising an interrupt
-that will stop the execution of these applications when the quota is exceeded
-(e.g. a fixed number of cache misses).
-Likewise, when designing a system these features can be helpful to debug
-(filter) specific applications running in the system and raising signals and/or
-alarms when a state is reached (quota).
+Quota and filtering features can support software control mechanisms in
+mixed-criticality systems to help ensure the safety of critical applications.
+For example, a software control mechanism can use both features to monitor
+non-critical applications by filtering events to include only addresses mapped
+by those applications. It can then raise an interrupt to stop their execution
+when a quota is exceeded, such as a specified number of cache misses.
+
+Likewise, when designing a system, these features can help debug specific
+applications by filtering relevant events and raising signals or alarms when
+a specified threshold is reached.
 
 [#sec:pmc:safety:level]
 #### Level
 
-Performance Counters in the context of Safety are needed on the SoC- and
-core-level.
-The level or scope where a counter is deployed depends on the location of the
-component.
-For instance, instruction counts, branch-related statistics and the like occur
-generally at the scope of the core, and hence, that is the right level for them.
-Others, instead, such as memory and peripheral controller related counters must
-clearly be placed at the SoC level.
-Some others, such as those related to shared caches, may fall in either
-category, namely core or SoC, depending on the specific implementation.
-For instance, a shared cache may be a standalone component, hence belonging to
-the SoC level, or part of a cluster of cores so that the cores and the shared
-cache cannot be deployed separately. In the latter case, the level for the
-performance counters can be assumed to be the cores themselves.
+Performance Counters in the context of safety are needed at both the
+SoC and core levels.
+The level or scope at which a counter is deployed depends on the location
+of the component being monitored.
+For instance, instruction counts, branch-related statistics, and similar
+events generally occur at the core level and are therefore appropriately
+monitored at that level. Other events, such as those related to memory and
+peripheral controllers, must clearly be monitored at the SoC level.
+Some events, such as those related to shared caches, may fall into either category,
+depending on the specific implementation. For example, a shared cache may be a
+standalone component and therefore belong to the SoC level, or it may be part of a
+cluster of cores such that the cores and shared cache cannot be deployed separately.
+In the latter case, the performance counters can be considered to be at the core level.
 
-Hypervisors, OSes and RTOS can implement further counters at software level,
-either to complement hardware counters, or as an alternative to hardware
-counters if the latter do not exist for some event types.
-Software-based counters are appropriate to monitor software-visible events such
-as, for instance, those related to peripherals, DMA, and even some memories
-(e.g. some flash memories).
-Such components may only be accessible through specific hypervisor/OS/RTOS
-services, and hence, those software layers can implement software counters to
-monitor activities related to those devices (e.g. access counts, data
-transferred). Other software-visible events, such as interrupts and exceptions,
-can also be monitored with software counters implemented in the
-hypervisor/OS/RTOS.
+Hypervisors, OSes, and RTOSes can implement additional counters at the software level,
+either to complement hardware counters or as an alternative when hardware counters are
+not available for some event types.
+Software-based counters are appropriate for monitoring software-visible events, such as
+those related to peripherals, DMA, and some memories (e.g., certain flash memories). Such
+components may only be accessible through specific hypervisor, OS, or RTOS services, allowing
+those software layers to implement counters that monitor activities related to those devices,
+such as access counts and the amount of data transferred. Other software-visible events, such as
+interrupts and exceptions, can also be monitored using software counters implemented in the
+hypervisor, OS, or RTOS.
 
 [#sec:pmc:safety:importance]
 #### Importance
 
 Performance counters are important for timing-sensitive applications that are
-implemented on architectures where there can be timing interferences between
-various processes or cores and other sources of indeterminism.
+implemented on architectures where timing interference can occur between
+processes, cores, or other sources of indeterminism.
 
 Performance counters can be used at any criticality level.
-The higher the criticality, the more urgently they are needed.
+The need for them generally increases with the criticality of the functionality,
+although it also depends on the characteristics of the hardware and software platform.
 
-In general, whether performance counters are needed or convenient is not only
-highly dependent on the criticality level of the functionality being considered,
-but also on the characteristics of the hardware and software platform.
-For instance, if the SoC provides a high degree of isolation across cores so
-that interference is low and limited by construction, or fully controllable by
-software means, then having performance counters to monitor interference, or to
-break down activity across cores may not be required.
-In this case, one could simply perform analyses in isolation, develop estimates
-based on some access counters, and not implement any safety measures requiring
-performance counters, since overruns during operation would not relate to how
+For instance, if the SoC provides a high degree of isolation across cores such
+that interference is low and limited by construction, or is fully controllable
+through software, performance counters for monitoring interference or breaking down
+activity across cores may not be required.
+In this case, analyses could be performed in isolation, with estimates developed based
+on available access counters, without implementing safety measures that require
+performance counters. Overruns during operation would then not depend on how
 hardware resources are shared.
 
 Therefore, there is no _one-size-fits-all_ solution in terms of performance
-counters but, in general, a higher number of performance counters, more detailed
-breakdowns and more per-core information, means the SoC becomes easier to
-integrate into safety-relevant systems due to the reduced costs for
-verification, validation and implementation of safety measures.
+counters. In general, however, a greater number of performance counters, more detailed
+breakdowns, and more per-core information can make an SoC easier to
+integrate into safety-relevant systems by reducing the costs associated with verification,
+validation, and implementation of safety measures.
 
-Hand-in-hand with the deployed performance counters, one cannot forget the
-importance of properly documenting them in the corresponding technical reference
-manuals.
-It is often the case that counters are described only with their names or with
-one-liners.
-Those descriptions bring uncertainty and hence, even though a performance
-counter may be of much use, it may end up being ignored simply because there is
-not enough information and evidence of such counter providing the required
-information.
-Therefore, it is of prominent importance to provide detailed documentation along
-with the performance counters of what they really measure.
+Along with providing performance counters, it is important to document them properly in
+the corresponding technical reference manuals.
+Counters are often described only by their names or in one-line descriptions.
+These descriptions introduce uncertainty, and even when a performance counter could be useful,
+it may ultimately be ignored because there is insufficient information or evidence that it
+provides the required information.
+
+It is therefore important to provide detailed documentation describing precisely what
+each performance counter measures.
 
 [#sec:pmc:safety:justification]
 #### Justification
 
-This section provides first the scope of why performance counters are needed in
-safety-related systems and then reviews specific uses through some examples.
+This section first describes why performance counters are needed in safety-related systems
+and then reviews specific use cases through several examples.
 
 [#sec:pmc:safety:justification:standards]
 ##### Traceability to standards
 
-Performance Counters can be used as the basis for meeting safety requirements
-related to a variety of safety needs such as "freedom from interference"
+Performance Counters can be used as a basis for meeting safety requirements
+related to a variety of safety needs, such as "freedom from interference"
 (ISO 26262 cite:[iso26262:2018]), "resource usage tests" (ISO 26262
 cite:[iso26262:2018]), and "interference channel characterization"
-(CAST 32-A cite:[cast32:2016]),
-as well as for processes related to timing estimation, critical configuration
-setting validation and random hardware fault management.
+(CAST 32-A cite:[cast32:2016]), as well as processes related to timing estimation,
+critical configuration validation, and random hardware fault management.
+
+If you consider performance counters in the context of the product lifecycle of
+safety-relevant systems, their use can be identified in at least three different
+phases of the product lifecycle:
 
 Putting performance counters in the context of the product life-cycle of
 safety-relevant systems, we foresee their need in at least three different
-phases of the product life-cycle, as detailed next:
+phases of the product life-cycle:
 
 * During verification, performance counters are needed for estimation purposes,
-  such as those related to timing, memory usage, peripheral usage, etc.
-* During validation, test campaigns are conducted and performance counters are
-  typically used to assess real usage of resources against estimates, and to
-  diagnose misbehavior since counters can provide detailed information on the
-  source of the misbehavior.
-* At run-time, the integrity or assurance level of the functionality at hand
-  determines the safety measures needed as part of the system architecture.
-  Some of those safety measures may include monitoring, quota and/or diagnostics
-  capabilities to proactively avoid failures, or to react to specific events to
-  avoid failures by taking corrective actions promptly and precisely (e.g.
-  degrading the system by dropping the offending task).
+  such as estimating timing, memory usage, peripheral usage, and other resource
+  requirements.
+* During validation, test campaigns are conducted, and performance counters are
+  typically used to assess actual resource usage against estimates and to diagnose
+  misbehavior, since counters can provide detailed information about its source.
+* At run-time, the integrity or assurance level of the functionality determines the
+  safety measures needed as part of the system architecture.
+  Some of these safety measures may include monitoring, quota, and/or diagnostic
+  capabilities to proactively prevent failures or to respond to specific events by
+  taking corrective actions promptly and precisely (e.g., degrading the system by
+  stopping the offending task).
 
 In all those cases, evidence obtained from performance counters can be used to
 feed certification documentation.
@@ -297,90 +290,90 @@ feed certification documentation.
 [#sec:pmc:safety:justification:uses]
 ##### Specific uses of performance counters
 
-Without being exhaustive, this section identifies a number of uses of
+Without being exhaustive, this section identifies several uses of
 performance counters in the context of safety-relevant systems.
 
 [#sec:pmc:safety:justification:uses:wcet]
 ###### [.h4-example-heading]#Example 1: WCET estimation#
 
-Performance counters can be used for measurement-based timing analysis, or to
-feed some input data related to, for instance, latencies into static timing
-analysis.
-In particular, one can use performance counters to measure the number of
-accesses to each shared resource and the maximum latency experienced under
-stressful scenarios in each shared resource, and then compute the execution
-time expected if all accesses experience those worst-case latencies.
+Performance counters can be used for measurement-based timing analysis or to
+provide input data, such as latency measurements, for static timing analysis.
+In particular, performance counters can be used to measure the number of
+accesses to each shared resource and the maximum latency experienced by each
+resource under stressful scenarios. These measurements can then be used to
+estimate the execution time assuming that all accesses experience the
+corresponding worst-case latencies.
 
-In the context of automotive systems, it is also common to attempt to optimize
-the timing behavior of critical tasks without such a process being a strict WCET
-estimation process as one could have in other domains such as avionics.
-In that case, performance counters can be used to feed timing models to find the
-best task scheduling in terms of timespan based on the timing model.
+In the context of automotive systems, it is also common to optimize the
+timing behaviour of critical tasks without performing a formal WCET
+estimation process, as may be required in other domains such as avionics.
+In such cases, performance counters can provide input to timing models that
+are used to determine task scheduling that minimizes the overall execution
+time, based on the model.
 
 [#sec:pmc:safety:justification:uses:valid]
-###### [.h4-example-heading]#Example 2: resource usage validation and diagnostics#
+###### [.h4-example-heading]#Example 2: Resource usage validation and diagnostics#
 
 Performance counters can be used to measure accesses to different resources
-(e.g. peripheral devices, DRAM memory), as well as data transferred during the
-validation phase of a subsystem to check that specific bandwidth bounds are not
+(e.g., peripheral devices and DRAM), as well as the amount of data transferred during the
+validation phase of a subsystem, to verify that specific bandwidth bounds are not
 exceeded.
 
-Another example relates to assess whether timing deadlines are exceeded or not.
-If they are exceeded, performance counters can provide a precise and detailed
-snapshot of the use of resources for the task experiencing the overrun as well
-as for the potentially offending tasks.
-Such information can allow a quick diagnosis of the source of the overrun.
-In fact, those counters can be used even if no overrun is experienced, to
-predict future overruns as further integration occurs, by revealing whether some
-specific resources are highly stressed and hence, whether consolidating
-additional applications may lead to resource overutilization.
+Another example is assessing whether timing deadlines are exceeded.
+If a deadline is exceeded, performance counters can provide a precise and detailed
+snapshot of resource usage for the task experiencing the overrun, as well as for
+potentially offending tasks.
+Such information can enable rapid diagnosis of the source of the overrun.
+
+Performance counters can also be used when no overrun has occurred to predict potential
+future overruns as further integration takes place. For example, they can reveal whether
+specific resources are already highly stressed and, therefore, whether integrating additional
+applications could lead to resource overutilization.
 
 [#sec:pmc:safety:justification:uses:monitoring]
-###### [.h4-example-heading]#Example 3: resource usage monitoring and diagnostics#
+###### [.h4-example-heading]#Example 3: Resource usage monitoring and diagnostics#
 
-As for example 2, performance counters can be used during operation analogously
+As with the previous example, performance counters can be used during operation, analogously
 to the validation process, but to implement safety measures.
-For instance, some counters can be read periodically to detect whether any task
-is abusing any resource or exhibiting any other type of misbehavior that may
-affect other tasks.
-Similarly, instead of monitoring those counters, one may let tasks run and, upon
-a failure to finish by a given deadline or to finish enough jobs in a given time
-period, diagnose the cause of the excessive duration by referring to the
-performance monitoring counters. Note that diagnostics information can be used
-not only for instantaneous decisions, but also to track some history and, for
-instance, if a task experiences overruns too frequently, switch to a different
-precomputed task schedule.
+For instance, some counters can be read periodically to detect whether a task is abusing
+a resource or exhibiting other types of misbehavior that may affect other tasks.
+
+Alternatively, instead of continuously monitoring these counters, tasks can be allowed to
+run until a failure to meet a given deadline or complete a sufficient number of jobs within
+a given time period occurs. The performance monitoring counters can then be used to diagnose
+the cause of the excessive execution time. Diagnostic information can be used not only for
+immediate decisions but also to track historical behavior. For instance, if a task experiences
+overruns too frequently, the system can switch to a different precomputed task schedule.
 
 [#sec:pmc:safety:justification:uses:quota]
-###### [.h4-example-heading]#Example 4: quota allocation#
+###### [.h4-example-heading]#Example 4: Quota allocation#
 
-If performance counters allow programming quotas (e.g. maximum number of
-accesses or data transferred in a given resource), safety measures can be
-implemented atop.
-One can set a maximum number of DRAM accesses for a task in a given period of
-time to limit the amount of interference such a task can cause on others.
-Upon reaching such limit, quota-related counters may raise an interrupt so that
-the hypervisor/OS/RTOS performs an appropriate corrective action by, for
-instance, dropping the specific job of this task if it may affect more critical
-ones, or drop other tasks if this one is highly critical and becomes more
-vulnerable to interference.
+If performance counters support programmable quotas (e.g., a maximum number of
+accesses to, or amount of data transferred through, a specific resource), safety
+measures can be implemented based on those quotas.
+
+For example, a maximum number of DRAM accesses can be defined for a task over a
+specific period to limit the amount of interference that the task can cause to other tasks.
+Upon reaching the limit, quota-related counters can raise an interrupt, allowing the hypervisor,
+OS, or RTOS to perform an appropriate corrective action. For instance, the system could drop a
+specific job of the task if its continued execution may affect more critical tasks, or drop other
+tasks if the task is highly critical and has become more vulnerable to interference.
 
 [#sec:pmc:safety:justification:uses:faults]
 ###### [.h4-example-heading]#Example 5: management of random hardware faults#
 
-Performance counters related to errors detected and/or corrected may be used to
-detect intermittent and permanent faults.
-For instance, SECDED codes deployed along with some DRAM memories may allow
-detecting and correcting transient faults due to, for instance, particle
-strikes.
-However, performance counters may allow tracking whether those errors occur too
-frequently or too concentrated in a specific component (e.g. a DRAM DIMM).
-In that case, if errors exceed specific predefined thresholds, performance
-counters can be used to trigger the replacement of some components (e.g. a DIMM)
-or perform a hardware fix (e.g. a cache line being replaced by a spare one) to
-avoid having unprotected components if the correction capabilities are devoted
-to correct permanent or intermittent errors, which would make transient faults
-not be correctable.
+Performance counters related to detected and/or corrected errors can be used to detect
+intermittent and permanent faults.
+
+For instance, SECDED codes deployed with some DRAM memories can detect and correct transient
+faults caused by, for example, particle strikes. Performance counters can also track whether such
+errors occur too frequently or are too concentrated in a specific component (e.g., a DRAM DIMM).
+
+If the number of errors exceeds predefined thresholds, performance counters can be used to trigger
+corrective actions, such as replacing a component (e.g., a DIMM) or performing a hardware repair
+(e.g., replacing a cache line with a spare one). Such actions can prevent components from becoming
+unprotected when error-correction capabilities are being used to correct permanent or intermittent
+errors, which can otherwise leave transient faults uncorrectable.
 
 [#sec:pmc:safety:justification:uses:contrib]
 ##### Contribution to safety properties
@@ -390,13 +383,13 @@ this white paper and how performance counters address them:
 
 * Availability: Performance counters can be used to monitor or control the
   correct real-time behavior of the system, the bounded impact of interference
-  channels, the correct usage of resources...
+  channels, the correct usage of resources, and so on.
 * Reliability: Performance counters can be used to detect or control the
   over-consumption of resources that could provoke an excessive thermal
   dissipation.
-  They can be used to measure the occurrences of errors.
-* Observability: Performance counters add observation capabilities that can be
-  used during SW/HW development and at run-time.
+  In addition, they can be used to measure the occurrences of errors.
+* Observability: Performance counters provide observation capabilities that
+  can be used during software and hardware development and at run-time.
 
 [#sec:pmc:rv]
 ### RISC-V solutions
@@ -405,46 +398,41 @@ The RISC-V Privileged ISA Specification cite:[rv-priv-spec:2024] Section 3.1.10
 outlines a basic hardware performance counters facility for M-Mode.
 In particular, the following counters are included:
 
-* Machine cycle counter (`mcycle`) CSR, counting the number of clock cycles
+* Machine cycle counter (`mcycle`) CSR: Counts the number of clock cycles
   executed by the processor core on which the hart is running.
-* Machine instruction retired counter (`minstret`) CSR, counting the number of
+* Machine instruction retired counter (`minstret`) CSR: Counts the number of
   instructions that the hart has retired.
-* Machine performance monitoring counters (`mhpmcounter3` - `mhpmcounter31`),
-  counting platform-specific events.
-  An additional set of Event Selector CSRs (`mhpmevent3` - `mhpmevent31`)
-  control which specific event causes the correspondent counter to increment.
+* Machine performance monitoring counters (`mhpmcounter3` - `mhpmcounter31`):
+  Counts platform-specific events. An additional set of Event Selector CSRs
+  (`mhpmevent3`– `mhpmevent31`) controls which specific event causes the corresponding
+  counter to increment.
 
-RISC-V performance counters are 64-bit wide.
-In RV32 processors, they are accessed via two 32-bit CSRs for their LSB and MSB
-portions.
+RISC-V performance counters are 64 bits wide. In RV32 processors, they are accessed
+through two 32-bit CSRs containing the least-significant and most-significant halves
+of each counter.
 
-The RISC-V Unprivileged ISA Specification cite:[rv-unpriv-spec:2024] Chapter 8
-defines with the [.extension]#Zicntr# and [.extension]#Zihpm# extensions an
-analogous facility for unprivileged hardware performance counters,
-including the Cycle Counter (`cycle`) CSR, the Instruction Retired Counter
-(`instret`) CSR and 29 additional Performance Monitoring Counters
-(`hpmcounter3` - `hpmcounter31`).
+The RISC-V Unprivileged ISA Specification cite:[rv-unpriv-spec:2024] Chapter 8 defines,
+through the [.extension]#Zicntr# and [.extension]#Zihpm# extensions, an analogous facility
+for unprivileged hardware performance counters, including the Cycle Counter (`cycle`) CSR,
+the Instruction Retired Counter (`instret`) CSR, and 29 additional Performance Monitoring
+Counters (`hpmcounter3`–`hpmcounter31`).
 
-The Privileged ISA Specification cite:[rv-priv-spec:2024], in Section 10.1.4,
-also addresses the Supervisor Software case, specifying that it uses the same
-hardware performance monitoring facility as user-mode software.
+The RISC-V Privileged ISA Specification cite:[rv-priv-spec:2024] Section 10.1.4 also addresses
+the Supervisor Software case, specifying that it uses the same hardware performance monitoring
+facility as user-mode software.
 
-It should be noted that additional CSRs are defined to provide control over
-counter activation (Machine Counter-Inhibit CSR, RISC-V Privileged ISA
-Specification cite:[rv-priv-spec:2024] Section 3.1.12) or availability of the
-hardware performance-monitoring counters to the next-lowest privileged mode
-(Counter-Enable Register CSR, RISC-V Privileged ISA Specification
-cite:[rv-priv-spec:2024] Sections 3.1.11 and 10.1.15, for machine and supervisor
-modes respectively).
+Additional CSRs are defined to provide control over counter activation (Machine Counter-Inhibit
+CSR, RISC-V Privileged ISA Specification cite:[rv-priv-spec:2024] Section 3.1.12) and the availability
+of hardware performance-monitoring counters to the next-lower privileged mode (Counter-Enable Register CSR,
+RISC-V Privileged ISA Specification cite:[rv-priv-spec:2024] Sections 3.1.11 and 10.1.15, for machine and
+supervisor modes, respectively).
 
-The RISC-V Privileged ISA Specification cite:[rv-priv-spec:2024] Chapter 17
-defines the [.extension]#Sscofpmf# extension providing performance counters
-overflow and mode filtering capabilities for machine and supervisor modes.
-The overflow capability allows the implementation of quotas as identified in the
-Features section of this chapter (<<sec:pmc:safety:features>>), while the mode filtering
-capabilities partially addresses the filtering capabilities identified in the
-same section, but limited to execution modes. Note that the overflow capability
-does not apply to the mandatory `cycle` and `instret` counters.
+The RISC-V Privileged ISA Specification cite:[rv-priv-spec:2024] Chapter 17 defines the [.extension]#Sscofpmf#
+extension, which provides performance-counter overflow and mode-filtering capabilities for machine and supervisor
+modes. The overflow capability allows the implementation of quotas, as described in the Features section of this
+chapter (<[sec:pmc:safety:features](sec:pmc:safety:features)>), while the mode-filtering capabilities partially
+address the filtering capabilities identified in the same section, but are limited to execution modes. Note that
+the overflow capability does not apply to the mandatory `cycle` and `instret` counters.
 
 [#sec:pmc:recom]
 ### Recommendations
@@ -452,103 +440,99 @@ does not apply to the mandatory `cycle` and `instret` counters.
 [#sec:pmc:recom:safety]
 #### Safety usage
 
-Version 1.11 of the RISC-V privileged architecture specification introduced the
+Version 1.11 of the RISC-V Privileged Architecture Specification introduced the
 Machine Counter-Inhibit (`mcountinhibit`) CSR.
-While this register allows stopping the counter from incrementing to save energy
-consumption or to prevent side channel security attacks, it may result in
-violation of some safety requirements or usage which depends on the counter
-being always active.
-The designer of a combined hardware/software system using this CSR from machine
-mode to do the deactivation should weigh the tradeoffs depending on the overall
-system requirements before using this register and/or device additional logic
-such as authentication of the lower privilege level client(s) that has access to
-this register through the `scountinhibit` CSR.
-The `mcounteren` CSR controls what the lower privilege can directly access.
 
-The designer should also be aware that the cycle counter may be shared between
-harts, and configuring `mcountinhibit.CY` to control the cycle count on one hart
-will propagate the configuration to all shared harts.
+While this register allows counters to be stopped to reduce energy consumption or
+mitigate certain side-channel security attacks, doing so may violate safety requirements
+or assumptions that depend on a counter remaining continuously active.
+
+A system designer using this CSR from machine mode to deactivate counters should consider
+the tradeoffs in the context of the overall system requirements before using the register.
+Additional logic may also be required, such as authentication of lower-privilege clients
+that have access to the corresponding `scountinhibit` CSR. The `mcounteren` CSR controls
+which counters can be directly accessed by lower-privilege modes.
+
+The designer should also be aware that the cycle counter may be shared between harts. In
+such implementations, configuring `mcountinhibit.CY` to control the cycle count on one
+hart propagates the configuration to all harts sharing the counter.
 
 [#sec:pmc:recom:newext]
 #### New extensions
 
-The standard Hardware Performance Monitoring facility and extensions defined by
-the RISC-V specifications, see previous section, provide an important base to
-address the implementation of safety-related hardware performance counters.
-Working groups within RISC-V International _Performance Analysis_ Special
-Interest Group are working on new extensions that can allow more efficient
-and new implementation of functional safety mechanisms relying on performance
-counters.
-New processor implementations targetting the safety critical domains should
-consider their integration.
-Examples of such works are:
+The standard Hardware Performance Monitoring facility and extensions defined
+by the RISC-V specifications, as described in the previous section, provide an
+important foundation for implementing safety-related hardware performance counters.
 
-* An extension providing standarized naming and definiton of the most frequent
-performance events that can be found in different implementations.
-* The performance events sampling extensions provide (1) precise attribution of
-the instruction that caused a performance counter to overflow and (2) sampling
-of instructions and/or uops, with collection of runtime metadata for the
-instruction/uop, including data virtual address, select event occurrences, and
-latencies incurred.
-* The self-hosted trace extension providing debug like functionalities but
-exploitable by the core itself and the software running on it without having
-to rely on an external debugger.
+Working groups within the RISC-V International *Performance Analysis* Special
+Interest Group are developing new extensions intended to enable more efficient
+implementations of functional safety mechanisms based on performance counters.
 
-The former, performance events standardized naming and definition, is specially
-interesting in safety critical domains as it ensures that functional safety
-software using performance counters can be reused in different RISC-V processor
-implementations with little to no effort.
-This will additionally reduce the time for the verification, validation and
-certification activities required when developing safety critical systems, as
-the software will not need to be modified.
-Obviously, this requires that the different RISC-V processor implementations
-follow this extension.
+New processor implementations targeting safety-critical domains should consider
+integrating these extensions where appropriate.
 
-The latter extensions, performance events sampling and self-hosted trace, will
-open opportunities for new functional safety mechanisms and/or more efficient
-implementations of existing ones.
-Processors implementing these extensions should consider dedicated resources
-(memory and paths to get to that memory) to keep the produced samples and
-traces, otherwise if those resources are shared with the rest of the system then
-the applications could suffer interferences,
-see xref:sec:partitioning[xrefstyle=full].
+Examples of such work include:
+
+* An extension providing standardized naming and definitions for the most common
+performance events that can be found across different implementations.
+* Performance event sampling extensions providing (1) precise attribution of the
+instruction that caused a performance counter to overflow and (2) sampling of instructions
+and/or uops, with collection of run-time metadata for each instruction/uop, including
+data virtual addresses, selected event occurrences, and incurred latencies.
+* A self-hosted trace extension providing debugger-like functionality that can be used by
+the core itself and the software running on it without relying on an external debugger.
+
+The former, standardized naming and definitions for performance events, is particularly
+relevant to safety-critical domains because it allows functional safety software that
+uses performance counters to be reused across different RISC-V processor implementations
+with little or no modification.
+
+This can also reduce the effort required for verification, validation, and certification
+when developing safety-critical systems, since the software does not need to be modified
+for each processor implementation. This benefit, of course, depends on the different
+RISC-V processor implementations conforming to the extension.
+
+The latter extensions, performance event sampling and self-hosted trace, open opportunities
+for new functional safety mechanisms and/or more efficient implementations of existing ones.
+
+Processors implementing these extensions should consider providing dedicated resources,
+including memory and paths to access that memory, for storing the generated samples and traces.
+If these resources are shared with the rest of the system, applications may experience
+interference; see xref:sec:partitioning.
 
 [#sec:pmc:recom:socpmc]
 #### SoC-level counters
 
-The RISC-V specifications provide performance counters for hart related events.
-However, safety critical systems, specially those using complex SoCs (e.g.
-multicores), require the observation of events outside of the harts.
-Particularly for resources shared among multiple harts, like buses and shared
-memory structures.
-Processors for safety critical systems should consider the implementation of
-dedicated SoC-level counters.
+The RISC-V specifications provide performance counters for hart-related events.
+However, safety-critical systems, particularly those using complex SoCs (e.g.,
+multicore systems), require observation of events outside the harts, especially
+for resources shared among multiple harts, such as buses and shared memory structures.
+
+Processors for safety-critical systems should consider implementing dedicated
+SoC-level performance counters.
 
 [#sec:pmc:activities]
 ### Relevant activities
 
 #### Related external bodies
 
-Performance counters usually have very diverse specifications on different
+Performance counters typically have very diverse specifications on different
 processors (Power, x86, ...).
 
-Linux features the `perf` command to instrument performance counters.
-Other OSes and vendors provide similar tools.
+Linux features the `perf` command for accessing and instrumenting performance counters.
+Other operating systems and processor vendors provide similar tools.
 
 #### Related chapters
 
-Performance counters can be used to monitor the effect of Quality of Service
-(QoS) policies, or even to dynamically influence them.
-Refer to xref:sec:qos[xrefstyle=full].
+Performance counters can be used to monitor the effects of Quality of Service
+(QoS) policies or even to dynamically influence them. Refer to xref:sec:qos[xrefstyle=full].
 
-Performance counters are obviously used to monitor cache performance.
-Refer to xref:sec:caches[xrefstyle=full].
+Performance counters can be used to monitor cache performance. Refer to
+xref:sec:caches[xrefstyle=full].
 
-Performance counters can be used to measure the occurrences of certain
-(obviously not fatal) errors.
-Such errors could be managed by an error management mechanism.
-Refer to xref:sec:error-reporting[xrefstyle=full].
+Performance counters can be used to measure the occurrence of certain non-fatal errors.
+Such errors can be managed by an error management mechanism. Refer to
+xref:sec:error-reporting[xrefstyle=full].
 
-SoC-level performance counters and monitoring are needed to implement some
-features identified to monitor the multicore interference.
-Refer to xref:sec:partitioning[xrefstyle=full].
+SoC-level performance counters and monitoring are needed to implement some of the features
+used to monitor multicore interference. Refer to xref:sec:partitioning[xrefstyle=full].
