@@ -100,7 +100,7 @@ Hence, controlling when tasks start with some degree of precision is a
 fundamental requirement.
 The existence of periodic timer(s) allows the task scheduler to have a precise
 notion of time.
-By properly configuring these timers, typically through scheduler primitives, 
+By properly configuring these timers, typically through scheduler primitives,
 a given task schedule can be enforced.
 +
 Timers must provide sufficient precision for the granularity at which time
@@ -141,7 +141,7 @@ For example, resetting the processor state to a known state reduces time
 variability because the state is known when task execution begins.
 Otherwise, effects such as systematic branch mispredictions or unfortunate cache
 miss patterns might occur when another task is started or resumed with the
-processor state, such as branch predictor state, cache replacement state, left 
+processor state, such as branch predictor state, cache replacement state, left
 unchanged after the execution of a previous task.
 The time required to reset, flush, or freeze the processor state should be
 accounted for in the scheduling.
@@ -351,7 +351,7 @@ used to enforce spatial isolation.
 These mechanisms can also be used to safely share memory areas when required by
 the system.
 
-To support this, particularly in multicore systems, features such as the following 
+To support this, particularly in multicore systems, features such as the following
 are required:
 
 * Protection of the memory space and peripherals used by safety-critical tasks,
@@ -392,12 +392,12 @@ Furthermore, the shared property of a branch predictor can make WCET analysis
 even more complex, because its state can be affected by other applications or
 tasks.
 
-The impact of such interference isn't limited to time, as shown in the previous 
+The impact of such interference isn't limited to time, as shown in the previous
 example of the branch predictor.
 For example, data integrity can also be impacted.
 In the security domain, attacks such as RowHammer have shown that the data from one
 application can corrupt data in another application.
-While malicious actions from applications are not considered in the safety domain, 
+While malicious actions from applications are not considered in the safety domain,
 the impact of such actions should be considered in order to maintain
 the reliability of the memory and the integrity of the data of the different
 applications in the system.
@@ -756,7 +756,7 @@ processors targeting the safety critical products, see <<sec:pmc>>.
 PCIe ATS (Address Translation Services) support should be disabled by default
 when available, but if required then consider enabling the IOMMU
 `T2GPA` control bit (see the RISC-V IOMMU cite:[rviommu:2025] for further
-details) or alternatively, when available, ensuring memory-partitioning 
+details) or alternatively, when available, ensuring memory-partitioning
 enforcement through other means provided by the SoC, such as the
 under specification IOPMP modules.
 IOPMP is a RISC-V specification draft providing PMP such as memory

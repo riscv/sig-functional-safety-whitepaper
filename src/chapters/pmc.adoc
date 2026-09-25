@@ -186,7 +186,7 @@ a specified threshold is reached.
 [#sec:pmc:safety:level]
 #### Level
 
-Performance Counters in the context of safety are needed at both the 
+Performance Counters in the context of safety are needed at both the
 SoC and core levels.
 The level or scope at which a counter is deployed depends on the location
 of the component being monitored.

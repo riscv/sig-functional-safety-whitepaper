@@ -34,7 +34,7 @@ service-level agreement (SLA).
 The performance can be measured by metrics such as instructions per cycle (IPC),
 latency of servicing work, etc.
 
-Note that, in the context of this document, priority-related features (i.e., 
+Note that, in the context of this document, priority-related features (i.e.,
 features that control access to resources according to the priorities assigned
 to tasks) are considered a subset of QoS features.
 
