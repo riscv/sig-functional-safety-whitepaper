@@ -73,7 +73,7 @@ techniques such as error detection and correction codes (EDC/ECC) in memory.
 Redundancy can be characterized by its level of diversity.
 If, for example, multiple identical hardware elements are integrated without
 modification, the diversity is low.
-Diversity can be increased by triggering software execution on replicated harts 
+Diversity can be increased by triggering software execution on replicated harts
 of the system with an offset of a number of clock cycles. Additional diversity can be
 achieved by incorporating elements of differing design, differing ISAs, or even
 differing manufacturers.
