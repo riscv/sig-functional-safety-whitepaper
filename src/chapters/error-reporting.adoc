@@ -23,7 +23,7 @@ of the higher order system.
 ### Safety needs
 
 In some instances, error detection mechanisms can be independently testable at
-run time to ensure correct operation, such as periodic tests, run-time fault
+runtime to ensure correct operation, such as periodic tests, runtime fault
 injection, boot-up, or power-down tests.
 
 Different error management mechanisms differ in their ability to detect and
@@ -41,17 +41,17 @@ The actions taken when a correctable error is detected that the hardware can
 correct autonomously and an uncorrectable error that the hardware cannot
 correct autonomously are generally different:
 
-* Uncorrectable errors: typically require the operation of the affected
-components to stop, such as avoiding the process running in DCLS or the reading
-of a SECDED protected memory with a 2-bit error, to avoid or limit error propagation,
-and then reporting the error to trigger necessary corrective actions.
+* Uncorrectable errors: These typically require the operation of the affected
+components to stop, such as stopping the DCLS core running the process or avoiding
+the read of a SECDED protected memory with a 2-bit error, to avoid or limit error
+propagation, and then reporting the error to trigger necessary corrective actions.
 The latter can be implemented at software level, but the detection is usually
 done by the hardware by, for instance, raising an interrupt.
 +
 NOTE: Note that uncorrectable errors can be further classified to "`deferred`"
 errors, where no further action is needed, or "`urgent`" errors where
 containment or recovery action is needed.
-* Correctable errors: Correct operations can be continued if the hardware is
+* Correctable errors: Correct operation can be continued if the hardware is
 able to correct an error, for example, a single-bit error affecting a SECDED protected
 memory.
 The number of those events, and potentially the source of the error are often recorded.
@@ -59,7 +59,7 @@ The aim of recording errors is to determine if additional actions are needed.
 For example, frequent single-bit errors in a SECDED-protected memory location,
 although correctable, may indicate a partially defective bit cell. This can
 require the memory location to be decommissioned or, where possible, replaced
-with a spare location, such as by disabling a faulty cache line and replacing
+with a spare location, such as by disabling a faulty cache line or replacing
 it with a spare one.
 
 Note that, while some errors may be correctable at system level, they may not be
@@ -180,8 +180,8 @@ element of the processor.
 
 Error management usually depends on other resources, such as
 interaction and interfacing with standardized interrupts and exceptions.
-In turn, this depends on the software stack and the supported by the processor
-privilege modes M, S, or U. Error notification and subsequent error management may
+In turn, this depends on the software stack and the processor supported
+privilege modes M, S, or U.. Error notification and subsequent error management may
 need to be handled in M mode and propagated to other privilege levels as necessary.
 
 Another issue to consider is to provide a method to discover hardware
