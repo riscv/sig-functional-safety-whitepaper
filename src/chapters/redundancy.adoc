@@ -5,7 +5,7 @@
 ### Safety needs
 
 
-A safe system is is one in which faults are detected, contained, or
+A safe system is one in which faults are detected, contained, or
 mitigated such that the resulting risk remains within acceptable limits.
 These faults can be transient or permanent. Transient faults are one-off
 events after which the affected component returns to normal operation,
@@ -73,8 +73,8 @@ techniques such as error detection and correction codes (EDC/ECC) in memory.
 Redundancy can be characterized by its level of diversity.
 If, for example, multiple identical hardware elements are integrated without
 modification, the diversity is low.
-Diversity can be increased by triggering software execution on each system
-with an offset of a number of clock cycles. Additional diversity can be
+Diversity can be increased by triggering software execution on replicated harts 
+of the system with an offset of a number of clock cycles. Additional diversity can be
 achieved by incorporating elements of differing design, differing ISAs, or even
 differing manufacturers.
 
@@ -203,7 +203,7 @@ Redundancy is often the only mechanism to detect errors and remain operational
 to the extent required by systems with high safety levels.
 
 Basic redundancy can improve integrity by providing a method for error detection
-and eventually correction, although both can by accompanied by degradation of the main
+and eventually correction, although both can be accompanied by degradation of the main
 functionality.
 If the redundancy is further increased, the system can also show improved fault
 tolerance and reliability, since single faults are corrected, as long as
