@@ -179,7 +179,7 @@ access.
 
 Cache and TCM memories are inherently vulnerable to random errors, and some form
 of redundancy will typically be required to mitigate the risk introduced by
-these errors (see <[sec:redundancy](sec:redundancy)>).
+these errors (see <<sec:redundancy>>).
 
 This is usually implemented in the form of parity bits or ECC.
 
