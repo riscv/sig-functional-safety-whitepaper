@@ -90,7 +90,7 @@ Even if a cache is private to a single core, it will normally be shared by all
 harts and separate software threads time-multiplexed onto that hart.
 This means that any attempt to analyze the cache behavior for a single software
 thread is complicated by its dependence on unrelated activity in the system (for
-example, other software running, DMA transfers, or system I/O).
+example, other software running, DMA transfers, or system IO).
 
 Cache partitioning allows some portion of a cache (for example, specific ways or
 lines) to be allocated to a specific core, hart, or software thread.
