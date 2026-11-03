@@ -126,7 +126,7 @@ a|This category includes, for instance, the following:
 
 1. Core-to-core stalls: The number of stalls experienced by a core that
 were caused by another core.
-Not always be easy to determine, but if it can be monitored, it provides
+Not always easy to determine, but if it can be monitored, it provides
 valuable information for verification, validation, and diagnostics as
 part of safety measures.
 
@@ -267,10 +267,6 @@ If you consider performance counters in the context of the product lifecycle of
 safety-relevant systems, their use can be identified in at least three different
 phases of the product lifecycle:
 
-Putting performance counters in the context of the product life-cycle of
-safety-relevant systems, we foresee their need in at least three different
-phases of the product life-cycle:
-
 * During verification, performance counters are needed for estimation purposes,
   such as estimating timing, memory usage, peripheral usage, and other resource
   requirements.
@@ -360,7 +356,7 @@ specific job of the task if its continued execution may affect more critical tas
 tasks if the task is highly critical and has become more vulnerable to interference.
 
 [#sec:pmc:safety:justification:uses:faults]
-###### [.h4-example-heading]#Example 5: management of random hardware faults#
+###### [.h4-example-heading]#Example 5: Management of random hardware faults#
 
 Performance counters related to detected and/or corrected errors can be used to detect
 intermittent and permanent faults.
@@ -403,7 +399,7 @@ In particular, the following counters are included:
 * Machine instruction retired counter (`minstret`) CSR: Counts the number of
   instructions that the hart has retired.
 * Machine performance monitoring counters (`mhpmcounter3` - `mhpmcounter31`):
-  Counts platform-specific events. An additional set of Event Selector CSRs
+  Counts the platform-specific events. An additional set of Event Selector CSRs
   (`mhpmevent3`– `mhpmevent31`) controls which specific event causes the corresponding
   counter to increment.
 
@@ -430,7 +426,7 @@ supervisor modes, respectively).
 The RISC-V Privileged ISA Specification cite:[rv-priv-spec:2024] Chapter 17 defines the [.extension]#Sscofpmf#
 extension, which provides performance-counter overflow and mode-filtering capabilities for machine and supervisor
 modes. The overflow capability allows the implementation of quotas, as described in the Features section of this
-chapter (<[sec:pmc:safety:features](sec:pmc:safety:features)>), while the mode-filtering capabilities partially
+chapter (<<sec:pmc:safety:features>>), while the mode-filtering capabilities partially
 address the filtering capabilities identified in the same section, but are limited to execution modes. Note that
 the overflow capability does not apply to the mandatory `cycle` and `instret` counters.
 
@@ -464,9 +460,9 @@ The standard Hardware Performance Monitoring facility and extensions defined
 by the RISC-V specifications, as described in the previous section, provide an
 important foundation for implementing safety-related hardware performance counters.
 
-Working groups within the RISC-V International *Performance Analysis* Special
-Interest Group are developing new extensions intended to enable more efficient
-implementations of functional safety mechanisms based on performance counters.
+Working groups within the RISC-V International *Debug, Trace, and Performance 
+Monitoring* Special Interest Group are developing new extensions intended to enable 
+more efficient implementations of functional safety mechanisms based on performance counters.
 
 New processor implementations targeting safety-critical domains should consider
 integrating these extensions where appropriate.
