@@ -335,8 +335,8 @@ If used to reset the cache to a known state to provide the temporal isolation
 discussed in this chapter, it is recommended that a cache state analysis
 (probably an offline analysis) be performed to selectively issue the [.extension]#Zicbom#
 instructions required to achieve the cache reset, rather than simply issuing
-[.extension]#Zicbom# instructions for the entire context, such as an application or
-address space.
+[.extension]#Zicbom# instructions for the the entire context address space, such as an 
+application address space.
 The latter approach might have a significant negative performance impact when the
 cache block size is small compared to the size of the entire context address space.
 . Traditionally, safety-critical processors required the ability to remove or
