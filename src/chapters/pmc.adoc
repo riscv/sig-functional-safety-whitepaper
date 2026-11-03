@@ -460,8 +460,8 @@ The standard Hardware Performance Monitoring facility and extensions defined
 by the RISC-V specifications, as described in the previous section, provide an
 important foundation for implementing safety-related hardware performance counters.
 
-Working groups within the RISC-V International *Debug, Trace, and Performance 
-Monitoring* Special Interest Group are developing new extensions intended to enable 
+Working groups within the RISC-V International *Debug, Trace, and Performance
+Monitoring* Special Interest Group are developing new extensions intended to enable
 more efficient implementations of functional safety mechanisms based on performance counters.
 
 New processor implementations targeting safety-critical domains should consider
