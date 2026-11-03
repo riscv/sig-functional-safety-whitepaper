@@ -136,7 +136,7 @@ those caches, the contents of branch predictors, and the occupancy of queues and
 buffers.
 +
 Features that allow the state of hardware resources used by a task to be
-reset, flush, or freeze can support time partitioning.
+reset, flush, or freeze can be used to provide time partitioning.
 For example, resetting the processor state to a known state reduces time
 variability because the state is known when task execution begins.
 Otherwise, effects such as systematic branch mispredictions or unfortunate cache
@@ -246,8 +246,8 @@ Core-local timers can also be used, but they may require some form of mutual
 synchronization, either directly between the timers or through a SoC-global
 timer.
 
-Intra-core time partitioning features are normally implemented at core level, if
-resources are local to the core or at SoC level, if resources are shared across
+Intra-core time partitioning features are normally implemented at core level if
+resources are local to the core, or at SoC level if resources are shared across
 cores.
 For instance, flushing cache contents for an on-core first level cache are
 a core-level feature, whereas flushing the buffers and queues of an interconnect
@@ -368,7 +368,7 @@ Solutions for memory partitioning can affect the core, SoC, or
 software levels, depending on the targeted resource or functionality,
 such as partitioning primitives, different types of memory, atomic
 operations, and virtualization.
-Changes at the core and/or SoC levels can impact the the software
+Changes at the core and/or SoC levels can impact the software
 level. The resulting software changes can be simple and limited in
 scope, such as adding instructions to the hypervisor, OS, or RTOS, or they
 can be more complex and affect multiple elements of the software stack, such
@@ -392,7 +392,7 @@ Furthermore, the shared property of a branch predictor can make WCET analysis
 even more complex, because its state can be affected by other applications or
 tasks.
 
-The impact of such interference isn't limited to time, as shown in the previous
+The impact of such interference is not limited to time, as shown in the previous
 example of the branch predictor.
 For example, data integrity can also be impacted.
 In the security domain, attacks such as RowHammer have shown that the data from one
@@ -402,7 +402,7 @@ the impact of such actions should be considered in order to maintain
 the reliability of the memory and the integrity of the data of the different
 applications in the system.
 In fact, many safety and security concerns have analogous consequences
-and differ primarily on whether the root cause is unintended, as in a safety concern
+and differ primarily on whether the root cause is unintended, as in a safety concern,
 or malicious, as in a security concern.
 
 [#sec:partitioning:safety:other:features]
@@ -443,9 +443,9 @@ queueing ports and sampling ports.
 neural network coprocessor, etc.), and DMAs.
 Transaction initiators can be considered similar to processor cores, as
 they can introduce concurrent traffic on shared interference channels.
-Peripherals that are allocated to a core or a specific sharing mechanisms can
+Peripherals can be allocated to a core or a specific sharing mechanisms can
 be used.
-* Cache coherency mechanisms, centralized (snooping) vs. distributed (
+* Cache coherency mechanisms, centralized (snooping) vs. distributed (e.g. 
 directory-based) and the associated additional traffic should be considered when
 analyzing interference channels.
 * In addition, performance counters can be used to implement
@@ -453,10 +453,6 @@ interference monitoring (refer to xref:sec:pmc[xrefstyle=full]).
 
 [#sec:partitioning:safety:other:level]
 ##### Level
-
-As with memory partitioning, solutions for partitioning other resources can affect the core, SoC, or software level, depending on the targeted resource or functionality, such as branch predictors, interconnects, interrupts, or explicit communication mechanisms.
-
-Changes at the core and/or SoC levels can impact the software level. The resulting software changes may be simple and limited in scope, such as adding instructions to the hypervisor, OS, or RTOS, or they may be more complex and affect multiple elements of the software stack, such as requiring major changes to the hypervisor, OS, or RTOS and re-architecting the application code.
 
 As with memory partitioning, solutions for the partitioning of other resources
 can affect the core, SoC, or software levels, depending on the
@@ -808,7 +804,7 @@ dedicated level signals or dedicated buses for message interrupts.
 
 Simultaneous multithreading in some cores can enhance system performance.
 However, this may lead to abundant time interferences at a very fine grain,
-which are hard to master - if possible at all. In safety-critical systems, this
+which are hard to master -- if possible at all. In safety-critical systems, this
 feature should be disabled.
 
 Some cores can share some "`complex units`", such as a vector unit or floating point
@@ -824,10 +820,10 @@ or explicitly time-sharing them so that concurrent accesses cannot occur.
 
 Partitioning has traditionally been used in avionics systems. If interested, see
 the ARINC 653 "`__Avionics Application Software Standard
-Interface__`" cite:[arinc653p0:2021,arinc653p1:2024,arinc653p2:2024]
-specification and the DO-297 "`__Integrated Modular Avionics (IMA)
+Interface__`" cite:[arinc653p0:2021,arinc653p1:2024,arinc653p2:2024] 
+and the DO-297 "`__Integrated Modular Avionics (IMA)
 Development Guidance and Certification Considerations__`" cite:[do297:2005]
-documents.
+specifications.
 
 #### Related chapters
 
