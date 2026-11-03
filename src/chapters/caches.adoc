@@ -359,7 +359,7 @@ This functionality is platform-defined, so it may not be configurable for all
 or any memory regions, and it is not consistent with the intended use model for
 PMAs, as described in the RISC-V Privileged ISA Specification
 cite:[rv-priv-spec:2024] Section 3.6:
-## "`PMAs are inherent properties of the underlying hardware and rarely change
+"`PMAs are inherent properties of the underlying hardware and rarely change
 during system operation.
 Unlike Physical Memory Protection (PMP) values described in Section 3.7, PMAs
 do not vary by execution context.`"
@@ -379,10 +379,6 @@ features and adapting its behavior accordingly.
 [#sec:caches:recom:non-isa]
 #### Non-ISA recommendations
 
-. Many safety-critical systems require isolation from interference from other
-software tasks (maybe with a lower safety integrity level).
-TCM that is private to a particular core can be extremely useful in delivering
-this isolation.
 . As they are susceptible to random errors, the memories used to implement
 caches (including tag/valid RAMs) and TCMs should be thoroughly analyzed for
 the effects of potential errors on the functional safety of the system.
