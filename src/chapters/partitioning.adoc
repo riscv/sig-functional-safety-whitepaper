@@ -445,7 +445,7 @@ Transaction initiators can be considered similar to processor cores, as
 they can introduce concurrent traffic on shared interference channels.
 Peripherals can be allocated to a core or a specific sharing mechanisms can
 be used.
-* Cache coherency mechanisms, centralized (snooping) vs. distributed (e.g. 
+* Cache coherency mechanisms, centralized (snooping) vs. distributed (e.g.
 directory-based) and the associated additional traffic should be considered when
 analyzing interference channels.
 * In addition, performance counters can be used to implement
@@ -820,7 +820,7 @@ or explicitly time-sharing them so that concurrent accesses cannot occur.
 
 Partitioning has traditionally been used in avionics systems. If interested, see
 the ARINC 653 "`__Avionics Application Software Standard
-Interface__`" cite:[arinc653p0:2021,arinc653p1:2024,arinc653p2:2024] 
+Interface__`" cite:[arinc653p0:2021,arinc653p1:2024,arinc653p2:2024]
 and the DO-297 "`__Integrated Modular Avionics (IMA)
 Development Guidance and Certification Considerations__`" cite:[do297:2005]
 specifications.
