@@ -81,7 +81,7 @@ advantages:
 * It also reduces the risk of deadline overruns during operation by significantly reducing
   timing interference between tasks.
 
-On multicore SOCs, time partitioning of tasks can be applied individually to
+On multicore SoCs, time partitioning of tasks can be applied individually to
 a single core as well as combinations of multiple cores.
 Time partitioning is key to allowing tasks to start, with some degree of precision
 when required and to ensuring that they make sufficient progress to meet their
